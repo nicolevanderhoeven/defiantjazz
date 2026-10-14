@@ -64,7 +64,15 @@ python3 -m pip install -r loader/requirements.txt
 python3 loader/load.py --target local
 ```
 
-Grafana 13.2 runs at <http://localhost:3000>. Sign in with **admin / admin**, or set `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` before `docker compose up`. The Loki, Prometheus and Tempo data sources are already provisioned. The local stack accepts the full history. Add `--no-shift` to keep the original 2026 dates.
+Grafana 13.2 runs at <http://localhost:3000>, and the Loki, Prometheus and Tempo data sources are already provisioned. Every port is bound to `127.0.0.1`, so nothing is reachable from your network.
+
+**Sign-in:** the default is **admin / admin**. To use your own password, copy `local/.env.example` to `local/.env` (git-ignored) before the first `docker compose up`. Grafana only reads it when its data volume is created. To change the password later, run:
+
+```sh
+docker compose exec grafana grafana cli admin reset-admin-password '<new password>'
+```
+
+Recreating the containers (for example after editing `docker-compose.yml`) clears Loki, Prometheus and Tempo, so run the loader again afterwards. Grafana's own data, including the Assistant connection, lives in the `grafana-data` volume and survives. The local stack accepts the full history. Add `--no-shift` to keep the original 2026 dates.
 
 ### Grafana Assistant on the local stack
 

@@ -1,4 +1,5 @@
 # Local stack for The Defiant Jazz Incident: Loki, Prometheus, Tempo and Grafana.
+# Ports are bound to 127.0.0.1 so only this machine can reach them.
 # Start it with `docker compose up -d` from this folder, then run the loader with --target local.
 services:
   loki:
@@ -7,7 +8,7 @@ services:
     volumes:
       - ./loki.yaml:/etc/loki/loki.yaml:ro
     ports:
-      - "3100:3100"
+      - "127.0.0.1:3100:3100"
 
   prometheus:
     image: prom/prometheus:v3.2.1
@@ -18,7 +19,7 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - "9090:9090"
+      - "127.0.0.1:9090:9090"
 
   tempo:
     image: grafana/tempo:2.7.1
@@ -26,8 +27,8 @@ services:
     volumes:
       - ./tempo.yaml:/etc/tempo/tempo.yaml:ro
     ports:
-      - "3200:3200"
-      - "4318:4318"
+      - "127.0.0.1:3200:3200"
+      - "127.0.0.1:4318:4318"
 
   grafana:
     image: grafana/grafana:13.2.4
@@ -44,7 +45,7 @@ services:
       # Keeps the Assistant connection (and anything you save) across restarts.
       - grafana-data:/var/lib/grafana
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on: [loki, prometheus, tempo]
 
 volumes:
