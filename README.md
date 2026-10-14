@@ -64,7 +64,19 @@ python3 -m pip install -r loader/requirements.txt
 python3 loader/load.py --target local
 ```
 
-Grafana runs at <http://localhost:3000> with no login, and the Loki, Prometheus and Tempo data sources are already provisioned. The local stack accepts the full history. Add `--no-shift` to keep the original 2026 dates.
+Grafana 13.2 runs at <http://localhost:3000>. Sign in with **admin / admin**, or set `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` before `docker compose up`. The Loki, Prometheus and Tempo data sources are already provisioned. The local stack accepts the full history. Add `--no-shift` to keep the original 2026 dates.
+
+### Grafana Assistant on the local stack
+
+The Grafana Assistant plugin (`grafana-assistant-app`) is preinstalled. Assistant still runs its AI backend in Grafana Cloud, so connect it once to a Grafana Cloud stack where Assistant is enabled. A free account works.
+
+1. Sign in to <http://localhost:3000>.
+2. Open **Administration > Plugins and data > Plugins > Grafana Assistant > Connection**, or go straight to <http://localhost:3000/plugins/grafana-assistant-app>.
+3. Click **Connect to Grafana Cloud** and approve the connection.
+
+Your telemetry stays in the local stack. Prompts and the query context Assistant needs are sent to Grafana Cloud, and usage counts against the connected stack. The connection is stored in the `grafana-data` Docker volume, so it survives restarts. `docker compose down -v` removes it.
+
+Some Assistant features, such as Investigations, aren't available on self-managed Grafana. See the [self-managed Assistant docs](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/self-managed/).
 
 In the local Tempo, TraceQL searches limited to a time range may not find the historical badge traces. A search without a time range (for example `curl 'localhost:3200/api/search?q={span.badge="hale_r"}'`) or opening a trace by ID works. Every door-event log line in Loki carries its trace's `trace_id`.
 

@@ -30,13 +30,22 @@ services:
       - "4318:4318"
 
   grafana:
-    image: grafana/grafana:11.5.2
+    image: grafana/grafana:13.2.4
     environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      # Grafana Assistant doesn't support anonymous access, so sign in (default admin / admin).
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      # Preinstall Grafana Assistant; connect it to a Grafana Cloud stack once (see README).
+      - GF_PLUGINS_PREINSTALL=grafana-assistant-app
+      - GF_AUTH_MANAGED_SERVICE_ACCOUNTS_ENABLED=true
+      - GF_FEATURE_TOGGLES_ENABLE=externalServiceAccounts
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      # Keeps the Assistant connection (and anything you save) across restarts.
+      - grafana-data:/var/lib/grafana
     ports:
       - "3000:3000"
     depends_on: [loki, prometheus, tempo]
+
+volumes:
+  grafana-data:
