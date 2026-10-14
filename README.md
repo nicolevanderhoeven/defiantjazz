@@ -66,6 +66,8 @@ python3 loader/load.py --target local
 
 Grafana runs at <http://localhost:3000> with no login, and the Loki, Prometheus and Tempo data sources are already provisioned. The local stack accepts the full history. Add `--no-shift` to keep the original 2026 dates.
 
+In the local Tempo, TraceQL searches limited to a time range may not find the historical badge traces. A search without a time range (for example `curl 'localhost:3200/api/search?q={span.badge="hale_r"}'`) or opening a trace by ID works. Every door-event log line in Loki carries its trace's `trace_id`.
+
 ## Loader options
 
 ```
