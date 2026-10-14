@@ -20,6 +20,7 @@ import base64
 import hashlib
 import os
 import re
+import ssl
 import sys
 import time
 import urllib.error
@@ -54,6 +55,16 @@ LOG_FILES = ["door-and-badge-events.log", "chat.log", "system.log", "ambient-mic
 
 
 # ---------------------------------------------------------------- helpers
+def tls_context():
+    """Use certifi's CA bundle when available: python.org builds of Python on macOS
+    ship without access to the system certificate store."""
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
 def parse_ts(s):
     return datetime.strptime(s, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
 
@@ -102,8 +113,13 @@ class Shifter:
         return ISO.sub(lambda m: (parse_ts(m.group(1)) + self.delta).strftime("%Y-%m-%dT%H:%M:%S"), s)
 
 
+def journey_trace_id(badge, day):
+    """Trace ID of a badge's journey on a given (shifted) day; shared by logs and traces."""
+    return hashlib.sha256(f"{badge}:{day}".encode()).digest()[:16]
+
+
 def read_logs(data_dir, shift):
-    """Yield (timestamp, source, level, body) for every log line."""
+    """Yield (timestamp, source, level, body, trace_id) for every log line."""
     out = []
     export_seq = 0
     for name in LOG_FILES:
@@ -123,7 +139,11 @@ def read_logs(data_dir, shift):
             else:
                 ts = parse_ts(line.split()[0])
                 source = f.get("source", "unknown")
-            out.append((shift.dt(ts), source, f.get("level"), shift.text(line)))
+            ts = shift.dt(ts)
+            trace_id = None
+            if name == "door-and-badge-events.log" and f.get("badge"):
+                trace_id = journey_trace_id(f["badge"], ts.date())  # links the line to its badge-journey trace
+            out.append((ts, source, f.get("level"), shift.text(line), trace_id))
     out.sort(key=lambda r: r[0])
     return out
 
@@ -158,7 +178,7 @@ def read_spans(data_dir, shift):
     spans = []
     for (badge, day), events in journeys.items():
         events.sort(key=lambda e: e[0])
-        trace_id = hashlib.sha256(f"{badge}:{day}".encode()).digest()[:16]
+        trace_id = journey_trace_id(badge, day)
         root_id = hashlib.sha256(f"root:{badge}:{day}".encode()).digest()[:8]
         start, end = events[0][0], events[-1][0] + timedelta(seconds=1)
         spans.append(Span(trace_id=trace_id, span_id=root_id, name="badge-journey",
@@ -187,9 +207,11 @@ def resource(service):
 
 def logs_request(batch):
     by_source = defaultdict(list)
-    for ts, source, level, body in batch:
+    for ts, source, level, body, trace_id in batch:
         rec = LogRecord(time_unix_nano=nanos(ts), observed_time_unix_nano=nanos(ts),
                         body=AnyValue(string_value=body))
+        if trace_id:
+            rec.trace_id = trace_id
         if level in LEVELS:
             rec.severity_number = LEVELS[level]
             rec.severity_text = level.upper()
@@ -220,6 +242,7 @@ def traces_request(batch):
 class Sender:
     def __init__(self, urls, auth, dry_run):
         self.urls, self.auth, self.dry_run = urls, auth, dry_run
+        self.tls = tls_context()
 
     def post(self, signal, message):
         payload = message.SerializeToString()
@@ -232,7 +255,7 @@ class Sender:
             req.add_header("Authorization", "Basic " + base64.b64encode(self.auth.encode()).decode())
         for attempt in range(5):
             try:
-                with urllib.request.urlopen(req, timeout=60):
+                with urllib.request.urlopen(req, timeout=60, context=self.tls):
                     return True
             except urllib.error.HTTPError as e:
                 body = e.read().decode(errors="replace")[:400]

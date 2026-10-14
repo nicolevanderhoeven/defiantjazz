@@ -52,6 +52,10 @@ Because of those limits, Grafana Cloud gets:
 
 Older history is skipped, and the loader reports how much. To see the full 14 weeks, use the local stack.
 
+**Traces in Grafana Cloud.** Grafana Cloud Traces stores the badge-journey traces, and you can open any of them by trace ID. It doesn't index spans with old timestamps for TraceQL search, though, and these spans are hours or days old by the time they're loaded. Every door-event log line carries its journey's `trace_id`, so in Loki you can jump from a door event to its trace.
+
+**macOS note.** If the loader fails with `CERTIFICATE_VERIFY_FAILED`, install the requirements, which include `certifi`. The python.org build of Python doesn't use the system certificate store.
+
 ## Loading into a local stack
 
 ```sh
