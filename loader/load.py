@@ -192,7 +192,7 @@ def read_spans(data_dir, shift):
                 name, dur = f"elevator-car {f.get('event', '')}".strip(), timedelta(seconds=1)
             else:
                 name, dur = f"{f.get('reader', '?')} {f.get('dir', '')}".strip(), timedelta(milliseconds=500)
-            attrs = [kv("badge", badge)] + [kv(k, v) for k, v in f.items() if k not in ("badge", "trace_id")]
+            attrs = [kv("badge", badge)] + [kv(k, shift.text(v)) for k, v in f.items() if k not in ("badge", "trace_id")]
             span_id = hashlib.sha256(f"{NAMESPACE}:{badge}:{ts.isoformat()}:{i}".encode()).digest()[:8]
             spans.append(Span(trace_id=trace_id, span_id=span_id, parent_span_id=root_id, name=name,
                               kind=Span.SPAN_KIND_INTERNAL, start_time_unix_nano=nanos(ts),
