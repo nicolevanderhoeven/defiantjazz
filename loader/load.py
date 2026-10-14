@@ -115,7 +115,8 @@ class Shifter:
 
 def journey_trace_id(badge, day):
     """Trace ID of a badge's journey on a given (shifted) day; shared by logs and traces."""
-    return hashlib.sha256(f"{badge}:{day}".encode()).digest()[:16]
+    # include the namespace so a second copy loaded into the same stack gets its own traces
+    return hashlib.sha256(f"{NAMESPACE}:{badge}:{day}".encode()).digest()[:16]
 
 
 def read_logs(data_dir, shift):
@@ -179,7 +180,7 @@ def read_spans(data_dir, shift):
     for (badge, day), events in journeys.items():
         events.sort(key=lambda e: e[0])
         trace_id = journey_trace_id(badge, day)
-        root_id = hashlib.sha256(f"root:{badge}:{day}".encode()).digest()[:8]
+        root_id = hashlib.sha256(f"root:{NAMESPACE}:{badge}:{day}".encode()).digest()[:8]
         start, end = events[0][0], events[-1][0] + timedelta(seconds=1)
         spans.append(Span(trace_id=trace_id, span_id=root_id, name="badge-journey",
                           kind=Span.SPAN_KIND_INTERNAL, start_time_unix_nano=nanos(start),
@@ -192,7 +193,7 @@ def read_spans(data_dir, shift):
             else:
                 name, dur = f"{f.get('reader', '?')} {f.get('dir', '')}".strip(), timedelta(milliseconds=500)
             attrs = [kv("badge", badge)] + [kv(k, v) for k, v in f.items() if k not in ("badge", "trace_id")]
-            span_id = hashlib.sha256(f"{badge}:{ts.isoformat()}:{i}".encode()).digest()[:8]
+            span_id = hashlib.sha256(f"{NAMESPACE}:{badge}:{ts.isoformat()}:{i}".encode()).digest()[:8]
             spans.append(Span(trace_id=trace_id, span_id=span_id, parent_span_id=root_id, name=name,
                               kind=Span.SPAN_KIND_INTERNAL, start_time_unix_nano=nanos(ts),
                               end_time_unix_nano=nanos(ts + dur), attributes=attrs))
