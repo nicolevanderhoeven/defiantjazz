@@ -1,0 +1,329 @@
+#!/usr/bin/env python3
+"""Load The Defiant Jazz Incident telemetry into Loki, Prometheus/Mimir and Tempo over OTLP.
+
+The same loader works for Grafana Cloud (one OTLP gateway) and for the local
+Docker stack in ../local (Loki, Prometheus and Tempo each expose OTLP).
+
+Usage:
+    python load.py --target cloud            # uses GRAFANA_OTLP_ENDPOINT etc. from the environment / .env
+    python load.py --target local            # sends to the docker compose stack on localhost
+    python load.py --target local --dry-run  # build and validate every payload without sending
+
+By default every timestamp is shifted so the incident happened just before
+"now": Grafana Cloud rejects metrics more than ~2 hours old and logs more than
+~7 days old. Timestamps inside log lines are shifted by the same amount, so the
+data stays internally consistent. Use --no-shift to keep the original dates
+(local stack only).
+"""
+import argparse
+import base64
+import hashlib
+import os
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
+from collections import defaultdict
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+from opentelemetry.proto.collector.logs.v1.logs_service_pb2 import ExportLogsServiceRequest
+from opentelemetry.proto.collector.metrics.v1.metrics_service_pb2 import ExportMetricsServiceRequest
+from opentelemetry.proto.collector.trace.v1.trace_service_pb2 import ExportTraceServiceRequest
+from opentelemetry.proto.common.v1.common_pb2 import AnyValue, InstrumentationScope, KeyValue
+from opentelemetry.proto.logs.v1.logs_pb2 import LogRecord, ResourceLogs, ScopeLogs, SeverityNumber
+from opentelemetry.proto.metrics.v1.metrics_pb2 import Gauge, Metric, NumberDataPoint, ResourceMetrics, ScopeMetrics
+from opentelemetry.proto.resource.v1.resource_pb2 import Resource
+from opentelemetry.proto.trace.v1.trace_pb2 import ResourceSpans, ScopeSpans, Span
+
+# The moment the original data treats as "now": Floor Security has finished
+# the scene and the interviews are under way.
+REFERENCE = datetime(2026, 10, 8, 15, 50, 0, tzinfo=timezone.utc)
+# Records (personnel, Break Room, wellness, ...) are a database pull, not a
+# stream; they are ingested as one export at this time, with their original
+# dates kept in the line body.
+RECORDS_EXPORT_AT = datetime(2026, 10, 8, 15, 40, 0, tzinfo=timezone.utc)
+NAMESPACE = "lumon-severed-floor"
+SCOPE = InstrumentationScope(name="defiantjazz-loader", version="1.0")
+ISO = re.compile(r"\b(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)\b")
+LEVELS = {"debug": SeverityNumber.SEVERITY_NUMBER_DEBUG, "info": SeverityNumber.SEVERITY_NUMBER_INFO,
+          "warn": SeverityNumber.SEVERITY_NUMBER_WARN, "error": SeverityNumber.SEVERITY_NUMBER_ERROR,
+          "critical": SeverityNumber.SEVERITY_NUMBER_FATAL}
+LOG_FILES = ["door-and-badge-events.log", "chat.log", "system.log", "ambient-mic.log", "records.log"]
+
+
+# ---------------------------------------------------------------- helpers
+def parse_ts(s):
+    return datetime.strptime(s, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+
+
+def nanos(dt):
+    return int(dt.timestamp()) * 1_000_000_000 + dt.microsecond * 1000
+
+
+def kv(key, value):
+    if isinstance(value, bool):
+        return KeyValue(key=key, value=AnyValue(bool_value=value))
+    if isinstance(value, int):
+        return KeyValue(key=key, value=AnyValue(int_value=value))
+    if isinstance(value, float):
+        return KeyValue(key=key, value=AnyValue(double_value=value))
+    return KeyValue(key=key, value=AnyValue(string_value=str(value)))
+
+
+def fields(line):
+    """Parse logfmt-style key=value (or key="quoted value") pairs."""
+    return {m.group(1): m.group(3) if m.group(3) is not None else m.group(2)
+            for m in re.finditer(r'(\w[\w.-]*)=(?:"([^"]*)"|([^\s"]+))', line)}
+
+
+def load_env_file(path):
+    if not path.exists():
+        return
+    for raw in path.read_text().splitlines():
+        line = raw.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+
+
+# ---------------------------------------------------------------- reading
+class Shifter:
+    def __init__(self, delta):
+        self.delta = delta
+
+    def dt(self, dt):
+        return dt + self.delta
+
+    def text(self, s):
+        if not self.delta:
+            return s
+        return ISO.sub(lambda m: (parse_ts(m.group(1)) + self.delta).strftime("%Y-%m-%dT%H:%M:%S"), s)
+
+
+def read_logs(data_dir, shift):
+    """Yield (timestamp, source, level, body) for every log line."""
+    out = []
+    export_seq = 0
+    for name in LOG_FILES:
+        for raw in (data_dir / name).read_text().splitlines():
+            line = raw.rstrip()
+            if not line or line.startswith("==="):
+                continue
+            f = fields(line)
+            if name == "records.log":
+                # one record pull; first word (after any date) names the record type
+                parts = line.split()
+                kind = parts[1] if ISO.fullmatch(parts[0]) else parts[0]
+                kind = kind.split("=")[0]
+                source = {"perk": "perks"}.get(kind, kind)
+                ts = RECORDS_EXPORT_AT + timedelta(milliseconds=export_seq)
+                export_seq += 1
+            else:
+                ts = parse_ts(line.split()[0])
+                source = f.get("source", "unknown")
+            out.append((shift.dt(ts), source, f.get("level"), shift.text(line)))
+    out.sort(key=lambda r: r[0])
+    return out
+
+
+def read_metrics(data_dir, shift):
+    """Yield (timestamp, name, attributes, value)."""
+    out = []
+    with open(data_dir / "metrics.csv") as fh:
+        next(fh)  # header: ts,metric,labels,value,ingested_at
+        for line in fh:
+            # labels may themselves contain commas (circuit=C-7,load=supply-room-b)
+            parts = line.rstrip("\n").split(",")
+            ts, name, value, ingested_at = parts[0], parts[1], parts[-2], parts[-1]
+            attrs = dict(p.split("=", 1) for p in parts[2:-2] if "=" in p)
+            if ingested_at:
+                attrs["buffered"] = "true"  # recorded on-device during the outage, uploaded late
+            out.append((shift.dt(parse_ts(ts)), name, attrs, float(value)))
+    out.sort(key=lambda r: r[0])
+    return out
+
+
+def read_spans(data_dir, shift):
+    """Build badge-journey traces: one trace per badge per day, one span per reader event."""
+    journeys = defaultdict(list)
+    for raw in (data_dir / "door-and-badge-events.log").read_text().splitlines():
+        f = fields(raw)
+        badge = f.get("badge")
+        if not badge:
+            continue  # reader_offline / reader_online announcements
+        ts = shift.dt(parse_ts(raw.split()[0]))
+        journeys[(badge, ts.date())].append((ts, f))
+    spans = []
+    for (badge, day), events in journeys.items():
+        events.sort(key=lambda e: e[0])
+        trace_id = hashlib.sha256(f"{badge}:{day}".encode()).digest()[:16]
+        root_id = hashlib.sha256(f"root:{badge}:{day}".encode()).digest()[:8]
+        start, end = events[0][0], events[-1][0] + timedelta(seconds=1)
+        spans.append(Span(trace_id=trace_id, span_id=root_id, name="badge-journey",
+                          kind=Span.SPAN_KIND_INTERNAL, start_time_unix_nano=nanos(start),
+                          end_time_unix_nano=nanos(end), attributes=[kv("badge", badge), kv("day", str(day))]))
+        for i, (ts, f) in enumerate(events):
+            if f.get("source") == "trace":
+                name, dur = f["span"], timedelta(milliseconds=int(f.get("dur_ms", "1000")))
+            elif f.get("source") == "elevator-reader":
+                name, dur = f"elevator-car {f.get('event', '')}".strip(), timedelta(seconds=1)
+            else:
+                name, dur = f"{f.get('reader', '?')} {f.get('dir', '')}".strip(), timedelta(milliseconds=500)
+            attrs = [kv("badge", badge)] + [kv(k, v) for k, v in f.items() if k not in ("badge", "trace_id")]
+            span_id = hashlib.sha256(f"{badge}:{ts.isoformat()}:{i}".encode()).digest()[:8]
+            spans.append(Span(trace_id=trace_id, span_id=span_id, parent_span_id=root_id, name=name,
+                              kind=Span.SPAN_KIND_INTERNAL, start_time_unix_nano=nanos(ts),
+                              end_time_unix_nano=nanos(ts + dur), attributes=attrs))
+    spans.sort(key=lambda s: s.start_time_unix_nano)
+    return spans
+
+
+# ---------------------------------------------------------------- payloads
+def resource(service):
+    return Resource(attributes=[kv("service.name", service), kv("service.namespace", NAMESPACE)])
+
+
+def logs_request(batch):
+    by_source = defaultdict(list)
+    for ts, source, level, body in batch:
+        rec = LogRecord(time_unix_nano=nanos(ts), observed_time_unix_nano=nanos(ts),
+                        body=AnyValue(string_value=body))
+        if level in LEVELS:
+            rec.severity_number = LEVELS[level]
+            rec.severity_text = level.upper()
+        by_source[source].append(rec)
+    return ExportLogsServiceRequest(resource_logs=[
+        ResourceLogs(resource=resource(src), scope_logs=[ScopeLogs(scope=SCOPE, log_records=recs)])
+        for src, recs in by_source.items()])
+
+
+def metrics_request(batch):
+    by_name = defaultdict(list)
+    for ts, name, attrs, value in batch:
+        by_name[name].append(NumberDataPoint(time_unix_nano=nanos(ts), as_double=value,
+                                             attributes=[kv(k, v) for k, v in sorted(attrs.items())]))
+    metrics = [Metric(name=n, gauge=Gauge(data_points=pts)) for n, pts in by_name.items()]
+    return ExportMetricsServiceRequest(resource_metrics=[
+        ResourceMetrics(resource=resource("lumon-floor-telemetry"),
+                        scope_metrics=[ScopeMetrics(scope=SCOPE, metrics=metrics)])])
+
+
+def traces_request(batch):
+    return ExportTraceServiceRequest(resource_spans=[
+        ResourceSpans(resource=resource("lumon-badge-tracking"),
+                      scope_spans=[ScopeSpans(scope=SCOPE, spans=batch)])])
+
+
+# ---------------------------------------------------------------- sending
+class Sender:
+    def __init__(self, urls, auth, dry_run):
+        self.urls, self.auth, self.dry_run = urls, auth, dry_run
+
+    def post(self, signal, message):
+        payload = message.SerializeToString()
+        if self.dry_run:
+            type(message).FromString(payload)  # round-trip validates the encoding
+            return True
+        req = urllib.request.Request(self.urls[signal], data=payload, method="POST",
+                                     headers={"Content-Type": "application/x-protobuf"})
+        if self.auth:
+            req.add_header("Authorization", "Basic " + base64.b64encode(self.auth.encode()).decode())
+        for attempt in range(5):
+            try:
+                with urllib.request.urlopen(req, timeout=60):
+                    return True
+            except urllib.error.HTTPError as e:
+                body = e.read().decode(errors="replace")[:400]
+                if e.code in (429, 500, 502, 503, 504) and attempt < 4:
+                    time.sleep(2 ** attempt)
+                    continue
+                print(f"  ! {signal} HTTP {e.code}: {body}", file=sys.stderr)
+                return False
+            except urllib.error.URLError as e:
+                if attempt < 4:
+                    time.sleep(2 ** attempt)
+                    continue
+                print(f"  ! {signal} connection failed: {e.reason}", file=sys.stderr)
+                return False
+        return False
+
+
+def send(sender, signal, items, build, batch_size):
+    ok = failed = 0
+    for i in range(0, len(items), batch_size):
+        chunk = items[i:i + batch_size]
+        if sender.post(signal, build(chunk)):
+            ok += len(chunk)
+        else:
+            failed += len(chunk)
+    print(f"{signal}: sent {ok}" + (f", rejected {failed}" if failed else ""))
+    return failed
+
+
+# ---------------------------------------------------------------- main
+def main():
+    here = Path(__file__).resolve().parent
+    load_env_file(here / ".env")
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--target", choices=["cloud", "local"], required=True)
+    ap.add_argument("--data", type=Path, default=here.parent / "telemetry")
+    ap.add_argument("--signals", default="logs,metrics,traces")
+    ap.add_argument("--no-shift", action="store_true", help="keep the original 2026-07..2026-10-08 timestamps")
+    ap.add_argument("--incident-end", help="ISO time (UTC) that 2026-10-08T15:50:00 maps to; default: now")
+    ap.add_argument("--dry-run", action="store_true", help="build and validate payloads without sending")
+    ap.add_argument("--batch-size", type=int, default=2000)
+    args = ap.parse_args()
+
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    if args.no_shift:
+        delta = timedelta(0)
+    else:
+        anchor = parse_ts(args.incident_end.rstrip("Z")) if args.incident_end else now - timedelta(minutes=2)
+        delta = anchor - REFERENCE
+    shift = Shifter(delta)
+    print(f"Time shift: {delta}  (incident 2026-10-08T15:02:00Z -> "
+          f"{(datetime(2026, 10, 8, 15, 2, tzinfo=timezone.utc) + delta).isoformat()})")
+
+    if args.target == "cloud":
+        base = os.environ.get("GRAFANA_OTLP_ENDPOINT", "").rstrip("/")
+        user, token = os.environ.get("GRAFANA_INSTANCE_ID"), os.environ.get("GRAFANA_API_TOKEN")
+        if not args.dry_run and not (base and user and token):
+            sys.exit("Set GRAFANA_OTLP_ENDPOINT, GRAFANA_INSTANCE_ID and GRAFANA_API_TOKEN (see loader/.env.example).")
+        urls = {s: f"{base}/v1/{s}" for s in ("logs", "metrics", "traces")}
+        auth = f"{user}:{token}" if user and token else None
+        # Grafana Cloud limits: metrics ~2h behind the newest sample, logs 7 days.
+        max_age = {"metrics": timedelta(hours=2) - timedelta(minutes=5), "logs": timedelta(days=7) - timedelta(hours=1),
+                   "traces": timedelta(days=7) - timedelta(hours=1)}
+    else:
+        urls = {"logs": os.environ.get("LOCAL_LOKI_OTLP", "http://localhost:3100/otlp/v1/logs"),
+                "metrics": os.environ.get("LOCAL_PROMETHEUS_OTLP", "http://localhost:9090/api/v1/otlp/v1/metrics"),
+                "traces": os.environ.get("LOCAL_TEMPO_OTLP", "http://localhost:4318/v1/traces")}
+        auth, max_age = None, {}
+
+    sender = Sender(urls, auth, args.dry_run)
+    wanted = [s.strip() for s in args.signals.split(",")]
+    future_limit = now + timedelta(minutes=5)
+    readers = {"logs": (read_logs, logs_request, lambda r: r[0]),
+               "metrics": (read_metrics, metrics_request, lambda r: r[0]),
+               "traces": (read_spans, traces_request,
+                          lambda s: datetime.fromtimestamp(s.start_time_unix_nano / 1e9, timezone.utc))}
+    failures = 0
+    for signal in ("logs", "metrics", "traces"):
+        if signal not in wanted:
+            continue
+        reader, build, when = readers[signal]
+        items = reader(args.data, shift)
+        oldest = now - max_age[signal] if signal in max_age else None
+        kept = [x for x in items if when(x) <= future_limit and (oldest is None or when(x) >= oldest)]
+        if len(kept) < len(items):
+            print(f"{signal}: skipping {len(items) - len(kept)} of {len(items)} items outside the target's time limits")
+        failures += send(sender, signal, kept, build, args.batch_size)
+    if args.dry_run:
+        print("Dry run: all payloads built and validated; nothing was sent.")
+    sys.exit(1 if failures else 0)
+
+
+if __name__ == "__main__":
+    main()
