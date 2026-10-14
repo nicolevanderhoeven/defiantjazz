@@ -205,6 +205,11 @@ def resource(service):
     return Resource(attributes=[kv("service.name", service), kv("service.namespace", NAMESPACE)])
 
 
+def set_namespace(ns):
+    global NAMESPACE
+    NAMESPACE = ns
+
+
 def logs_request(batch):
     by_source = defaultdict(list)
     for ts, source, level, body, trace_id in batch:
@@ -297,8 +302,11 @@ def main():
     ap.add_argument("--incident-end", help="ISO time (UTC) that 2026-10-08T15:50:00 maps to; default: now")
     ap.add_argument("--dry-run", action="store_true", help="build and validate payloads without sending")
     ap.add_argument("--batch-size", type=int, default=2000)
+    ap.add_argument("--namespace", default=NAMESPACE,
+                    help="service.namespace for every signal (use a new one to load a second copy into the same stack)")
     args = ap.parse_args()
 
+    set_namespace(args.namespace)
     now = datetime.now(timezone.utc).replace(microsecond=0)
     if args.no_shift:
         delta = timedelta(0)

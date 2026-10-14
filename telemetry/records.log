@@ -159,7 +159,6 @@ personnel id=okonjo_a name="Mr. Okonjo" role="Floor Security" legal_name="Amos O
 2026-09-29T16:05:00 supervisor-feedback reply_by=hale_r to=bertram_l text="Reward issued: 1x small kitchen appliance (off-ledger). Discretion appreciated."
 
 === PERKS LEDGER ===
-2026-07-15T16:00:00 perk=waffle-party recipient=bertram_l dept=quota-harmonization note="Q2 top refiner"
 2026-09-21T16:01:10 perk=finger-trap recipient=fern_o
 2026-10-08T16:06:54 perk=eraser recipient=lorna_b
 2026-07-29T16:00:46 perk=eraser recipient=victor_h3

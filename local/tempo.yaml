@@ -13,6 +13,11 @@ distributor:
 ingester:
   max_block_duration: 5m
 
+query_frontend:
+  search:
+    # The case spans ~14 weeks; allow searching all of it at once.
+    max_duration: 0
+
 compactor:
   compaction:
     # The case data is historical (or time-shifted); keep it.
