@@ -20,7 +20,7 @@ This repo contains **only the telemetry** and the tools to load it into Grafana:
 | `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts recorded during the outage |
 | `telemetry/records.log` | Personnel, Break Room, wellness, supervisor feedback, perks, keystroke drafts, calendar |
 | `loader/` | `load.py` sends everything over OTLP |
-| `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana |
+| `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana (with Grafana Assistant) and the Grafana MCP server |
 
 That's about 127,000 lines across roughly 120 employees and 14 weeks. Reading it end to end isn't practical, so query it.
 
@@ -85,6 +85,25 @@ The Grafana Assistant plugin (`grafana-assistant-app`) is preinstalled. Assistan
 Your telemetry stays in the local stack. Prompts and the query context Assistant needs are sent to Grafana Cloud, and usage counts against the connected stack. The connection is stored in the `grafana-data` Docker volume, so it survives restarts. `docker compose down -v` removes it.
 
 Some Assistant features, such as Investigations, aren't available on self-managed Grafana. See the [self-managed Assistant docs](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/self-managed/).
+
+### Grafana MCP server on the local stack
+
+The stack also runs the open-source [Grafana MCP server](https://github.com/grafana/mcp-grafana), so any MCP-capable AI agent (Claude Code, Cursor, Codex and others) can investigate the case through Grafana.
+
+- **Endpoint:** `http://localhost:8000/mcp` (streamable HTTP), reachable only from this machine.
+- **Read-only:** write tools are disabled, so agents can query Loki, Prometheus and Tempo, but can't change anything in Grafana.
+- **Sign-in:** it uses the Grafana admin login from `local/.env`.
+- **Usage statistics:** turned off.
+
+Add it to Claude Code with:
+
+```sh
+claude mcp add --transport http grafana-local http://localhost:8000/mcp
+```
+
+For other clients, point an MCP "HTTP" or "streamable-http" server entry at the same URL. To require a bearer token, set `MCP_SERVER_TOKEN` in `local/.env`, run `docker compose up -d mcp-grafana`, and have the client send `Authorization: Bearer <token>`.
+
+The data source UIDs are `loki`, `prometheus` and `tempo`.
 
 In the local Tempo, TraceQL searches limited to a time range may not find the historical badge traces. A search without a time range (for example `curl 'localhost:3200/api/search?q={span.badge="hale_r"}'`) or opening a trace by ID works. Every door-event log line in Loki carries its trace's `trace_id`.
 

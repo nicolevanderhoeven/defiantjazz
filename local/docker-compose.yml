@@ -48,5 +48,27 @@ services:
       - "127.0.0.1:3000:3000"
     depends_on: [loki, prometheus, tempo]
 
+  # Open-source Grafana MCP server, so any MCP-capable AI agent can investigate the local stack.
+  # Streamable HTTP at http://localhost:8000/mcp. Read-only: write tools are disabled.
+  mcp-grafana:
+    image: grafana/mcp-grafana:2.0.2
+    entrypoint: ["/app/mcp-grafana"]
+    command:
+      - --transport=streamable-http
+      - --address=0.0.0.0:8000
+      - --allowed-hosts=localhost:8000,127.0.0.1:8000
+      - --disable-write
+    environment:
+      - GRAFANA_URL=http://grafana:3000
+      - GRAFANA_USERNAME=${GRAFANA_ADMIN_USER:-admin}
+      - GRAFANA_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      # Optional: set MCP_SERVER_TOKEN in local/.env to require "Authorization: Bearer <token>" from MCP clients.
+      - GRAFANA_SERVER_TOKEN=${MCP_SERVER_TOKEN:-}
+      # Don't send anonymous usage statistics from the local stack.
+      - GRAFANA_USAGE_STATS=false
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on: [grafana]
+
 volumes:
   grafana-data:
