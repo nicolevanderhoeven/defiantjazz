@@ -121,7 +121,7 @@ personnel id=beatrice_h3 innie_name="Beatrice H." dept="Perpetuity Upkeep" legal
 personnel id=cyrus_p3 innie_name="Cyrus P." dept="Wellness Archival" legal_name="Cyrus Pzford" preferred_name="" tenure_years=7
 personnel id=hale_r name="Mr. Hale" role="Floor Supervisor" legal_name="Reginald Hale" severed=false
 personnel id=pruitt_d name="Ms. Pruitt" role="Wellness Counselor" legal_name="Delphine Pruitt" severed=false
-personnel id=okonjo_a name="Mr. Okonjo" role="Floor Security" legal_name="Amos Okonjo" severed=false
+personnel id=okonjo_a name="Ms. Okonjo" role="Floor Security" legal_name="Ada Okonjo" severed=false
 
 === BREAK ROOM RECORDS (current quarter) ===
 2026-07-06T10:37:40 break-room employee=fern_o ordered_by=hale_r reason="unauthorized movement" statement_reads_to_sincerity="10"
