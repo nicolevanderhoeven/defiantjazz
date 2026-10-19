@@ -41,11 +41,11 @@ from opentelemetry.proto.trace.v1.trace_pb2 import ResourceSpans, ScopeSpans, Sp
 # The moment the original data treats as "now": Floor Security has finished
 # the scene and the interviews are under way.
 REFERENCE = datetime(2026, 10, 8, 15, 50, 0, tzinfo=timezone.utc)
-# Records (personnel, Break Room, wellness, ...) are a database pull, not a
+# Records (personnel, detention, Hush Room, ...) are a database pull, not a
 # stream; they are ingested as one export at this time, with their original
 # dates kept in the line body.
 RECORDS_EXPORT_AT = datetime(2026, 10, 8, 15, 40, 0, tzinfo=timezone.utc)
-NAMESPACE = "lumon-severed-floor"
+NAMESPACE = "kipsake-sleep-floor"
 SCOPE = InstrumentationScope(name="defiantjazz-loader", version="1.0")
 ISO = re.compile(r"\b(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)\b")
 LEVELS = {"debug": SeverityNumber.SEVERITY_NUMBER_DEBUG, "info": SeverityNumber.SEVERITY_NUMBER_INFO,
@@ -234,13 +234,13 @@ def metrics_request(batch):
                                              attributes=[kv(k, v) for k, v in sorted(attrs.items())]))
     metrics = [Metric(name=n, gauge=Gauge(data_points=pts)) for n, pts in by_name.items()]
     return ExportMetricsServiceRequest(resource_metrics=[
-        ResourceMetrics(resource=resource("lumon-floor-telemetry"),
+        ResourceMetrics(resource=resource("kipsake-floor-telemetry"),
                         scope_metrics=[ScopeMetrics(scope=SCOPE, metrics=metrics)])])
 
 
 def traces_request(batch):
     return ExportTraceServiceRequest(resource_spans=[
-        ResourceSpans(resource=resource("lumon-badge-tracking"),
+        ResourceSpans(resource=resource("kipsake-badge-tracking"),
                       scope_spans=[ScopeSpans(scope=SCOPE, spans=batch)])])
 
 
