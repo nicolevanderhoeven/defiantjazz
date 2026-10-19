@@ -1,8 +1,8 @@
 # The Defiant Jazz Incident
 
-An observability murder mystery set on a severed floor at Lumon Industries.
+An observability murder mystery set on the Sleep Floor at Kipsake.
 
-During a Defiant Jazz Music Dance Experience, the floor loses power for five minutes. When the lights come back, Floor Supervisor Mr. Reginald Hale is dead in the elevator. Lumon recorded everything it could: badges, doors, chat, chips, power, microphones, cameras, wellness bands, personnel records. Your job is to work out who killed him.
+During the Jazz Hour, while *Defiant Jazz* plays, the floor loses power for five minutes. When the lights come back, Floor Supervisor Mr. Reginald Hale is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
 
 This repo contains **only the telemetry** and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice.
 
@@ -16,9 +16,9 @@ This repo contains **only the telemetry** and the tools to load it into Grafana:
 | `telemetry/door-and-badge-events.log` | Door readers, badge journeys and trace spans |
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |
-| `telemetry/system.log` | Severance chips, power, outlets, the MDE, elevator, cameras, security, medical |
+| `telemetry/system.log` | Sleep rings, power, outlets, the Jazz Hour, elevator, cameras, security, medical |
 | `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts recorded during the outage |
-| `telemetry/records.log` | Personnel, Break Room, wellness, supervisor feedback, perks, keystroke drafts, calendar |
+| `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar |
 | `loader/` | `load.py` sends everything over OTLP |
 | `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana (with Grafana Assistant) and the Grafana MCP server |
 
@@ -26,10 +26,10 @@ That's about 127,000 lines across roughly 120 employees and 14 weeks. Reading it
 
 ## How the data maps to Grafana
 
-- **Loki:** every log line, unchanged except for timestamp shifting (see below). Each source (`door`, `chat`, `chip`, `power`, `ambient-mic`, `security`, `personnel`, `wellness`, …) is its own `service_name`, all under `service_namespace="lumon-severed-floor"`. Lines are logfmt, so `| logfmt` works.
+- **Loki:** every log line, unchanged except for timestamp shifting (see below). Each source (`door`, `chat`, `ring`, `power`, `ambient-mic`, `security`, `personnel`, `hush-room`, …) is its own `service_name`, all under `service_namespace="kipsake-sleep-floor"`. Lines are logfmt, so `| logfmt` works.
   - Records are a database pull, not a stream, so they are ingested as one export at the end of the incident. Their own dates are kept in each line.
-- **Prometheus / Mimir:** every row of `metrics.csv` as a gauge, for example `badge_accel_variance`, `wellness_band_heart_rate_bpm`, `circuit_power_watts` and `quota_file_progress`. Samples recorded on a device during the outage and uploaded late carry `buffered="true"`.
-- **Tempo:** one trace per badge per day (`service.name="lumon-badge-tracking"`), with a span for each door-reader or elevator-reader event.
+- **Prometheus / Mimir:** every row of `metrics.csv` as a gauge, for example `badge_accel_variance`, `sleep_band_heart_rate_bpm`, `circuit_power_watts` and `quota_file_progress`. Samples recorded on a device during the outage and uploaded late carry `buffered="true"`.
+- **Tempo:** one trace per badge per day (`service.name="kipsake-badge-tracking"`), with a span for each door-reader or elevator-reader event.
 
 ## Loading into Grafana Cloud
 
@@ -122,4 +122,4 @@ In the local Tempo, TraceQL searches limited to a time range may not find the hi
 Start with `CASE-BRIEF.md`, then go where the data takes you. Some things worth knowing:
 - Several devices lost clock sync during the outage, and their records say so.
 - Data recorded during the outage arrived late.
-- Not everyone on a severed floor remembers what their body did.
+- Not everyone on the Sleep Floor remembers what their body did.
