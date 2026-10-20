@@ -8,14 +8,17 @@ from ai import AIError
 from content import SUSPECTS
 
 DECISION_SHORT = ["check a scene", "the outside world", "push one sleepwalker"]
+LEAD_KIND = ["a crime scene", "a home visit", "one last interview"]
 
 HELP = """\
 Commands:
   ask <question>    Ask your AI assistant anything. It has read Kipsake's
                     records, but it has never spoken to anyone and hasn't seen
                     anything you've seen.
-  investigate       Have Ms. Okonjo follow up the next of her three leads, one
-                    at a time, whenever you're ready. Each one shows you a clip.
+  investigate       Have Ms. Okonjo follow up the next of her three leads, in
+                    order: a crime scene, a home visit, one last interview.
+                    Each time, you pick one of three options and see only that
+                    one. Use them whenever you like, between questions.
   review [n|all]    Re-read the cold open, interviews and clips you've unlocked.
   accuse <name>     When you're ready, name the killer and say why. You can do
                     this any time, even before all three leads. It ends the game.
@@ -206,12 +209,15 @@ class Game:
     def hint(self):
         n = len(self.chosen)
         if n < 3:
-            inv = f"investigate (lead {n + 1} of 3: {DECISION_SHORT[n]})"
+            leads = (f"Leads left: {3 - n} of 3 · type investigate for the next one "
+                     f"({LEAD_KIND[n]})")
         else:
-            inv = "investigate (all three leads used)"
-        parts = ["ask <question>", inv, "review", "accuse <name>", "help", "quit"]
+            leads = "Leads left: 0 of 3 · all three leads used · type accuse <name> when you're ready"
+        parts = ["ask <question>", "investigate", "review", "accuse <name>", "help", "quit"]
         self.say()
         self.rule()
+        for row in textwrap.wrap(leads, self.width, subsequent_indent="  "):
+            self.say(self._style(row, "2"))
         # Wrap between commands, never inside one.
         line = "What next? " + parts[0]
         for part in parts[1:]:

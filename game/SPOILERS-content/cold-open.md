@@ -28,5 +28,5 @@ Floor Security has named three suspects, all DSO clerks: **Agnes K.**, **Bertram
 You're an investigator, brought in to work alongside Ms. Okonjo of Floor Security. The Directors want a name by 17:00, before the shift goes home. Your job is to name who killed Mr. Hale and explain why.
 
 - **ask**: your AI assistant has read Kipsake's records, but it has never spoken to anyone. Ask it anything.
-- **investigate**: Ms. Okonjo has three leads she can follow up for you, one at a time, whenever you're ready.
+- **investigate**: Ms. Okonjo can follow up three leads for you, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.
 - **accuse**: when you're ready, name the killer and say why.

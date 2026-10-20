@@ -149,6 +149,7 @@ class FullPathTest(unittest.TestCase):
         before_turn = self.output.split("── Your turn")[0]
         self.assertIn("I N C I D E N T", before_turn)
         self.assertIn("Your role", before_turn)
+        self.assertIn("You can accuse before you've used them all.", " ".join(before_turn.split()))
         self.assertIn("alongside Ms. Okonjo", before_turn)
         self.assertIn("hot cocoa", before_turn)
         for label in ("Cold open", "Security interviews", "Your turn", "AI assistant",
@@ -231,6 +232,22 @@ class OtherPathsTest(unittest.TestCase):
             self.assertFalse(line.rstrip().endswith("accuse"))
             self.assertLessEqual(len(line), 60)
         self.assertIn("accuse <name>", "\n".join(output))
+
+    def test_hint_counts_leads_down_then_suggests_accuse(self):
+        expected = [
+            "Leads left: 3 of 3 · type investigate for the next one (a crime scene)",
+            "Leads left: 2 of 3 · type investigate for the next one (a home visit)",
+            "Leads left: 1 of 3 · type investigate for the next one (one last interview)",
+            "Leads left: 0 of 3 · all three leads used · type accuse <name> when you're ready",
+        ]
+        for n, text in enumerate(expected):
+            output = []
+            game = Game(CONTENT, None, input_fn=Script([]), write=output.append, width=88)
+            game.chosen = [None] * n
+            game.hint()
+            self.assertIn(text, output)
+            if n == 3:
+                self.assertNotIn("for the next one", "\n".join(output))
 
     def test_quit_and_unknown_command(self):
         game, output = play(["", "", "", "", "dance", "ask", "", "quit", "y"], None)
