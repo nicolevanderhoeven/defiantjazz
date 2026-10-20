@@ -5,7 +5,7 @@ import shutil
 import textwrap
 
 from ai import AIError
-from content import SUSPECTS, resolve_suspect
+from content import SUSPECTS
 
 DECISION_SHORT = ["check a scene", "the outside world", "push one sleepwalker"]
 
@@ -341,7 +341,7 @@ class Game:
         name = arg or self.read("Who killed Mr. Hale? (Agnes, Bertram or Clement) ")
         if not name:
             return
-        key = resolve_suspect(name)
+        key = self.content.resolve_suspect(name)
         if key:
             label = SUSPECTS[key]
         else:

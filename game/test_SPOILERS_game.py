@@ -1,4 +1,4 @@
-"""Self-check for the game. Never calls a real AI.
+"""Self-check for the game. Never calls a real AI. Contains spoilers.
 
     python3 -m unittest discover -s game
 """
@@ -107,10 +107,10 @@ class ContentTest(unittest.TestCase):
             self.assertNotIn(line, BUNDLE)
 
     def test_suspect_names(self):
-        self.assertEqual(content.resolve_suspect("Clement W."), "clement")
-        self.assertEqual(content.resolve_suspect("peggy"), "agnes")
-        self.assertEqual(content.resolve_suspect("Mr. Lindqvist"), "bertram")
-        self.assertIsNone(content.resolve_suspect("Fern"))
+        self.assertEqual(CONTENT.resolve_suspect("Clement W."), "clement")
+        self.assertEqual(CONTENT.resolve_suspect("peggy"), "agnes")
+        self.assertEqual(CONTENT.resolve_suspect("Mr. Lindqvist"), "bertram")
+        self.assertIsNone(CONTENT.resolve_suspect("Fern"))
 
 
 class FullPathTest(unittest.TestCase):

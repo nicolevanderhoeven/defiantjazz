@@ -16,6 +16,7 @@ screen, "> ..." lines are text shown on screen, and "Name: ..." lines are
 spoken.
 """
 
+import json
 import os
 import re
 from dataclasses import dataclass, field
@@ -28,17 +29,6 @@ SUSPECTS = {
     "agnes": "Agnes K.",
     "bertram": "Bertram L.",
     "clement": "Clement W.",
-}
-
-# Names a player might use for a suspect, including their waking names.
-SUSPECT_ALIASES = {
-    "agnes": "agnes", "agnes k": "agnes", "peggy": "agnes", "kowalski": "agnes",
-    "ms kowalski": "agnes", "a": "agnes",
-    "bertram": "bertram", "bertram l": "bertram", "lindqvist": "bertram",
-    "mr lindqvist": "bertram", "waffles": "bertram", "b": "bertram",
-    "clement": "clement", "clement w": "clement", "whitlow": "clement",
-    "mr whitlow": "clement", "clement whitlow": "clement",
-    "clement arthur whitlow": "clement", "c": "clement",
 }
 
 _META = re.compile(r"^([a-z][a-z_]*):\s*(.*)$")
@@ -77,6 +67,11 @@ class Content:
     outside_world: Card
     decisions: list
     reveal: Section
+    aliases: dict  # normalized name -> suspect key
+
+    def resolve_suspect(self, text):
+        """Return 'agnes', 'bertram' or 'clement' for a recognisable name, else None."""
+        return self.aliases.get(normalize_name(text))
 
 
 def _take_meta(lines):
@@ -131,6 +126,16 @@ def _decision(section, source):
     return Decision(section.title, section.meta["prompt"], section.cards)
 
 
+def _aliases(content_dir):
+    # Names a player might use for a suspect, including their waking names.
+    path = os.path.join(content_dir, "suspect-names.json")
+    with open(path, encoding="utf-8") as f:
+        names = json.load(f)
+    if set(names) != set(SUSPECTS):
+        raise ContentError(f"{path}: expected names for {', '.join(SUSPECTS)}")
+    return {normalize_name(name): key for key, group in names.items() for name in group}
+
+
 def load(content_dir=CONTENT_DIR):
     testimonies = _read("testimonies.md", content_dir).cards
     if len(testimonies) != 3:
@@ -149,6 +154,7 @@ def load(content_dir=CONTENT_DIR):
         outside_world=_read("outside-world.md", content_dir).cards[0],
         decisions=decisions,
         reveal=reveal,
+        aliases=_aliases(content_dir),
     )
 
 
@@ -159,8 +165,3 @@ def load_bundle(path=BUNDLE_PATH):
 
 def normalize_name(text):
     return re.sub(r"[^a-z ]", "", text.lower()).strip()
-
-
-def resolve_suspect(text):
-    """Return 'agnes', 'bertram' or 'clement' for a recognisable name, else None."""
-    return SUSPECT_ALIASES.get(normalize_name(text))

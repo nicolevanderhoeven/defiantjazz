@@ -1,9 +1,9 @@
 # The Defiant Jazz Incident: terminal game
 
-A local text adventure for demoing and playtesting the mystery. This page is spoiler-free.
+A local text adventure for demoing and playtesting the mystery.
 
 > [!WARNING]
-> **`SPOILERS-content/` contains spoilers.** It holds the clips you unlock in the game and `SPOILERS-reveal.md`, the solution. Don't open it before you play. `ai-evidence/` is safe: it's only the telemetry the AI is given.
+> **`SPOILERS-content/` and `test_SPOILERS_game.py` contain spoilers.** The folder holds the clips you unlock in the game, the names the game accepts for each suspect, and `SPOILERS-reveal.md`, the solution. The test names the killer. Don't open either before you play. `ai-evidence/` is safe: it's only the telemetry the AI is given.
 
 ## Play
 
@@ -71,9 +71,9 @@ The command keeps no session, so the game sends the system prompt, the bundle an
 | `engine.py` | The game loop and commands |
 | `content.py` | Loads the text cards |
 | `ai.py` | Runs the AI |
-| `test_game.py` | Self-check, below |
+| `test_SPOILERS_game.py` | **Spoilers:** the self-check, below |
 | `ai-evidence/case-bundle.md` | What the AI sees |
-| `SPOILERS-content/` | **Spoilers:** the cold open, interviews, the three decisions, the Outside World handout and `SPOILERS-reveal.md` |
+| `SPOILERS-content/` | **Spoilers:** the cold open, interviews, the three decisions, the Outside World handout, `suspect-names.json` and `SPOILERS-reveal.md` |
 
 The cards are Markdown, one file per part of the game. `content.py` describes the format.
 
