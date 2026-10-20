@@ -17,9 +17,9 @@ Kipsake, a firm in the seaside town of Port Quiet, pays its staff to sleep while
 
 **What happened**
 
-- **14:58.** One team, Deep Sleep Operations (DSO), meets its quota for the quarter. Its reward is a Cocoa Hour: a break from work to sit together and drink hot cocoa, with no music. It starts at 15:00 in Break Room 2, with all six DSO clerks and Mr. Hale.
-- **About 15:02.** The power goes out. Every speaker on the floor starts playing jazz, and the jazz wakes everyone up: for five minutes, every sleepwalker is their ordinary waking self, in the dark, somewhere they've never seen.
-- **15:07.** The power comes back and the jazz stops. Everyone falls back asleep and remembers none of it. Mr. Hale is found strangled in the elevator, which is stopped at the Sleep Floor with its doors open. A DSO clerk, Agnes K., is in the elevator with him, holding a cable.
+- **14:58.** One team, Deep Sleep Operations (DSO), met its quota for the quarter. Its reward was a Cocoa Hour: a break from work to sit together and drink hot cocoa, with no music. It started at 15:00 in Break Room 2, with all six DSO clerks and Mr. Hale.
+- **About 15:02.** The power went out. Every speaker on the floor started playing jazz, and the jazz woke everyone up: for five minutes, every sleepwalker was their ordinary waking self, in the dark, somewhere they'd never seen.
+- **15:07.** The power came back and the jazz stopped. Everyone fell back asleep and remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. A DSO clerk, Agnes K., was in the elevator with him, holding a cable.
 
 Floor Security has named three suspects, all DSO clerks: **Agnes K.**, **Bertram L.** and **Clement W.**
 
