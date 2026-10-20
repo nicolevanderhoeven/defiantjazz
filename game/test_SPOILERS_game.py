@@ -142,8 +142,21 @@ class FullPathTest(unittest.TestCase):
         self.assertEqual(self.game.accused, "clement")
         self.assertIn("You're right.", self.output)
         self.assertIn("How it's solved", self.output)
-        self.assertIn("all three used", self.output)
+        self.assertIn("all three leads used", self.output)
         self.assertIn("Answer 2.", self.output)
+
+    def test_opening_and_separators(self):
+        before_turn = self.output.split("── Your turn")[0]
+        self.assertIn("I N C I D E N T", before_turn)
+        self.assertIn("Your role", before_turn)
+        self.assertIn("alongside Ms. Okonjo", before_turn)
+        self.assertIn("hot cocoa", before_turn)
+        for label in ("Cold open", "Security interviews", "Your turn", "AI assistant",
+                      "Lead 1 of 3", "Outside World handout", "Review", "The verdict"):
+            self.assertIn(f"── {label} ─", self.output)
+        for line in self.output.splitlines():
+            self.assertLessEqual(len(line), 80)
+        self.assertNotIn("\x1b[", self.output)
 
     def test_ai_is_headless_isolated_and_resumed(self):
         first, second = self.runner.calls
@@ -182,7 +195,7 @@ class OtherPathsTest(unittest.TestCase):
         game, output = play(["", "", "", "", "accuse peggy", "y", "She had the cable.", "", "", "", ""],
                             None)
         self.assertEqual(game.accused, "agnes")
-        self.assertIn("You still have 3 decisions left", output)
+        self.assertIn("Ms. Okonjo still has 3 leads to follow up", output)
         self.assertIn("the mistake the case is built around", output)
         self.assertNotIn("Outside World handout", output)
 
@@ -253,7 +266,7 @@ class ErrorTest(unittest.TestCase):
         with self.assertRaisesRegex(ai.AIError, "logged in"):
             the_ai.ask("hello?")
         game, output = play(["", "", "", "", "ask hello?", "quit", "y"], the_ai)
-        self.assertIn("The AI couldn't answer", output)
+        self.assertIn("Your AI assistant couldn't answer", output)
 
 
 if __name__ == "__main__":

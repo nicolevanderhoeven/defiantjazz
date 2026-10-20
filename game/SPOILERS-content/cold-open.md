@@ -17,8 +17,16 @@ Kipsake, a firm in the seaside town of Port Quiet, pays its staff to sleep while
 
 **What happened**
 
-- **14:58.** One team, Deep Sleep Operations (DSO), meets its quota for the quarter. Its reward is a Cocoa Hour: cocoa, and no music. It starts at 15:00 in Break Room 2, with all six DSO clerks and Mr. Hale.
+- **14:58.** One team, Deep Sleep Operations (DSO), meets its quota for the quarter. Its reward is a Cocoa Hour: a break from work to sit together and drink hot cocoa, with no music. It starts at 15:00 in Break Room 2, with all six DSO clerks and Mr. Hale.
 - **About 15:02.** The power goes out. Every speaker on the floor starts playing jazz, and the jazz wakes everyone up: for five minutes, every sleepwalker is their ordinary waking self, in the dark, somewhere they've never seen.
 - **15:07.** The power comes back and the jazz stops. Everyone falls back asleep and remembers none of it. Mr. Hale is found strangled in the elevator, which is stopped at the Sleep Floor with its doors open. A DSO clerk, Agnes K., is in the elevator with him, holding a cable.
 
 Floor Security has named three suspects, all DSO clerks: **Agnes K.**, **Bertram L.** and **Clement W.**
+
+**Your role**
+
+You're an investigator, brought in to work alongside Ms. Okonjo of Floor Security. The Directors want a name by 17:00, before the shift goes home. Your job is to name who killed Mr. Hale and explain why.
+
+- **ask**: your AI assistant has read Kipsake's records, but it has never spoken to anyone. Ask it anything.
+- **investigate**: Ms. Okonjo has three leads she can follow up for you, one at a time, whenever you're ready.
+- **accuse**: when you're ready, name the killer and say why.

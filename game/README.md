@@ -17,10 +17,10 @@ The game opens with the cold open and three security interviews. After that you 
 
 | Command | What it does |
 |---|---|
-| `ask <question>` | Ask the AI. It has Kipsake's telemetry, and nothing you've seen. |
-| `investigate` | Take the next decision. There are three, each with three choices, and each choice unlocks one clip. |
+| `ask <question>` | Ask your AI assistant anything. It has read Kipsake's records (the telemetry), but it has never spoken to anyone and hasn't seen anything you've seen. |
+| `investigate` | Have Ms. Okonjo follow up her next lead. There are three, one at a time, each with three choices, and each choice unlocks one clip. |
 | `review` | Re-read the cold open, the interviews, and anything you've unlocked. |
-| `accuse <name>` | Name the killer and explain why. You can do this at any time, and it ends the game. |
+| `accuse <name>` | When you're ready, name the killer and say why. You can do this at any time, and it ends the game. |
 | `help`, `quit` | |
 
 The first `ask` sends the AI the whole case file (about 250 KB), so it can take up to a minute. Later questions are faster. Ctrl-C cancels a question.

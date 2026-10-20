@@ -11,14 +11,25 @@ DECISION_SHORT = ["check a scene", "the outside world", "push one sleepwalker"]
 
 HELP = """\
 Commands:
-  ask <question>    Ask the AI. It has Kipsake's telemetry and has never seen
-                    the clips, the Outside World or anything you write here.
-  investigate       Take the next decision (three in all) and watch one clip.
-  review [n|all]    Re-read the cold open, testimonies and clips you've unlocked.
-  accuse <name>     Name the killer and explain why. You can do this any time,
-                    even before using all three decisions. It ends the game.
+  ask <question>    Ask your AI assistant anything. It has read Kipsake's
+                    records, but it has never spoken to anyone and hasn't seen
+                    anything you've seen.
+  investigate       Have Ms. Okonjo follow up the next of her three leads, one
+                    at a time, whenever you're ready. Each one shows you a clip.
+  review [n|all]    Re-read the cold open, interviews and clips you've unlocked.
+  accuse <name>     When you're ready, name the killer and say why. You can do
+                    this any time, even before all three leads. It ends the game.
   help              Show this list.
   quit              Leave without accusing."""
+
+BANNER = r"""
+  T  H  E
+ ___   ___  ___  ___    _    _  _  _____        _    _    ____  ____
+|   \ | __|| __||_ _|  /_\  | \| ||_   _|    _ | |  /_\  |_  / |_  /
+| |) || _| | _|  | |  / _ \ | .` |  | |     | || | / _ \  / /   / /
+|___/ |___||_|  |___|/_/ \_\|_|\_|  |_|      \__/ /_/ \_\/___| /___|
+                                                  I N C I D E N T
+"""[1:-1]
 
 _STYLE = {"**": "1", "*": "3", "~~": "9"}
 _TOKEN = re.compile(r"(\*\*|~~|\*)")
@@ -141,6 +152,11 @@ class Game:
         self.paragraphs(card.body)
         self.say()
 
+    def rule(self, label=""):
+        """A dim line that marks the start of a new block of output."""
+        text = f"── {label} " if label else ""
+        self.say(self._style(text + "─" * max(self.width - len(text), 3), "2"))
+
     def pause(self):
         self.read("[Enter] to continue ")
 
@@ -158,37 +174,50 @@ class Game:
             self.say("Interrupted. Bye.")
 
     def intro(self):
-        self.say(self._style("THE DEFIANT JAZZ INCIDENT", "1"))
-        self.say("A murder mystery. You have the clips and documents. The AI has Kipsake's")
-        self.say("telemetry, its computer records. Neither of you has seen what the other has.")
+        if self.width >= max(len(line) for line in BANNER.splitlines()):
+            self.say(self._style(BANNER, "1"))
+        else:
+            self.say(self._style("THE DEFIANT JAZZ INCIDENT", "1"))
+        self.say()
+        self.say("A murder mystery. You have the clips and documents. Your AI assistant has")
+        self.say("Kipsake's records. Neither of you has seen what the other has.")
+        self.say()
+        self.rule("Cold open")
         self.card(self.content.cold_open)
         self.pause()
         self.say()
+        self.rule("Security interviews")
         self.say(self._style("Floor Security interviewed the three suspects.", "1"))
-        for testimony in self.content.testimonies:
+        for i, testimony in enumerate(self.content.testimonies):
+            if i:
+                self.say()
+                self.rule()
             self.card(testimony)
             self.pause()
         self.say()
+        self.rule("Your turn")
         self.paragraphs(
-            "**Your turn.** The AI has Kipsake's telemetry: badges and doors, chat, metrics, "
-            "system logs, microphone transcripts and records. It has never seen the clips. "
-            "Ask it anything, then investigate when you want more evidence. You get three "
-            "decisions, each with three choices, and you can name the killer whenever you're ready.")
+            "Your AI assistant has read Kipsake's records: badges and doors, chat, metrics, "
+            "system logs, microphone transcripts and other records. It has never spoken to anyone. "
+            "Ask it anything. Ms. Okonjo has three leads she can follow up for you, one at a "
+            "time, whenever you're ready: type investigate. When you're ready, accuse the killer "
+            "and say why.")
         self.say()
         self.paragraphs("Try: ask Who killed Mr. Hale?")
 
     def hint(self):
         n = len(self.chosen)
         if n < 3:
-            inv = f"investigate ({n + 1} of 3: {DECISION_SHORT[n]})"
+            inv = f"investigate (lead {n + 1} of 3: {DECISION_SHORT[n]})"
         else:
-            inv = "investigate (all three used)"
+            inv = "investigate (all three leads used)"
         parts = ["ask <question>", inv, "review", "accuse <name>", "help", "quit"]
         self.say()
+        self.rule()
         # Wrap between commands, never inside one.
         line = "What next? " + parts[0]
         for part in parts[1:]:
-            if len(line) + 3 + len(part) > self.width:
+            if len(line) + 3 + len(part) + 2 > self.width:  # room for the trailing " ·"
                 self.say(self._style(line + " ·", "2"))
                 line = "           " + part
             else:
@@ -209,7 +238,7 @@ class Game:
                 "quit": self.do_quit, "exit": self.do_quit,
             }.get(command)
             if handler is None:
-                self.say(f"I don't know \"{command}\". To ask the AI, start with `ask`, "
+                self.say(f"I don't know \"{command}\". To ask your AI assistant, start with `ask`, "
                          "for example: ask What happened at 15:02?")
                 continue
             handler(arg)
@@ -218,6 +247,7 @@ class Game:
 
     def do_help(self, _arg=""):
         self.say()
+        self.rule("Help")
         self.say(HELP)
 
     def do_quit(self, _arg=""):
@@ -226,28 +256,30 @@ class Game:
 
     def do_ask(self, question):
         if self.ai is None:
-            self.say("The AI is turned off for this game (--no-ai).")
+            self.say("Your AI assistant is turned off for this game (--no-ai).")
             return
         if not question:
-            question = self.read("Your question for the AI: ")
+            question = self.read("Your question for your AI assistant: ")
             if not question:
                 return
         if not self.ai.started:
-            self.say(self._style("(The AI is reading the case files for the first time. "
-                                 "This answer can take up to a minute. Ctrl-C cancels.)", "2"))
+            for line in self._wrap("(Your AI assistant is reading Kipsake's records for the first "
+                                   "time. This answer can take up to a minute. Ctrl-C cancels.)",
+                                   base="2"):
+                self.say(line)
         else:
-            self.say(self._style("(Asking the AI… Ctrl-C cancels.)", "2"))
+            self.say(self._style("(Asking your AI assistant… Ctrl-C cancels.)", "2"))
         try:
             answer = self.ai.ask(question)
         except AIError as e:
-            self.say(f"The AI couldn't answer: {e}")
+            self.say(f"Your AI assistant couldn't answer: {e}")
             return
         except KeyboardInterrupt:
             self.say("(Cancelled.)")
             return
         self.asked.append((question, answer))
         self.say()
-        self.say(self._style("AI:", "1"))
+        self.rule("AI assistant")
         self.paragraphs(answer)
 
     def _choose(self, decision, arg):
@@ -280,17 +312,20 @@ class Game:
     def do_investigate(self, arg=""):
         n = len(self.chosen)
         if n >= 3:
-            self.say("You've used all three decisions. When you're ready: accuse <name>.")
+            self.say("Ms. Okonjo has followed up all three leads. "
+                     "When you're ready: accuse <name>.")
             return
         if n == 1 and not self.outside_shown:
             self.say()
-            self.say(self._style("Before the next decision, a handout from outside Kipsake.", "1"))
+            self.rule("Outside World handout")
+            self.say(self._style("Before the next lead, a handout from outside Kipsake.", "1"))
             self.card(self.content.outside_world)
             self.outside_shown = True
             self.pause()
         decision = self.content.decisions[n]
         self.say()
-        self.say(self._style(decision.title, "1"))
+        self.rule(f"Lead {n + 1} of 3")
+        self.say(self._style(decision.title.split(" · ", 1)[-1], "1"))
         self.paragraphs(decision.prompt)
         self.say()
         for i, card in enumerate(decision.options, 1):
@@ -302,12 +337,13 @@ class Game:
             self.say("No rush. Type investigate when you're ready.")
             return
         self.chosen.append((n, picked))
-        self.card(picked, heading=f"Decision {n + 1} · {picked.title}")
+        self.card(picked, heading=f"Lead {n + 1} · {picked.title}")
         if n < 2:
-            self.say(f"Ask the AI about anything here, or investigate again "
-                     f"(decision {n + 2}: {DECISION_SHORT[n + 1]}).")
+            self.paragraphs(f"Ask your AI assistant about anything here, or investigate again "
+                            f"(lead {n + 2}: {DECISION_SHORT[n + 1]}).")
         else:
-            self.say("That was your last decision. Ask the AI anything else, then accuse <name>.")
+            self.say("That was the last lead. Ask your AI assistant anything else, "
+                     "then accuse <name>.")
 
     def review_items(self):
         items = [("Cold open", self.content.cold_open)]
@@ -315,17 +351,19 @@ class Game:
         if self.outside_shown:
             items.append(("Outside World handout", self.content.outside_world))
         for n, card in self.chosen:
-            items.append((f"Decision {n + 1} · {card.title}", card))
+            items.append((f"Lead {n + 1} · {card.title}", card))
         return items
 
     def do_review(self, arg=""):
         items = self.review_items()
+        self.say()
+        self.rule("Review")
         if not arg:
-            self.say()
             for i, (label, _) in enumerate(items, 1):
                 self.say(f"  {i}) {label}")
             if self.asked:
-                self.say(f"  {len(items) + 1}) Your questions to the AI ({len(self.asked)})")
+                self.say(f"  {len(items) + 1}) Your questions to your AI assistant "
+                         f"({len(self.asked)})")
             arg = self.read("Which one? (a number, 'all', or [Enter] to go back) ")
             if not arg:
                 return
@@ -359,12 +397,12 @@ class Game:
             key = "other"
         left = 3 - len(self.chosen)
         if left:
-            self.say(f"You still have {left} decision{'s' if left > 1 else ''} left. "
-                     "You can accuse now or keep investigating.")
+            self.paragraphs(f"Ms. Okonjo still has {left} lead{'s' if left > 1 else ''} to "
+                            "follow up. You can accuse now or keep investigating.")
         if not self.read(f"Accuse {label}? This ends the game. (y/n) ").lower().startswith("y"):
             return
-        self.say("Why? Explain your reasoning. Finish with a line containing only \".\" "
-                 "or with two empty lines in a row.")
+        self.paragraphs("Why? Explain your reasoning. Finish with a line containing only \".\" "
+                        "or with two empty lines in a row.")
         lines = []
         while True:
             line = self.read("  ")
@@ -381,6 +419,7 @@ class Game:
         cards = self.content.reveal.cards
         verdict = next(c for c in cards if c.meta.get("for") == self.accused)
         self.say()
+        self.rule("The verdict")
         stop = "" if label.endswith(".") else "."
         self.say(self._style(f"You accused {label}{stop}", "1"))
         for para in re.split(r"\n\s*\n", self.reasoning):
@@ -391,5 +430,7 @@ class Game:
         for card in cards:
             if card.meta.get("for") == "all":
                 self.pause()
+                self.say()
+                self.rule()
                 self.card(card)
         self.say("Thanks for playing.")
