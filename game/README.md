@@ -23,7 +23,7 @@ The game opens with the cold open and three security interviews. After that you 
 | `accuse <name>` | Name the killer and explain why. You can do this at any time, and it ends the game. |
 | `help`, `quit` | |
 
-The first `ask` sends the AI the whole case file (about 250 KB), so it can take a minute or two. Later questions are faster. Ctrl-C cancels a question.
+The first `ask` sends the AI the whole case file (about 250 KB), so it can take up to a minute. Later questions are faster. Ctrl-C cancels a question.
 
 ## Options
 
