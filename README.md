@@ -4,12 +4,12 @@ An observability murder mystery set on the Sleep Floor at Kipsake.
 
 During the Cocoa Hour, a quiet quota reward in Break Room 2, the floor loses power for five minutes. When the power comes back, Floor Supervisor Mr. Reginald Hale is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
 
-This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice. It also has a terminal version of the game for demos and playtests.
+This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice. It also has the game itself, in a terminal version for demos and playtests and a web version to embed in a Grafana dashboard.
 
 > [!WARNING]
-> **Spoilers live in `game/SPOILERS-content/` and `game/test_SPOILERS_game.py`.** The folder holds the human-only story clips and `SPOILERS-reveal.md`, which names the killer and explains the solution. The test names the killer too. Don't open them if you want to play.
+> **Spoilers live in `game/SPOILERS-content/`, `game/test_SPOILERS_game.py` and `web/SPOILERS-content.js`.** The folder holds the human-only story clips and `SPOILERS-reveal.md`, which names the killer and explains the solution. The test names the killer too, and the web bundle is built from that folder. Don't open them if you want to play.
 >
-> Everything else is safe to read: `CASE-BRIEF.md`, `telemetry/`, `loader/`, `local/` and `game/ai-evidence/` hold only what an investigator is given, never the solution.
+> Everything else is safe to read: `CASE-BRIEF.md`, `telemetry/`, `loader/`, `local/` and `game/ai-evidence/` hold only what an investigator is given, never the solution. The rest of `web/` is spoiler-free too.
 
 ## Play the game
 
@@ -21,12 +21,26 @@ python3 game/play.py
 
 Type `help` in the game for the commands. [`game/README.md`](game/README.md) covers swapping in another AI and has no spoilers.
 
+### In the browser or a Grafana dashboard
+
+The same game as a static web page, made to embed in a Grafana dashboard panel next to the telemetry. There's no AI inside it: players ask Grafana Assistant, or their own agent through the Grafana MCP server or `gcx`, and the page offers example questions to copy. To play it locally:
+
+```sh
+python3 -m http.server 8080 --bind 127.0.0.1 --directory web
+```
+
+Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embedding it in a dashboard with the example dashboard, and has no spoilers.
+
+> [!WARNING]
+> **`web/SPOILERS-content.js` contains spoilers.** It's built from `game/SPOILERS-content/` and includes the solution, so don't open it if you want to play.
+
 ## What's in it
 
 | Path | Contents |
 |---|---|
 | `CASE-BRIEF.md` | The incident brief Floor Security hands to investigators |
 | `game/` | The terminal game. **`game/SPOILERS-content/` and `game/test_SPOILERS_game.py` contain spoilers.** |
+| `web/` | The web version, for a browser or a Grafana dashboard panel. **`web/SPOILERS-content.js` contains spoilers.** |
 | `telemetry/door-and-badge-events.log` | Door readers, badge journeys and trace spans |
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Static page: no network requests at runtime. Links that leave the game open in a new tab. -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="dark light">
+<title>The Defiant Jazz Incident</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <span class="brand">The Defiant Jazz Incident</span>
+  <span class="leads" id="leads" hidden></span>
+  <span class="spacer"></span>
+  <button type="button" class="btn btn-quiet" id="theme-toggle"></button>
+  <button type="button" class="btn btn-quiet" id="restart" hidden>Restart</button>
+</header>
+<main id="main" tabindex="-1">
+  <noscript><p>The game needs JavaScript. You can also play it in a terminal: <code>python3 game/play.py</code>.</p></noscript>
+</main>
+<div class="toast" id="status" role="status" aria-live="polite"></div>
+<dialog id="restart-dialog" aria-labelledby="restart-title">
+  <form method="dialog">
+    <h2 id="restart-title">Start over?</h2>
+    <p>This clears your progress in this browser and goes back to the start.</p>
+    <div class="actions">
+      <button class="btn btn-danger" value="restart">Start over</button>
+      <button class="btn" value="cancel" autofocus>Cancel</button>
+    </div>
+  </form>
+</dialog>
+<script src="SPOILERS-content.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
