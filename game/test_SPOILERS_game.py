@@ -22,9 +22,8 @@ BUNDLE = content.load_bundle()
 # Human-only text that must never reach the AI.
 SENTINELS = [
     "Called me Waffles, as usual",
-    "WAFFLES — ice. — C.W.",
     "Who's Waffles?",
-    "Clement. He's the only one who calls me that",
+    "Clement. 'Chill out, Waffles.' He's the only one who calls me that",
     "Clement calls him 'Waffles'",
     "checked on Waffles",
     "Someone was screaming by the elevator",

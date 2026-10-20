@@ -32,8 +32,7 @@ Ms. Okonjo: You weren't having cocoa, Mr. L.
 [His shoulders slump.]
 Bertram: Fine. I was making a waffle.
 Ms. Okonjo: And who brought you the ice?
-[He turns the ice pack toward the camera. The sticky note says, in block capitals: "WAFFLES — ice. — C.W."]
-Bertram: Clement. He's the only one who calls me that.
+Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.
 
 ## Clement
 option: Clement

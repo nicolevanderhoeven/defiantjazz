@@ -17,7 +17,7 @@ Agnes: I think I was trying to get it off him?
 Agnes: Will someone be taking apart the elevator? The phone panel, I mean?
 
 ## T-B · Bertram L. · 15:40
-[A security interview. Another DSO clerk, Bertram L., sits on the same chair, wearing his lanyard. He holds an ice pack to his right shoulder. A yellow sticky note is stuck to the ice pack. There's a smudge of flour on the back of his free hand.]
+[A security interview. Another DSO clerk, Bertram L., sits on the same chair, wearing his lanyard. He holds an ice pack to his right shoulder. There's a smudge of flour on the back of his free hand.]
 Ms. Okonjo: Mr. L. Mr. Hale met you this morning?
 Bertram: He said he'd step out during the Cocoa Hour. Something to pick up.
 [He looks down and to the left.]
@@ -25,7 +25,6 @@ Ms. Okonjo: And when the lights went?
 Bertram: I was having cocoa.
 [He avoids eye contact.]
 Bertram: Then I was in the corridor. Sore shoulder. Sheep everywhere.
-[He moves the ice pack, and for a moment the sticky note faces the camera. It says, in block capitals: "WAFFLES — ice. — C.W."]
 
 ## T-C · Clement W. · 15:20
 [A security interview. A third DSO clerk, Clement W., sits on the same chair, wearing his lanyard, hands folded in his lap. He wears a fringed scarf, looped once so both ends hang down his chest. The threads of its fringe are many different colours. His hands are clean.]
