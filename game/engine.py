@@ -152,7 +152,7 @@ class Game:
             self.loop()
         except Quit:
             self.say()
-            self.say("Case closed without an accusation. The answer is still in the SPOILERS files.")
+            self.say("Case closed without an accusation. Run the game again to keep investigating.")
         except KeyboardInterrupt:
             self.say()
             self.say("Interrupted. Bye.")
@@ -183,10 +183,17 @@ class Game:
             inv = f"investigate ({n + 1} of 3: {DECISION_SHORT[n]})"
         else:
             inv = "investigate (all three used)"
-        text = f"What next? ask <question> · {inv} · review · accuse <name> · help · quit"
+        parts = ["ask <question>", inv, "review", "accuse <name>", "help", "quit"]
         self.say()
-        for line in textwrap.wrap(text, self.width, subsequent_indent="           "):
-            self.say(self._style(line, "2"))
+        # Wrap between commands, never inside one.
+        line = "What next? " + parts[0]
+        for part in parts[1:]:
+            if len(line) + 3 + len(part) > self.width:
+                self.say(self._style(line + " ·", "2"))
+                line = "           " + part
+            else:
+                line += " · " + part
+        self.say(self._style(line, "2"))
 
     def loop(self):
         while self.accused is None:
@@ -227,7 +234,7 @@ class Game:
                 return
         if not self.ai.started:
             self.say(self._style("(The AI is reading the case files for the first time. "
-                                 "This answer can take a minute or two. Ctrl-C cancels.)", "2"))
+                                 "This answer can take up to a minute. Ctrl-C cancels.)", "2"))
         else:
             self.say(self._style("(Asking the AI… Ctrl-C cancels.)", "2"))
         try:
@@ -356,24 +363,29 @@ class Game:
                      "You can accuse now or keep investigating.")
         if not self.read(f"Accuse {label}? This ends the game. (y/n) ").lower().startswith("y"):
             return
-        self.say("Why? Explain your reasoning. Finish with an empty line.")
+        self.say("Why? Explain your reasoning. Finish with a line containing only \".\" "
+                 "or with two empty lines in a row.")
         lines = []
         while True:
             line = self.read("  ")
-            if not line:
+            if line.strip() == ".":
+                break
+            if not line.strip() and lines and not lines[-1].strip():
                 break
             lines.append(line)
         self.accused = key
-        self.reasoning = "\n".join(lines)
+        self.reasoning = "\n".join(lines).strip()
         self.reveal(label)
 
     def reveal(self, label):
         cards = self.content.reveal.cards
         verdict = next(c for c in cards if c.meta.get("for") == self.accused)
         self.say()
-        self.say(self._style(f"You accused {label}.", "1"))
-        if self.reasoning:
-            self.paragraphs("> " + self.reasoning.replace("\n", " "))
+        stop = "" if label.endswith(".") else "."
+        self.say(self._style(f"You accused {label}{stop}", "1"))
+        for para in re.split(r"\n\s*\n", self.reasoning):
+            if para.strip():
+                self.paragraphs("> " + " ".join(para.split()))
         self.card(verdict, heading=verdict.title if self.accused != "other" else
                   f"You named {label}")
         for card in cards:

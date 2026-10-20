@@ -130,7 +130,7 @@ class FullPathTest(unittest.TestCase):
             "review", "all",
             "investigate",                      # all used
             "accuse clement w.", "y",
-            REASONING, "",
+            REASONING, "", "Second paragraph.", ".",
             "", "",                             # the reveal's cards
         ]
         self.game, self.output = play(answers, self.ai)
@@ -179,12 +179,35 @@ class FullPathTest(unittest.TestCase):
 
 class OtherPathsTest(unittest.TestCase):
     def test_early_accusation_of_agnes(self):
-        game, output = play(["", "", "", "", "accuse peggy", "y", "She had the cable.", "", "", ""],
+        game, output = play(["", "", "", "", "accuse peggy", "y", "She had the cable.", "", "", "", ""],
                             None)
         self.assertEqual(game.accused, "agnes")
         self.assertIn("You still have 3 decisions left", output)
         self.assertIn("the mistake the case is built around", output)
         self.assertNotIn("Outside World handout", output)
+
+    def test_accused_label_has_one_full_stop(self):
+        self.assertIn("You accused Clement W.", game_output := play(
+            ["", "", "", "", "accuse clement", "y", "x", ".", "", ""], None)[1])
+        self.assertNotIn("Clement W..", game_output)
+
+    def test_reasoning_keeps_paragraphs_until_terminator(self):
+        game, output = play(["", "", "", "", "accuse agnes", "y",
+                             "First.", "", "Second.", "", "", "", ""], None)
+        self.assertEqual(game.reasoning, "First.\n\nSecond.")
+        self.assertIn("Second.", output)
+        game, _ = play(["", "", "", "", "accuse agnes", "y", "One.", "", "Two.", " . ", "", ""],
+                       None)
+        self.assertEqual(game.reasoning, "One.\n\nTwo.")
+
+    def test_hint_wraps_between_commands(self):
+        output = []
+        game = Game(CONTENT, None, input_fn=Script([]), write=output.append, width=60)
+        game.hint()
+        for line in output:
+            self.assertFalse(line.rstrip().endswith("accuse"))
+            self.assertLessEqual(len(line), 60)
+        self.assertIn("accuse <name>", "\n".join(output))
 
     def test_quit_and_unknown_command(self):
         game, output = play(["", "", "", "", "dance", "ask", "", "quit", "y"], None)
