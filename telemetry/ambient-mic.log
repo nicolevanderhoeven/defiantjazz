@@ -604,3 +604,4 @@
 2026-10-08T15:07:59 source=ambient-mic zone=corridor-w speaker=unknown confidence=0.73 clock=LOST est_error_s=±90 ts_basis=uptime text="I need to call my wife" ingested_at=2026-10-08T15:07:41
 2026-10-08T15:07:59 source=ambient-mic zone=corridor-w speaker=unknown confidence=0.76 clock=LOST est_error_s=±90 ts_basis=uptime text="What is this place" ingested_at=2026-10-08T15:07:41
 2026-10-08T15:08:06 source=ambient-mic zone=corridor-w speaker=unknown confidence=0.40 clock=LOST est_error_s=±90 ts_basis=uptime text="What is this place" ingested_at=2026-10-08T15:07:41
+2026-10-08T15:09:14 source=ambient-mic zone=elevator-lobby speaker=unknown confidence=0.86 clock=ok text="Ms. K.? Step away from him, please."

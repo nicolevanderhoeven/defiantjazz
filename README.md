@@ -2,7 +2,7 @@
 
 An observability murder mystery set on the Sleep Floor at Kipsake.
 
-During the Jazz Hour, while *Defiant Jazz* plays, the floor loses power for five minutes. When the lights come back, Floor Supervisor Mr. Reginald Hale is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
+During the Cocoa Hour, a quiet quota reward in Break Room 2, the floor loses power for five minutes. When the power comes back, Floor Supervisor Mr. Reginald Hale is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
 
 This repo contains **only the telemetry** and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice.
 
@@ -16,8 +16,8 @@ This repo contains **only the telemetry** and the tools to load it into Grafana:
 | `telemetry/door-and-badge-events.log` | Door readers, badge journeys and trace spans |
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |
-| `telemetry/system.log` | Sleep rings, power, outlets, the Jazz Hour, elevator, cameras, security, medical |
-| `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts recorded during the outage |
+| `telemetry/system.log` | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |
+| `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts, 15:02 to 15:10 (buffered during the outage, live after it) |
 | `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar |
 | `loader/` | `load.py` sends everything over OTLP |
 | `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana (with Grafana Assistant) and the Grafana MCP server |
