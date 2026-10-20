@@ -15,12 +15,12 @@ Source: "Defiant Jazz - Playtest/Player Packet.md", section 1. See game/README.m
 
 Kipsake, a firm in the seaside town of Port Quiet, pays its staff to sleep while their **sleepwalking selves** do the work. At work, each of them is a **sleepwalker**, who remembers only work. At home, they're their **waking self**, who remembers only home. A sleepwalker knows its desk and colleagues; its waking self has never seen them. Day staff, like the supervisor, Mr. Hale, stay awake at work. Every sleepwalker wears a badge, and the doors log each badge that passes. But a badge can't tell who's wearing it.
 
-**Any music except Kipsake's own lullaby wakes up everyone who hears it.** They become their waking selves. When the music stops, they fall back asleep as sleepwalkers, and the sleepwalker remembers nothing of being awake. To the sleepwalker, the lights just blinked, and suddenly it was somewhere else.
+The jazz woke everyone up. For five minutes, every sleepwalker on the floor was their ordinary waking self, in the dark, somewhere they'd never seen. When the jazz stopped, they fell back asleep and remembered none of it.
 
 **What happened**
 
 - **14:58.** One team, Deep Sleep Operations (DSO), meets its quota for the quarter. Its reward is a Cocoa Hour: cocoa, and no music. It starts at 15:00 in Break Room 2, with all six DSO clerks and Mr. Hale.
-- **About 15:02.** The power goes out on the Sleep Floor. The emergency speakers should play the lullaby. Instead, every speaker plays *Defiant Jazz* until the power comes back.
+- **About 15:02.** The power goes out. Every speaker on the floor starts playing jazz until the power comes back.
 - **15:07.** The power comes back and the jazz stops. Mr. Hale is found strangled in the elevator, which is stopped at the Sleep Floor with its doors open. A DSO clerk, Agnes K., is in the elevator with him, holding a cable.
 
 Floor Security has named three suspects, all DSO clerks: **Agnes K.**, **Bertram L.** and **Clement W.**
