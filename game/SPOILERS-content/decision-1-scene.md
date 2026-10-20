@@ -11,7 +11,7 @@ option: Elevator car 1
 note: Agnes says she woke up there
 aliases: elevator, car, lift, e
 
-[Ms. Okonjo's gloved hands lay out Floor Security's evidence on a dark cloth, filmed from above. Three numbered markers.]
+[Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]
 [Marker 1: a grey cable in an evidence bag.]
 [Marker 2: three folded notes.]
 [Marker 3: a small evidence bag holding a loose twist of five or six threads, in several different colours.]
@@ -35,14 +35,13 @@ aliases: break room, breakroom, br, speaker
 [The screen is black. Jazz starts playing on the emergency speaker.]
 > 15:07:03
 [Same angle, same zoom. The cable and the napkin are gone from the chair. Clement sits on the floor beside the chair, in his fringed scarf, wearing his lanyard with the badge facing out. Nobody else is in the shot. At the edge of the shot, a dropped lanyard and one shoe lie on the floor.]
-[Last shot: Ms. Okonjo's gloved hand rests on the empty chair.]
 
 ## Supply Room B
 option: Supply Room B
 note: Bertram says he was having cocoa
 aliases: supply room, supply, sr, waffle iron, breaker
 
-[Ms. Okonjo's gloved hands lay out the evidence on a dark cloth, filmed from above.]
+[The evidence, already laid out on a dark cloth, filmed from above.]
 [An evidence bag holding a pale, half-cooked waffle, tagged "SR-B-03 · unregistered appliance (waffle iron) · confiscated."]
 [Beside it, a printed certificate in a plastic sleeve: "KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM L."]
 [A text card:]

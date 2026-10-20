@@ -12,7 +12,7 @@ note: ask about the notes in the elevator's phone panel
 aliases: agnes k., agnes k, agnes, a
 
 > 16:30 · Kipsake · Security interview
-[Agnes sits on the chair, wearing her lanyard. Her right wrist is in a crepe bandage from the medical exam. Ms. Okonjo's gloved hand passes her four notes in evidence bags. One of them is the note found in Mr. Hale's jacket. It begins "If you are reading this, you are me…" and ends "Don't trust them."]
+[Agnes sits on the chair, wearing her lanyard. Her right wrist is in a crepe bandage from the medical exam. Four notes in evidence bags lie in her lap. One of them is the note found in Mr. Hale's jacket. It begins "If you are reading this, you are me…" and ends "Don't trust them."]
 Ms. Okonjo: These were in the elevator phone panel.
 Agnes: They're for her. The other me.
 [She takes the folded note from behind her badge card and adds it to the pile.]
