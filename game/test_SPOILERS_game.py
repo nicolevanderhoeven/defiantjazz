@@ -24,7 +24,7 @@ SENTINELS = [
     "Called me Waffles, as usual",
     "WAFFLES — ice. — C.W.",
     "Who's Waffles?",
-    "He's the only one who calls me that",
+    "Clement. He's the only one who calls me that",
     "Clement calls him 'Waffles'",
     "checked on Waffles",
     "Someone was screaming by the elevator",
