@@ -31,7 +31,7 @@ for: all
 
 That afternoon, three people had three separate plans. None of them knew about the others' plans, and nobody planned the blackout.
 
-- **Agnes wants Peggy to find her notes.** Agnes, the sleepwalker, hides notes for her waking self, Peggy, in the elevator's emergency phone panel. On 10-07 she changes the emergency speakers' fail-safe track from the lullaby to *Defiant Jazz*. The next time the power fails, the jazz will wake Peggy, who will walk toward the elevator's emergency light and find the notes.
+- **Agnes wants Peggy to find her notes.** Agnes, the sleepwalker, hides notes for her waking self, Peggy, in the elevator's emergency phone panel. The day before, she changes the emergency speakers' fail-safe track from the lullaby to *Defiant Jazz*. The next time the power fails, the jazz will wake Peggy, who will walk toward the elevator's emergency light and find the notes.
 - **Bertram wants a waffle.** During the Cocoa Hour he sneaks off to the supply room to use his banned waffle iron. It trips the floor's main breaker. It's an accident.
 - **Clement wants Hale alone.** Clement is *lucid*: he's the same person at work and at home, and remembers both lives. Hale signed off on the procedure that killed Clement's sister, June. A chat message from Bertram told Clement that Hale would slip off to the elevator during a Cocoa Hour. So Clement times the team's last quota file to trigger one.
 

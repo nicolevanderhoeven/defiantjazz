@@ -47,7 +47,7 @@ Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embe
 | `telemetry/system.log` | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |
 | `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts, 15:02 to 15:10 (buffered during the outage, live after it) |
 | `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar |
-| `loader/` | `load.py` sends everything over OTLP |
+| `loader/` | `load.py` sends everything over OTLP; `test_load.py` checks its time shift |
 | `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana (with Grafana Assistant) and the Grafana MCP server |
 
 That's about 127,000 lines across roughly 120 employees and 14 weeks. Reading it end to end isn't practical, so query it.
@@ -57,7 +57,7 @@ That's about 127,000 lines across roughly 120 employees and 14 weeks. Reading it
 - **Loki:** every log line, unchanged except for timestamp shifting (see below). Each source (`door`, `chat`, `ring`, `power`, `ambient-mic`, `security`, `personnel`, `hush-room`, …) is its own `service_name`, all under `service_namespace="kipsake-sleep-floor"`. Lines are logfmt, so `| logfmt` works.
   - Records are a database pull, not a stream, so they are ingested as one export at the end of the incident. Their own dates are kept in each line.
 - **Prometheus / Mimir:** every row of `metrics.csv` as a gauge, for example `badge_accel_variance`, `sleep_band_heart_rate_bpm`, `circuit_power_watts` and `quota_file_progress`. Samples recorded on a device during the outage and uploaded late carry `buffered="true"`.
-- **Tempo:** one trace per badge per day (`service.name="kipsake-badge-tracking"`), with a span for each door-reader or elevator-reader event.
+- **Tempo:** one trace per badge per day (`service.name="kipsake-badge-tracking"`), with a span for each door-reader or elevator-reader event. The days are the data's own, so a shift across midnight doesn't split a journey.
 
 ## Loading into Grafana Cloud
 
@@ -72,7 +72,7 @@ That's about 127,000 lines across roughly 120 employees and 14 weeks. Reading it
    python3 loader/load.py --target cloud
    ```
 
-**Time shifting.** Grafana Cloud rejects metric samples more than about 2 hours behind the newest sample, and log entries older than 7 days. So by default the loader shifts every timestamp so the incident happened just before "now". Timestamps inside log lines move by the same amount, so the data stays consistent. The loader prints the shift it used.
+**Time shifting.** Grafana Cloud rejects metric samples more than about 2 hours behind the newest sample, and log entries older than 7 days. So by default the loader shifts every timestamp so the incident happened just before "now". Timestamps inside log lines move by the same amount, so the data stays consistent. This moves the times of day too: the story's 15:02 lands at whatever time you loaded it. The loader prints the mode and the shift it used.
 
 Because of those limits, Grafana Cloud gets:
 - the last 7 days of logs and traces, which includes all of the incident day and every record
@@ -100,7 +100,17 @@ Grafana 13.2 runs at <http://localhost:3000>, and the Loki, Prometheus and Tempo
 docker compose exec grafana grafana cli admin reset-admin-password '<new password>'
 ```
 
-Recreating the containers (for example after editing `docker-compose.yml`) clears Loki, Prometheus and Tempo, so run the loader again afterwards. Grafana's own data, including the Assistant connection, lives in the `grafana-data` volume and survives. The local stack accepts the full history. Add `--no-shift` to keep the original 2026 dates.
+Recreating the containers (for example after editing `docker-compose.yml`) clears Loki, Prometheus and Tempo, so run the loader again afterwards. Grafana's own data, including the Assistant connection, lives in the `grafana-data` volume and survives.
+
+**Dates.** The raw files are dated around one canonical incident day, Thursday 2026-10-08. The local stack accepts the full history, so it can keep the story's times of day:
+
+```sh
+python3 loader/load.py --target local --incident-date latest
+```
+
+`--incident-date` moves every date by whole weeks so the incident falls on the Thursday you name (`YYYY-MM-DD`), or with `latest` on the most recent Thursday whose data has all happened. Times of day and weekdays stay the story's own, so the blackout is at 15:02 UTC on a Thursday. You can also set it with `DJ_INCIDENT_DATE`. A date that isn't a Thursday is refused, unless you add `--any-weekday`. Set Grafana's time zone to UTC (the example dashboard already is) so the times on screen match the story's. Add `--no-shift` to keep the original 2026 dates instead.
+
+Every signal carries the load's incident date as the resource attribute `case_run` (a label on the local stack's metrics). If you load the data into the same stack more than once, filter on `case_run` to see one load.
 
 ### Grafana Assistant on the local stack
 
@@ -140,6 +150,8 @@ In the local Tempo, TraceQL searches limited to a time range may not find the hi
 ```
 --target cloud|local     where to send the data (required)
 --signals logs,metrics,traces
+--incident-date DATE     move by whole weeks so the incident falls on this Thursday, or 'latest' (env DJ_INCIDENT_DATE)
+--any-weekday            allow an --incident-date that isn't a Thursday
 --no-shift               keep original timestamps (local only)
 --incident-end ISO       pin the time that 2026-10-08T15:50:00Z maps to (default: now)
 --dry-run                build and validate every payload without sending

@@ -17,7 +17,7 @@
   var LEADS = C.decisions.length;
 
   // Examples only: the player asks whatever they like, in whichever AI they like.
-  // The loader shifts timestamps to when the data was loaded, so these avoid clock times.
+  // The loader can move the data to just before the load, so these avoid clock times.
   var QUESTIONS = [
     "The Kipsake Sleep Floor telemetry is in this stack, under service_namespace " +
       "\"kipsake-sleep-floor\" in Loki, Prometheus and Tempo. During a five-minute power " +
@@ -340,8 +340,9 @@
         "records in this stack, but it has never spoken to anyone and hasn't seen anything you see here."),
       el("p", null, "Ask it anything. These are only examples, if you're not sure where to start:"),
       list,
-      el("p", { class: "note" }, "The data's timestamps were shifted to when it was loaded, so the " +
-        "story's 15:02 is a different clock time in Grafana. Your AI can find the outage in the data."),
+      el("p", { class: "note" }, "The data's times are UTC. If it was loaded on an incident date, the " +
+        "story's 15:02 is 15:02 in Grafana set to UTC. If it was loaded to end just before the load, " +
+        "15:02 is a different clock time there. Either way, your AI can find the outage in the data."),
       el("p", { class: "note" }, ["Learn more: "].concat(LINKS.map(function (l, i) {
         return [i ? " · " : "", el("a", { href: l[1], target: "_blank", rel: "noopener noreferrer" }, l[0])];
       }).flat(), [" (opens in a new tab)"])),

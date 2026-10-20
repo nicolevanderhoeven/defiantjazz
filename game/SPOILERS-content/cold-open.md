@@ -11,7 +11,6 @@ Source: "Defiant Jazz - Playtest/Player Packet.md", section 1. See game/README.m
 > Incident File SF-1008
 > KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 > Subject: Death of Mr. Reginald Hale, Floor Supervisor (day staff)
-> Date: 2026-10-08
 
 Kipsake, a firm in the seaside town of Port Quiet, pays its staff to sleep while their **sleepwalking selves** do the work. At work, each of them is a **sleepwalker**, who remembers only work. At home, they're their **waking self**, who remembers only home. A sleepwalker knows its desk and colleagues; its waking self has never seen them. Day staff, like the supervisor, Mr. Hale, stay awake at work. Every sleepwalker wears a badge, and the doors log each badge that passes. But a badge can't tell who's wearing it.
 

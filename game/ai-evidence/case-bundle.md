@@ -3,7 +3,7 @@
 KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 
 **Subject:** Death of Mr. Reginald Hale, Floor Supervisor (day staff)
-**Date:** 2026-10-08
+**When:** the last day in these files
 
 ## Summary
 
@@ -28,8 +28,8 @@ Floor Security has named three persons of interest, all from DSO:
 
 | File | Contents |
 |---|---|
-| 02-badge-and-door-events.md | Door readers and badge journeys, 2026-09-24 to 2026-10-08 |
-| 03-chat.md | Floor chat, 2026-09-24 to 2026-10-08 |
+| 02-badge-and-door-events.md | Door readers and badge journeys, the 14 days up to the incident |
+| 03-chat.md | Floor chat, the 14 days up to the incident |
 | 04-metrics.md | Selected time series (CSV) |
 | 05-system-logs.md | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |
 | 06-ambient-mic-transcripts.md | Ambient-microphone transcripts, 15:02 to 15:10 (buffered during the outage, live after it) |

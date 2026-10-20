@@ -3,7 +3,7 @@
 KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 
 **Subject:** Death of Mr. Reginald Hale, Floor Supervisor (day staff)
-**Date:** 2026-10-08 (when loaded into Grafana, the loader shifts all dates so the incident happened just before you loaded it; see the README)
+**When:** the last day in the telemetry. Times are UTC. The dates depend on how the data was loaded into Grafana (see the README).
 
 ## Summary
 
@@ -30,7 +30,7 @@ These are raw exports, too large to read end to end. Query them by searching (fo
 
 | File | Contents |
 |---|---|
-| door-and-badge-events.log | Door readers, badge journeys and trace spans, 2026-07-06 to 2026-10-08 |
+| door-and-badge-events.log | Door readers, badge journeys and trace spans, the 14 weeks up to the incident |
 | chat.log | Floor chat |
 | metrics.csv | Time series: ts,metric,labels,value,ingested_at |
 | system.log | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |

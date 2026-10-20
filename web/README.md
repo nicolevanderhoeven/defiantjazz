@@ -28,7 +28,7 @@ The game panel uses the community [Video panel](https://grafana.com/grafana/plug
 3. Import [`dashboard-example.json`](dashboard-example.json) (**Dashboards > New > Import**), then pick your Loki data source in the **Loki** drop-down at the top of the dashboard.
 4. Edit the **Play The Defiant Jazz Incident** panel and set **Iframe URL** to where you hosted `web/`, replacing the placeholder `https://example.com/defiantjazz/web/?theme=dark`, and save the dashboard. On the local stack, run the `http.server` command above and use `http://localhost:8080/?theme=dark`.
 
-The game panel is 24 columns wide and 18 rows tall, with two telemetry panels below it: Sleep Floor log volume by source, and the raw logs. The loader shifts the data so the incident ends just before you loaded it, so set the dashboard's time range to cover that.
+The game panel is 24 columns wide and 18 rows tall, with two telemetry panels below it: Sleep Floor log volume by source, and the raw logs. By default the loader shifts the data so the incident ends just before you loaded it. With `--incident-date`, the incident falls on that Thursday instead, with the story's times of day. Set the dashboard's time range to cover the incident. The dashboard shows UTC, the data's own timezone, so with `--incident-date` the story's 15:02 is 15:02 on screen.
 
 ### Options
 

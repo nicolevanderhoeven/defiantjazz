@@ -7,5 +7,5 @@ storage:
     out_of_order_time_window: 3650d
 
 otlp:
-  # Keep service.name / service.namespace as labels on every series.
-  promote_resource_attributes: [service.name, service.namespace]
+  # Keep service.name, service.namespace and case_run (the load's incident date) as labels on every series.
+  promote_resource_attributes: [service.name, service.namespace, case_run]
