@@ -203,7 +203,7 @@ class Game:
             }.get(command)
             if handler is None:
                 self.say(f"I don't know \"{command}\". To ask the AI, start with `ask`, "
-                         "for example: ask Where was Clement W. at 15:04?")
+                         "for example: ask What happened at 15:02?")
                 continue
             handler(arg)
 

@@ -110,6 +110,9 @@ class ContentTest(unittest.TestCase):
         self.assertEqual(CONTENT.resolve_suspect("Clement W."), "clement")
         self.assertEqual(CONTENT.resolve_suspect("peggy"), "agnes")
         self.assertEqual(CONTENT.resolve_suspect("Mr. Lindqvist"), "bertram")
+        self.assertEqual(CONTENT.resolve_suspect("Bertram Lindqvist"), "bertram")
+        self.assertEqual(CONTENT.resolve_suspect("Peggy Kowalski"), "agnes")
+        self.assertEqual(CONTENT.resolve_suspect("Agnes Kowalski"), "agnes")
         self.assertIsNone(CONTENT.resolve_suspect("Fern"))
 
 

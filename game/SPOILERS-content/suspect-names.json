@@ -1,6 +1,8 @@
 {
-  "agnes": ["agnes", "agnes k", "peggy", "kowalski", "ms kowalski", "a"],
-  "bertram": ["bertram", "bertram l", "lindqvist", "mr lindqvist", "waffles", "b"],
+  "agnes": ["agnes", "agnes k", "peggy", "kowalski", "ms kowalski", "agnes kowalski",
+            "peggy kowalski", "a"],
+  "bertram": ["bertram", "bertram l", "lindqvist", "mr lindqvist", "bertram lindqvist",
+              "waffles", "b"],
   "clement": ["clement", "clement w", "whitlow", "mr whitlow", "clement whitlow",
               "clement arthur whitlow", "c"]
 }
