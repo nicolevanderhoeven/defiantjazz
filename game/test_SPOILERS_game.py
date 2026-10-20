@@ -158,6 +158,16 @@ class FullPathTest(unittest.TestCase):
             self.assertLessEqual(len(line), 80)
         self.assertNotIn("\x1b[", self.output)
 
+    def test_example_questions(self):
+        before_turn, after_turn = self.output.split("── Your turn", 1)
+        self.assertNotIn("Neither of you", self.output)
+        flat = " ".join(after_turn.split())
+        self.assertIn("You can ask anything.", flat)
+        self.assertIn("ask Who killed Mr. Hale?", flat)
+        evidence = "ask What happened near the elevator between 15:02 and 15:07?"
+        self.assertEqual(flat.count(evidence), 1)
+        self.assertLess(flat.index("Answer 1."), flat.index(evidence))
+
     def test_ai_is_headless_isolated_and_resumed(self):
         first, second = self.runner.calls
         for call in (first, second):

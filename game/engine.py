@@ -179,9 +179,6 @@ class Game:
         else:
             self.say(self._style("THE DEFIANT JAZZ INCIDENT", "1"))
         self.say()
-        self.say("A murder mystery. You have the clips and documents. Your AI assistant has")
-        self.say("Kipsake's records. Neither of you has seen what the other has.")
-        self.say()
         self.rule("Cold open")
         self.card(self.content.cold_open)
         self.pause()
@@ -203,7 +200,8 @@ class Game:
             "time, whenever you're ready: type investigate. When you're ready, accuse the killer "
             "and say why.")
         self.say()
-        self.paragraphs("Try: ask Who killed Mr. Hale?")
+        self.paragraphs("You can ask anything. If you're not sure where to start, you could ask it "
+                        "who it thinks did it: ask Who killed Mr. Hale?")
 
     def hint(self):
         n = len(self.chosen)
@@ -281,6 +279,11 @@ class Game:
         self.say()
         self.rule("AI assistant")
         self.paragraphs(answer)
+        if len(self.asked) == 1:
+            self.say()
+            self.paragraphs("Ask whatever you like next. For example, to look at the evidence, "
+                            "you could ask: ask What happened near the elevator between 15:02 "
+                            "and 15:07?")
 
     def _choose(self, decision, arg):
         options = decision.options
