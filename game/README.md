@@ -40,7 +40,7 @@ The first `ask` sends the AI the whole case file (about 250 KB), so it can take 
 
 The AI only ever gets:
 - a short system prompt (in `ai.py`)
-- `ai-evidence/case-bundle.md`: the incident brief and a curated export of the telemetry, the same files an investigator would query. It includes the Story's pending data changes, so a few lines differ from `telemetry/`.
+- `ai-evidence/case-bundle.md`: the incident brief and a curated excerpt of `telemetry/` (from the Paper Test), the same kind of files an investigator would query.
 - what you type after `ask`, exactly as typed
 
 It never gets a clip, the Outside World, the reveal, or your accusation and reasoning.

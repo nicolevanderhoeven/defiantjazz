@@ -7,7 +7,7 @@ During the Cocoa Hour, a quiet quota reward in Break Room 2, the floor loses pow
 This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice. It also has a terminal version of the game for demos and playtests.
 
 > [!WARNING]
-> **Spoilers live in `game/SPOILERS-content/`.** That folder holds the human-only story clips and `SPOILERS-reveal.md`, which names the killer and explains the solution. Don't open it, or read the game's source files, if you want to play.
+> **Spoilers live in `game/SPOILERS-content/` and `game/test_SPOILERS_game.py`.** The folder holds the human-only story clips and `SPOILERS-reveal.md`, which names the killer and explains the solution. The test names the killer too. Don't open them if you want to play.
 >
 > Everything else is safe to read: `CASE-BRIEF.md`, `telemetry/`, `loader/`, `local/` and `game/ai-evidence/` hold only what an investigator is given, never the solution.
 
@@ -19,14 +19,14 @@ A text adventure for running locally. You watch the testimonies and choose what 
 python3 game/play.py
 ```
 
-Type `help` in the game for the commands. [`game/README.md`](game/README.md) covers swapping in another AI and is spoiler-free.
+Type `help` in the game for the commands. [`game/README.md`](game/README.md) covers swapping in another AI and has no spoilers.
 
 ## What's in it
 
 | Path | Contents |
 |---|---|
 | `CASE-BRIEF.md` | The incident brief Floor Security hands to investigators |
-| `game/` | The terminal game. **`game/SPOILERS-content/` contains spoilers.** |
+| `game/` | The terminal game. **`game/SPOILERS-content/` and `game/test_SPOILERS_game.py` contain spoilers.** |
 | `telemetry/door-and-badge-events.log` | Door readers, badge journeys and trace spans |
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |
