@@ -151,6 +151,9 @@ class FullPathTest(unittest.TestCase):
         self.assertIn("You can accuse before you've used them all.", " ".join(before_turn.split()))
         self.assertIn("alongside Ms. Okonjo", before_turn)
         self.assertIn("hot cocoa", before_turn)
+        interviews = " ".join(before_turn.split("── Security interviews", 1)[1].split())
+        self.assertLess(interviews.index("First, the suspects' statements."),
+                        interviews.index("Ms. Okonjo: Ms. K."))
         for label in ("Cold open", "Security interviews", "Your turn", "AI assistant",
                       "Lead 1 of 3", "Outside World handout", "Review", "The verdict"):
             self.assertIn(f"── {label} ─", self.output)

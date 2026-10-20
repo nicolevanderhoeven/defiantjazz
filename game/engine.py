@@ -187,7 +187,7 @@ class Game:
         self.pause()
         self.say()
         self.rule("Security interviews")
-        self.say(self._style("Floor Security interviewed the three suspects.", "1"))
+        self.paragraphs(self.content.testimony_intro)
         for i, testimony in enumerate(self.content.testimonies):
             if i:
                 self.say()

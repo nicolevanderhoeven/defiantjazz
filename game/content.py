@@ -64,6 +64,7 @@ class Decision:
 class Content:
     cold_open: Card
     testimonies: list
+    testimony_intro: str
     outside_world: Card
     decisions: list
     reveal: Section
@@ -137,7 +138,10 @@ def _aliases(content_dir):
 
 
 def load(content_dir=CONTENT_DIR):
-    testimonies = _read("testimonies.md", content_dir).cards
+    testimony_section = _read("testimonies.md", content_dir)
+    testimonies = testimony_section.cards
+    if "intro" not in testimony_section.meta:
+        raise ContentError("testimonies.md: missing 'intro:'")
     if len(testimonies) != 3:
         raise ContentError("testimonies.md: expected three testimonies")
     decisions = [
@@ -151,6 +155,7 @@ def load(content_dir=CONTENT_DIR):
     return Content(
         cold_open=_read("cold-open.md", content_dir).cards[0],
         testimonies=testimonies,
+        testimony_intro=testimony_section.meta["intro"],
         outside_world=_read("outside-world.md", content_dir).cards[0],
         decisions=decisions,
         reveal=reveal,

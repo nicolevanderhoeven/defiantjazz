@@ -5,6 +5,7 @@ Each card is one clip: the spoken lines, plus a plain description of what's on s
 -->
 
 # Opening testimonies
+intro: First, the suspects' statements. Ms. Okonjo of Floor Security interviewed all three soon after the power came back. Here's what each of them told her.
 
 ## T-A · Agnes K. · 15:30
 [A security interview. A DSO clerk, Agnes K., sits on a chair against a plain wall. Her Kipsake badge card hangs from a lanyard around her neck. She wears a plain top and no scarf. The interviewer, Ms. Okonjo of Floor Security, is off camera.]
