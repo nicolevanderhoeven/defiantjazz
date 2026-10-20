@@ -4,11 +4,11 @@ Source: "Defiant Jazz - Clue Map.md", "The vote prompts" (Decision 2) and "Decis
 -->
 
 # Decision 2 · The outside world
-prompt: Kipsake never questions anyone awake. But these three were awake on the floor when the lights went out. Whose door do we knock on?
+prompt: Kipsake never questions anyone's waking self. But these three were awake on the floor when the lights went out. We can visit one of them at home this evening. Whose door do we knock on?
 
 ## Ms. Kowalski
 option: Ms. Kowalski
-note: Agnes, awake: "Peggy"
+note: Agnes's waking self, "Peggy"
 aliases: kowalski, peggy, agnes, a
 
 > 18:40 · Port Quiet · Ms. Kowalski's flat
@@ -23,7 +23,7 @@ Ms. Kowalski: This was in my pocket. It isn't mine.
 
 ## Mr. Lindqvist
 option: Mr. Lindqvist
-note: Bertram, awake
+note: Bertram's waking self
 aliases: lindqvist, bertram, b
 
 > 18:40 · Port Quiet · Mr. Lindqvist's flat
@@ -34,20 +34,20 @@ Mr. Lindqvist: Someone trod on me in the dark. I grabbed at them.
 Mr. Lindqvist: Then a sheep.
 [He touches his right shoulder.]
 Mr. Lindqvist: They said sorry. Called me "Waffles". Who's Waffles?
-[He looks bemused.]
+[He looks puzzled.]
 
 ## Mr. Whitlow
 option: Mr. Whitlow
-note: Clement, awake
+note: Clement's waking self
 aliases: whitlow, clement, c
 
 > 18:40 · Port Quiet · Mr. Whitlow's flat
-[Clement's waking self, Mr. Whitlow, sits on the same chair. No lanyard; the fringed scarf is on. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the visitor.]
+[Clement's waking self, Mr. Whitlow, sits on the same chair. No lanyard, but he's wearing the fringed scarf. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the visitor.]
 Visitor: Mr. Whitlow? You sleepwalk for Kipsake.
 Mr. Whitlow: I don't remember work. That's rather the point.
 [Close-up: the open folder, lying flat, with three things inside.]
-[A Port Quiet Gazette clipping about Procedure Revision 114, with "R. Hale" circled in red.]
-[A printed photo of the Sleep Floor's fire-evacuation plan, photographed where it hangs on a wall. Its red "You are here" dot is in Break Room 2. A route is traced over it in pen: Break Room 2, corridor E, and the elevator, circled.]
+[A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114. "R. Hale" is circled in red.]
+[A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red "You are here" dot is in Break Room 2. A route is drawn over it in pen: from Break Room 2, along corridor E, to the elevator, which is circled.]
 [A photo of a woman standing by a lighthouse.]
 Visitor: We read about June.
 Mr. Whitlow: Then you know everything I do.

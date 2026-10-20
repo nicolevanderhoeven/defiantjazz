@@ -159,12 +159,12 @@ class Game:
 
     def intro(self):
         self.say(self._style("THE DEFIANT JAZZ INCIDENT", "1"))
-        self.say("A murder mystery in Kipsake's telemetry. You hold the human-only evidence;")
-        self.say("the AI holds the telemetry. Neither has seen the other's.")
+        self.say("A murder mystery. You have the clips and documents. The AI has Kipsake's")
+        self.say("telemetry, its computer records. Neither of you has seen what the other has.")
         self.card(self.content.cold_open)
         self.pause()
         self.say()
-        self.say(self._style("Floor Security interviewed the three persons of interest.", "1"))
+        self.say(self._style("Floor Security interviewed the three suspects.", "1"))
         for testimony in self.content.testimonies:
             self.card(testimony)
             self.pause()
@@ -353,7 +353,7 @@ class Game:
             label = SUSPECTS[key]
         else:
             label = name
-            if not self.read(f"{name} isn't one of the three persons of interest. "
+            if not self.read(f"{name} isn't one of the three suspects. "
                              "Accuse them anyway? (y/n) ").lower().startswith("y"):
                 return
             key = "other"
