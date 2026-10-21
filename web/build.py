@@ -8,12 +8,20 @@
     python3 web/build.py --page                   # the same, reusing that file's template
     python3 web/build.py --page --check           # exit 1 if that file is out of date
 
+    python3 web/build.py --art     # cut the comic sheet into web/assets/scene-*.webp
+
 --page builds the game as a Grafana Page: a page export file to import in Grafana
 (Pages > Import page). A page is a small React project that Grafana builds itself,
 so the file is source only. The game's own files (game.js, style.css and the story
 cards) go into src/ next to a few lines of glue; the project around them (package.json,
 lockfile and the vendored pages SDK) comes from FILE, an export of any existing page,
 since only a page Grafana made has the versions that Grafana's builder expects.
+
+--art cuts the four scene strips out of the comic prototype's art sheet,
+comic-prototype/assets/scenes.png (read only, never changed), into one WebP file per
+scene in web/assets/. The game shows them as header art. Each scene is its own file, so
+new art for one scene just replaces that file. It needs Pillow (python3 -m pip install
+Pillow); the scenes are committed, so nothing else needs it.
 
 SPOILERS: the bundle holds every card in game/SPOILERS-content/, including the
 reveal. The reveal is base64-encoded so a glance at the file doesn't spoil it,
@@ -34,6 +42,19 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "SPOILERS-content.js")
 PAGE_PATH = os.path.join(HERE, "dist", "SPOILERS-defiantjazz.page.json")
+ASSETS = os.path.join(HERE, "assets")
+SHEET = os.path.join(os.path.dirname(HERE), "comic-prototype", "assets", "scenes.png")
+# The sheet's four scene strips, top to bottom, as (name, first row, end row). The strips
+# aren't quite equal, so these are the seams measured in the sheet. game.js knows the sizes.
+SCENES = (
+    ("scene-1-broadcast", 0, 361),
+    ("scene-2-break-room", 361, 707),
+    ("scene-3-elevator", 707, 1071),
+    ("scene-4-clement-home", 1071, 1448),
+)
+# Lossy WebP: the sheet is painted, not drawn on a pixel grid, so lossless is 5 to 10 times
+# larger for no visible gain. The page scales the scenes with image-rendering: pixelated.
+WEBP_QUALITY = 80
 # Spoiler-free: Grafana shows the title in lists and gives it to Assistant as context.
 PAGE_TITLE = "The Defiant Jazz Incident"
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), "game"))
@@ -79,6 +100,30 @@ def render(cards=None):
     return f"{HEADER}window.DJ_CONTENT = {body};\n"
 
 
+# ---- Scene art -------------------------------------------------------------------
+
+def scene_path(name):
+    return os.path.join(ASSETS, name + ".webp")
+
+
+def cut_scenes(sheet=SHEET, out=ASSETS):
+    """Write one WebP file per scene strip of the sheet into out. The sheet isn't changed."""
+    try:
+        from PIL import Image
+    except ImportError:
+        sys.exit("--art needs Pillow: python3 -m pip install Pillow")
+    with Image.open(sheet) as im:
+        im = im.convert("RGB")
+        if im.height != SCENES[-1][2]:
+            sys.exit(f"{os.path.relpath(sheet)} is {im.width}x{im.height}, not the {SCENES[-1][2]} rows "
+                     "SCENES in web/build.py expects: measure the new seams and update SCENES.")
+        os.makedirs(out, exist_ok=True)
+        for name, top, bottom in SCENES:
+            path = os.path.join(out, name + ".webp")
+            im.crop((0, top, im.width, bottom)).save(path, "WEBP", quality=WEBP_QUALITY, method=6)
+            print(f"Wrote {os.path.relpath(path)} ({os.path.getsize(path) // 1024} KB).")
+
+
 # ---- Grafana Page ----------------------------------------------------------------
 
 # What a page takes from its template. Everything else in the template (its src/, its
@@ -117,9 +162,10 @@ createRoot(document.getElementById('root')!).render(
 HOST_TS = f"""\
 // {GENERATED}
 // The hooks game.js looks for in a Grafana Page: saved progress in the viewer's Grafana
-// user storage, Grafana's theme, and Ask Assistant. Only the question goes to Assistant.
+// user storage, Grafana's theme, Ask Assistant and the header art. Only the question goes to Assistant.
 import {{ grafana, openAssistant }} from '@grafana/pages';
 import {{ MARKUP }} from './markup';
+import {{ SCENES }} from './scenes';
 
 declare global {{
   interface Window {{
@@ -147,6 +193,8 @@ window.DJ_HOST = {{
     if (mode) callback(mode);
   }},
   askAssistant: (prompt: string) => openAssistant({{ prompt }}),
+  // The page's frame can't load files, so the header art comes inline.
+  scenes: SCENES,
 }};
 """
 
@@ -190,6 +238,20 @@ def read_template(path):
     return files
 
 
+def scene_modules():
+    """src/scenes.ts and one module per scene, each scene a data: URL (the frame allows those)."""
+    files, imports, entries = {}, [], []
+    for i, (name, _, _) in enumerate(SCENES):
+        with open(scene_path(name), "rb") as f:
+            url = "data:image/webp;base64," + base64.b64encode(f.read()).decode("ascii")
+        files[f"src/scenes/{name}.ts"] = f"// {GENERATED}\nexport default '{url}';\n"
+        imports.append(f"import scene{i} from './scenes/{name}';\n")
+        entries.append(f"  '{name}': scene{i},\n")
+    files["src/scenes.ts"] = (f"// {GENERATED}\n" + "".join(imports)
+                              + "\nexport const SCENES: Record<string, string> = {\n" + "".join(entries) + "};\n")
+    return files
+
+
 def page_files(template, cards=None):
     files = {k: v for k, v in template.items() if k in TEMPLATE_FILES or k.startswith(TEMPLATE_DIRS)}
 
@@ -209,6 +271,7 @@ def page_files(template, cards=None):
         "src/SPOILERS-content.js": render(cards),
         "src/SPOILERS-content.d.ts": SCRIPT_DTS,
     })
+    files.update(scene_modules())
     return dict(sorted(files.items()))
 
 
@@ -236,11 +299,18 @@ def main(argv=None):
     p = argparse.ArgumentParser(description="Bundle game/SPOILERS-content/ for the web game.")
     p.add_argument("--check", action="store_true", help="exit 1 if the output is out of date")
     p.add_argument("--page", action="store_true", help="build the Grafana Page export file instead")
+    p.add_argument("--art", action="store_true",
+                   help="cut comic-prototype/assets/scenes.png into web/assets/scene-*.webp")
     p.add_argument("--template", metavar="FILE",
                    help="with --page: an exported page whose project to build on (default: the last build's)")
     args = p.parse_args(argv)
     if args.template and not args.page:
         p.error("--template needs --page")
+    if args.art:
+        if args.page or args.check or args.template:
+            p.error("--art takes no other options")
+        cut_scenes()
+        return
     if args.page:
         out, rebuild = PAGE_PATH, "python3 web/build.py --page"
         template = args.template or PAGE_PATH

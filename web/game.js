@@ -15,6 +15,7 @@
  *   storage.getItem(key) / storage.setItem(key, value)  saved progress, may return promises
  *   onTheme(callback)          calls callback("dark" | "light") whenever the host's theme changes
  *   askAssistant(prompt)       opens Grafana Assistant with the prompt; returns a promise
+ *   scenes                     the header art as { name: URL }, for a frame that can't load files
  */
 (function () {
   "use strict";
@@ -39,6 +40,17 @@
     ["Grafana Assistant", "https://grafana.com/docs/grafana-cloud/machine-learning/assistant/"],
     ["Grafana MCP server", "https://github.com/grafana/mcp-grafana"],
   ];
+
+  // Header art: pixel-art scenes in assets/, cut from the comic sheet by web/build.py --art,
+  // as name: [width, height]. They hold no clue text, so their alt text is empty and the
+  // story stays in the HTML. Lead options with a scene are listed by option name.
+  var SCENES = {
+    "scene-1-broadcast": [1086, 361],
+    "scene-2-break-room": [1086, 346],
+    "scene-3-elevator": [1086, 364],
+    "scene-4-clement-home": [1086, 377],
+  };
+  var LEAD_SCENES = { "Elevator car 1": "scene-3-elevator", "Clement at home": "scene-4-clement-home" };
 
   var main = document.getElementById("main");
   var leadsEl = document.getElementById("leads");
@@ -230,12 +242,27 @@
     return root;
   }
 
+  function scene(name) {
+    var size = SCENES[name];
+    var src = (HOST.scenes && HOST.scenes[name]) || "assets/" + name + ".webp";
+    return el("figure", { class: "scene" },
+      el("img", { src: src, alt: "", width: size[0], height: size[1], decoding: "async" }));
+  }
+
   function card(c, title, ruleLabel) {
     if (c.meta && c.meta.style === "advert") return advert(c, ruleLabel);
+    var body = cardBody(c.body);
+    var art = c.meta && LEAD_SCENES[c.meta.option] ? scene(LEAD_SCENES[c.meta.option]) : null;
+    if (c === C.coldOpen) {
+      // The break room goes above "What happened that night".
+      var at = [].find.call(body.children, function (n) { return /^What happened/.test(n.textContent); });
+      body.insertBefore(scene("scene-2-break-room"), at || body.firstChild);
+    }
     return el("article", { class: "story" }, [
       ruleLabel ? rule(ruleLabel) : null,
+      art,
       heading(title || c.title),
-      cardBody(c.body),
+      body,
     ]);
   }
 
@@ -251,8 +278,9 @@
         body.appendChild(inline(line, el("p")));
       }
     });
-    return el("article", null, [
+    return el("article", { class: "advert-card" }, [
       ruleLabel ? rule(ruleLabel) : null,
+      scene("scene-1-broadcast"),
       el("div", { class: "advert" }, [
         el("p", { class: "ad-label" }, "Advert"),
         heading(c.title),

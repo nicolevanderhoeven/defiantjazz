@@ -184,6 +184,19 @@ p { margin: 0 0 10px; }
 .advert .card-body strong { color: var(--ad-accent); }
 @media (max-width: 640px) { .advert { padding: 18px 16px 14px; } }
 
+/* Header art: pixel-art scenes, kept crisp when scaled */
+.scene {
+  max-width: 72ch; margin: 0 0 16px;
+  border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+  background: var(--screen-bg);
+}
+.scene img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+@media (prefers-reduced-motion: no-preference) {
+  .scene img { animation: scene-in 0.5s ease-out; }
+}
+@keyframes scene-in { from { opacity: 0; } }
+.advert-card .scene { max-width: 60ch; }
+
 .reasoning {
   margin: 0 0 16px; padding: 8px 12px;
   border-left: 3px solid var(--border);

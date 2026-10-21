@@ -121,6 +121,63 @@ class SandboxTest(unittest.TestCase):
         self.assertTrue(any(u.startswith("try {") for u in uses))
 
 
+def webp_size(path):
+    """(width, height) of a WebP file, read from its header."""
+    with open(path, "rb") as f:
+        head = f.read(30)
+    if head[:4] != b"RIFF" or head[8:12] != b"WEBP":
+        raise ValueError(f"{path} isn't a WebP file")
+    chunk = head[12:16]
+    if chunk == b"VP8 ":
+        return (int.from_bytes(head[26:28], "little") & 0x3FFF, int.from_bytes(head[28:30], "little") & 0x3FFF)
+    if chunk == b"VP8L":
+        bits = int.from_bytes(head[21:25], "little")
+        return ((bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1)
+    if chunk == b"VP8X":
+        return (int.from_bytes(head[24:27], "little") + 1, int.from_bytes(head[27:30], "little") + 1)
+    raise ValueError(f"{path}: unknown WebP chunk {chunk!r}")
+
+
+class SceneArtTest(unittest.TestCase):
+    """The header art: one WebP file per scene, cut from the comic sheet by build.py --art."""
+
+    def test_one_small_webp_per_scene(self):
+        self.assertTrue(os.path.exists(build.SHEET), "the comic sheet is the source of the scenes")
+        rows = 0
+        for name, top, bottom in build.SCENES:
+            self.assertEqual(top, rows, "the scenes cover the sheet without gaps")
+            rows = bottom
+            path = build.scene_path(name)
+            self.assertEqual(webp_size(path)[1], bottom - top, name)
+            self.assertLess(os.path.getsize(path), 150 * 1024, f"{name} should stay small")
+
+    def test_game_knows_each_scene(self):
+        game = read("game.js")
+        for name, _, _ in build.SCENES:
+            width, height = webp_size(build.scene_path(name))
+            self.assertIn(f'"{name}": [{width}, {height}]', game, f"SCENES in game.js is out of date for {name}")
+        self.assertIn('"assets/" + name + ".webp"', game)
+        self.assertIn('alt: ""', game, "the art holds no clue text, so it needs no alt text")
+        self.assertIn("img-src 'self'", read("index.html"))
+
+    def test_lead_scenes_name_real_options(self):
+        game = read("game.js")
+        leads = json.loads(re.search(r"var LEAD_SCENES = (\{[^}]*\});", game).group(1))
+        options = {o.meta.get("option") for d in CONTENT.decisions for o in d.options}
+        for option, name in leads.items():
+            self.assertIn(option, options)
+            self.assertIn(name, [n for n, _, _ in build.SCENES])
+
+    def test_art_stays_crisp_and_still_for_reduced_motion(self):
+        css = read("style.css")
+        self.assertIn("image-rendering: pixelated", css)
+        self.assertRegex(css, r"prefers-reduced-motion: no-preference\) \{\s*\.scene img \{ animation")
+
+    def test_art_takes_no_other_options(self):
+        with self.assertRaises(SystemExit), redirect_stderr(StringIO()):
+            build.main(["--art", "--page"])
+
+
 def fake_template():
     return {
         "package.json": '{"name": "grafana-page"}\n',
@@ -166,6 +223,17 @@ class PageBuildTest(unittest.TestCase):
         self.assertIn("pageReady", main)
         for name in ("src/game.d.ts", "src/SPOILERS-content.d.ts", "src/host.ts", "src/markup.ts", "src/page.css"):
             self.assertIn(name, self.files)
+
+    def test_page_inlines_the_scenes(self):
+        index = self.files["src/scenes.ts"]
+        for name, _, _ in build.SCENES:
+            with open(build.scene_path(name), "rb") as f:
+                url = "data:image/webp;base64," + base64.b64encode(f.read()).decode("ascii")
+            self.assertIn(f"'{url}'", self.files[f"src/scenes/{name}.ts"])
+            self.assertIn(f"from './scenes/{name}'", index)
+        self.assertIn("scenes: SCENES", self.files["src/host.ts"])
+        self.assertLess(len(build.render_page(fake_template(), CONTENT).encode("utf-8")), 4 << 20,
+                        "the page file should stay well inside Grafana's limits")
 
     def test_markup_is_the_page_body(self):
         markup = json.loads(self.files["src/markup.ts"].split("export const MARKUP = ", 1)[1].rstrip().rstrip(";"))
