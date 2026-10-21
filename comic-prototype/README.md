@@ -1,6 +1,6 @@
 # Kipsake: interactive comic preview
 
-A standalone, silent four-scene prototype for Nicole. Everything lives in this folder; the existing web and terminal games are unchanged.
+A standalone, silent five-scene prototype for Nicole. Everything lives in this folder; the existing web and terminal games are unchanged.
 
 Run from the repository root:
 
@@ -18,4 +18,13 @@ Scenes, frames, aliases, hotspots, and responses are in scenes.js. app.js handle
 
 ## Regenerate or continue
 
-[PROMPT.md](PROMPT.md) contains the reusable regeneration brief, artwork prompt, and instructions for extending this prototype to the complete canonical story. The full-story section is a future implementation brief; this PR contains the four-scene preview only. Keep future changes within this directory so the prototype can evolve independently of the existing game.
+[PROMPT.md](PROMPT.md) contains the reusable regeneration brief, artwork prompt, and instructions for extending this prototype to the complete canonical story. The full-story section is a future implementation brief; the prototype contains selected scenes only. Keep future changes within this directory so the prototype can evolve independently of the existing game.
+
+
+## Comic statement pages
+
+The opening uses `assets/sleep-self-v4.png`: the same woman sleeping, then a transparent double exposure of her getting up and walking, then working at her desk at night. No spectral glow or ghost trail. Earlier variants are retained in `assets/sleep-self.png` and `assets/sleep-self-v2.png`. The Kipsake emblem is a local SVG; the company name and “Earn while you sleep” slogan are readable HTML. This is an advertising metaphor, not an additional supernatural rule of the mystery. The original four-strip artwork is preserved.
+
+After the elevator chapter, The statements shows Agnes, Bertram, and Clement in three parallel panels. NEXT reveals the next exchange in each interview. The panels stack on narrow screens. Speech bubbles are selectable HTML text; TALK echoes the current exchange in the console. Dialogue is adapted from the canonical opening testimonies without loading the solution. `statements.js` contains this human-facing adaptation and the opening-art override; `assets/statements.png` supplies the portrait triptych. Other scenes also show a speech bubble when you TALK to someone.
+
+The transparent sleepwalking figure belongs in the middle foreground, in front of the bed: her body overlaps the duvet, which remains visible through her. Preserve the earlier image variants when revising the art.
