@@ -21,7 +21,8 @@ since only a page Grafana made has the versions that Grafana's builder expects.
 comic-prototype/assets/scenes.png (read only, never changed), into one WebP file per
 scene in web/assets/. The game shows them as header art. Each scene is its own file, so
 new art for one scene just replaces that file. It needs Pillow (python3 -m pip install
-Pillow); the scenes are committed, so nothing else needs it.
+Pillow); the scenes are committed, so nothing else needs it. Their captions, hotspots and
+the web game's text beside them are in game/SPOILERS-content/scene-art.md, bundled with the cards.
 
 SPOILERS: the bundle holds every card in game/SPOILERS-content/, including the
 reveal. The reveal is base64-encoded so a glance at the file doesn't spoil it,
@@ -34,6 +35,7 @@ any card there.
 
 import argparse
 import base64
+import hashlib
 import json
 import os
 import re
@@ -43,6 +45,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "SPOILERS-content.js")
 PAGE_PATH = os.path.join(HERE, "dist", "SPOILERS-defiantjazz.page.json")
 ASSETS = os.path.join(HERE, "assets")
+ART_PATH = os.path.join(os.path.dirname(HERE), "game", "SPOILERS-content", "scene-art.md")
 SHEET = os.path.join(os.path.dirname(HERE), "comic-prototype", "assets", "scenes.png")
 # The sheet's four scene strips, top to bottom, as (name, first row, end row). The strips
 # aren't quite equal, so these are the seams measured in the sheet. game.js knows the sizes.
@@ -91,8 +94,55 @@ def data(cards=None):
             for d in cards.decisions
         ],
         "aliases": cards.aliases,
+        "art": scene_art(cards),
         "reveal": base64.b64encode(reveal.encode("utf-8")).decode("ascii"),
     }
+
+
+def fingerprint(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
+
+
+def scene_art(cards=None, path=ART_PATH):
+    """game/SPOILERS-content/scene-art.md as {card title: its scene}: the image, its caption,
+    the web game's text for the card, and the hotspots. The file's comment has the format."""
+    cards = cards or content.load()
+    shown = [cards.advert, cards.cold_open, cards.outside_world] + list(cards.testimonies)
+    shown += [c for d in cards.decisions for c in d.options]
+    by_title = {c.title: c for c in shown}
+    names = [name for name, _, _ in SCENES]
+    with open(path, encoding="utf-8") as f:
+        section = content.parse_section(f.read(), path)
+    art, current = {}, None
+    for c in section.cards:
+        where = f"{os.path.relpath(path)}: {c.title!r}"
+        if c.title.startswith("scene-"):
+            if c.title not in names:
+                raise content.ContentError(f"{where}: no such scene in web/assets/")
+            card = by_title.get(c.meta.get("card"))
+            if not card or card.title in art:
+                raise content.ContentError(f"{where}: 'card:' must name a story card no other scene has")
+            if not c.meta.get("where") or not c.meta.get("caption"):
+                raise content.ContentError(f"{where}: needs 'where:' and 'caption:'")
+            if c.body and c.meta.get("source") != fingerprint(card.body):
+                raise content.ContentError(
+                    f"{where}: the card {card.title!r} has changed since this text was written from it. "
+                    f"Update the text to match, then set 'source: {fingerprint(card.body)}'.")
+            current = {"scene": c.title, "where": c.meta["where"], "caption": c.meta["caption"],
+                       "story": c.meta.get("story"), "before": c.meta.get("before"),
+                       "body": c.body or None, "hotspots": []}
+            art[card.title] = current
+            continue
+        at = re.fullmatch(r"(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)", c.meta.get("at", ""))
+        if current is None or not at or not c.body:
+            raise content.ContentError(f"{where}: a hotspot needs a scene above it, 'at: x, y' and some text")
+        x, y = (float(v) if "." in v else int(v) for v in at.groups())
+        if not (0 <= x <= 100 and 0 <= y <= 100):
+            raise content.ContentError(f"{where}: 'at:' is a percentage of the image, 0 to 100")
+        current["hotspots"].append({"label": c.title, "x": x, "y": y, "body": c.body})
+    if sorted(a["scene"] for a in art.values()) != sorted(names):
+        raise content.ContentError(f"{os.path.relpath(path)}: expected one card for each of {', '.join(names)}")
+    return art
 
 
 def render(cards=None):

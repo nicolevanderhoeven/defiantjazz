@@ -156,26 +156,112 @@ class SceneArtTest(unittest.TestCase):
         for name, _, _ in build.SCENES:
             width, height = webp_size(build.scene_path(name))
             self.assertIn(f'"{name}": [{width}, {height}]', game, f"SCENES in game.js is out of date for {name}")
-        self.assertIn('"assets/" + name + ".webp"', game)
+        self.assertIn('"assets/" + art.scene + ".webp"', game)
         self.assertIn('alt: ""', game, "the art holds no clue text, so it needs no alt text")
         self.assertIn("img-src 'self'", read("index.html"))
 
-    def test_lead_scenes_name_real_options(self):
-        game = read("game.js")
-        leads = json.loads(re.search(r"var LEAD_SCENES = (\{[^}]*\});", game).group(1))
-        options = {o.meta.get("option") for d in CONTENT.decisions for o in d.options}
-        for option, name in leads.items():
-            self.assertIn(option, options)
-            self.assertIn(name, [n for n, _, _ in build.SCENES])
+    def test_art_stays_on_the_cards_it_illustrates(self):
+        # The leads' scenes come with their lead cards, so they show only once a lead is followed.
+        art = build.scene_art(CONTENT)
+        lead_cards = {o.title for d in CONTENT.decisions for o in d.options}
+        self.assertEqual(set(art), {CONTENT.advert.title, CONTENT.cold_open.title} | (set(art) & lead_cards))
+        self.assertEqual(len(set(art) & lead_cards), 2)
+        self.assertEqual(bundle_data()["art"], art)
 
     def test_art_stays_crisp_and_still_for_reduced_motion(self):
         css = read("style.css")
         self.assertIn("image-rendering: pixelated", css)
         self.assertRegex(css, r"prefers-reduced-motion: no-preference\) \{\s*\.scene img \{ animation")
 
+    def test_markers_are_buttons_with_notes(self):
+        game, css = read("game.js"), read("style.css")
+        self.assertIn('type: "button", class: "hotspot"', game)
+        self.assertIn('"aria-describedby": id', game)
+        self.assertIn('e.key === "Escape"', game)
+        self.assertNotIn(".setAttribute(\"style\"", game, "the page's CSP blocks style attributes")
+        self.assertRegex(css, r"prefers-reduced-motion: no-preference\) \{\s*\.hotspot \{ animation")
+        self.assertIn(".hotspot:focus-visible", css)
+
     def test_art_takes_no_other_options(self):
         with self.assertRaises(SystemExit), redirect_stderr(StringIO()):
             build.main(["--art", "--page"])
+
+
+def words(text):
+    return re.findall(r"[a-z0-9']+", text.lower().replace("\u2019", "'"))
+
+
+def phrases(text, n=4):
+    w = words(text)
+    return {" ".join(w[i:i + n]) for i in range(len(w) - n + 1)}
+
+
+class SceneTextTest(unittest.TestCase):
+    """game/SPOILERS-content/scene-art.md: captions, the cards' text beside the art, hotspots."""
+
+    def setUp(self):
+        self.art = build.scene_art(CONTENT)
+
+    def texts(self, scene):
+        yield scene["where"]
+        yield scene["caption"]
+        if scene["story"]:
+            yield scene["story"]
+        if scene["body"]:
+            yield scene["body"]
+        for h in scene["hotspots"]:
+            yield h["label"]
+            yield h["body"]
+
+    def test_every_scene_has_text_and_hotspots(self):
+        for title, scene in self.art.items():
+            self.assertTrue(scene["where"] and scene["caption"], title)
+            self.assertTrue(scene["hotspots"], f"{title} has no hotspots")
+            for h in scene["hotspots"]:
+                self.assertTrue(h["label"].strip() and h["body"].strip(), title)
+
+    def test_hotspots_sit_inside_the_image(self):
+        for title, scene in self.art.items():
+            for h in scene["hotspots"]:
+                for v in (h["x"], h["y"]):
+                    self.assertTrue(3 <= v <= 97, f"{title}: {h['label']} is at the edge of the image")
+            # Markers far enough apart to tap: 4% of the width is about 14px on a phone.
+            spots = scene["hotspots"]
+            for i, a in enumerate(spots):
+                for b in spots[i + 1:]:
+                    self.assertGreater(abs(a["x"] - b["x"]) + abs(a["y"] - b["y"]) / 3, 4,
+                                       f"{title}: {a['label']} and {b['label']} overlap")
+
+    def test_before_names_a_line_of_the_text(self):
+        for title, scene in self.art.items():
+            if scene["before"]:
+                body = scene["body"] or next(c.body for c in all_cards() if c.title == title)
+                self.assertIn(scene["before"], body, title)
+
+    def test_nothing_from_the_reveal(self):
+        # Any four words in a row that the reveal has must also be in a card the player sees.
+        reveal = set().union(*(phrases(c.body) | phrases(c.title) for c in CONTENT.reveal.cards))
+        shown = set().union(*(phrases(c.body) for c in all_cards()))
+        for title, scene in self.art.items():
+            for text in self.texts(scene):
+                self.assertFalse((phrases(text) & reveal) - shown, f"{title}: scene text quotes the reveal")
+
+    def test_names_and_numbers_come_from_the_cards(self):
+        # Scene text retells the cards: no name, place, time or number the cards don't have.
+        known = {t.lower() for c in all_cards() for t in re.findall(r"[A-Za-z0-9]+", c.title + " " + c.body)}
+        for title, scene in self.art.items():
+            for text in self.texts(scene):
+                for m in re.finditer(r"[A-Za-z0-9]+", text):
+                    t, before = m.group(), text[:m.start()].rstrip(" *\"(\u201c>●↓")
+                    name = t[0].isupper() and before and before[-1] not in ".!?:\n"
+                    if any(ch.isdigit() for ch in t) or name:
+                        self.assertTrue(t.lower() in known, f"{title}: a name or number that no card has")
+
+    def test_a_changed_card_stops_the_build(self):
+        changed = content.load()
+        changed.advert.body += "\nOne more line."
+        with self.assertRaises(content.ContentError):
+            build.scene_art(changed)
 
 
 def fake_template():

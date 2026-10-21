@@ -163,5 +163,131 @@ window.DJ_CONTENT = {
   "clement": "clement",
   "c": "clement"
  },
+ "art": {
+  "Kipsake": {
+   "scene": "scene-1-broadcast",
+   "where": "A Kipsake advert",
+   "caption": "Asleep, and at work.",
+   "story": "In the story, Dreamers check in at Kipsake and sleep in pods, not at home.",
+   "before": null,
+   "body": "Hi! I'm with Kipsake.\nYou work hard all day. So why should your nights go to waste?\nAt Kipsake, we rent your sleep.\nEach night, you check in, settle into your pod, and drift off.\nYour sleepwalking self works the night shift for you.\nIn the morning, you wake up rested, paid, and remembering nothing at all.\nAnd don't worry: our lullaby keeps you sound asleep all night long. Even in a power outage.\n**Kipsake. Earn while you sleep.**\nSweet dreams, Dreamers.",
+   "hotspots": [
+    {
+     "label": "Asleep",
+     "x": 14,
+     "y": 55,
+     "body": "Each night, you check in, settle into your pod, and drift off."
+    },
+    {
+     "label": "Kipsake",
+     "x": 66,
+     "y": 32,
+     "body": "Kipsake rents your sleep. Earn while you sleep."
+    },
+    {
+     "label": "The night shift",
+     "x": 85,
+     "y": 69,
+     "body": "Your sleepwalking self works the night shift for you. In the morning, you remember nothing at all."
+    }
+   ]
+  },
+  "The Defiant Jazz Incident": {
+   "scene": "scene-2-break-room",
+   "where": "Break Room 2 · Sleep Floor · 03:00",
+   "caption": "The Cocoa Hour.",
+   "story": "In the story, it's just the three clerks, Agnes, Bertram and Clement, with Mr. Hale.",
+   "before": "What happened that night",
+   "body": "*The power went out for five minutes. When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.*\n\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n\n**What happened that night**\n\n- **02:58.** Agnes, Bertram and Clement, the three clerks of Deep Sleep Operations, are sleepwalkers on the Sleep Floor's night shift. They met their quota for the quarter. Their reward was a Cocoa Hour, with no music. It started at 03:00, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.\n- **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.\n- **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.\n\nThere are three suspects: **Agnes**, **Bertram** and **Clement**.\n\n**Your role**\n\nYou're the investigator. Kipsake wants a name before dawn, when the shift wakes up. Your job is to name who killed Mr. Hale and explain why.\n\n- **ask**: Your AI has read Kipsake's records, and nothing else. It hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it.\n- **investigate**: you can follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.\n- **accuse**: when you're ready, name the killer and say why.",
+   "hotspots": [
+    {
+     "label": "The emergency speaker",
+     "x": 10,
+     "y": 11,
+     "body": "Break Room 2's emergency speaker. In a power outage, the emergency speakers come on and play the lullaby."
+    },
+    {
+     "label": "Cocoa",
+     "x": 15,
+     "y": 84,
+     "body": "The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together, with no music."
+    },
+    {
+     "label": "Mr. Hale",
+     "x": 46,
+     "y": 31,
+     "body": "Mr. Reginald Hale, the night supervisor. He stays awake all shift."
+    },
+    {
+     "label": "Clement",
+     "x": 59,
+     "y": 64,
+     "body": "Clement, one of the three sleepwalking clerks of Deep Sleep Operations."
+    }
+   ]
+  },
+  "Elevator car 1": {
+   "scene": "scene-3-elevator",
+   "where": "Elevator car 1 · Sleep Floor · 03:09",
+   "caption": "Where Mr. Hale was found.",
+   "story": "In the story, the power is back by 03:09, and Floor Security has laid the evidence out on a cloth.",
+   "before": null,
+   "body": null,
+   "hotspots": [
+    {
+     "label": "The floor indicator",
+     "x": 50,
+     "y": 9,
+     "body": "Car 1 stopped at the Sleep Floor, with its doors open."
+    },
+    {
+     "label": "The car",
+     "x": 50,
+     "y": 55,
+     "body": "Where Mr. Hale was found. Floor Security's evidence from here is laid out below."
+    }
+   ]
+  },
+  "Clement at home": {
+   "scene": "scene-4-clement-home",
+   "where": "Clement's flat · Port Quiet · 06:40",
+   "caption": "Clement's waking self, with the folder.",
+   "story": "In the story, it's morning, he wears no lanyard, and the three things are in a cardboard folder, not a box.",
+   "before": null,
+   "body": "You: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[In the open folder, three things: a clipping from the local paper, a printed photo of the Sleep Floor's fire-evacuation plan, and a photo of a woman by a lighthouse. Select each one on the picture to look closer.]\nYou: We read about June.\nClement: Then you know everything I do.\n[He closes the folder and holds it against his chest.]",
+   "hotspots": [
+    {
+     "label": "Clement",
+     "x": 22,
+     "y": 42,
+     "body": "Clement's waking self, at home. He's wearing the fringed scarf."
+    },
+    {
+     "label": "The folder",
+     "x": 62,
+     "y": 62,
+     "body": "An open cardboard folder, lying flat, with three things inside."
+    },
+    {
+     "label": "The clipping",
+     "x": 38,
+     "y": 84,
+     "body": "A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114. \"R. Hale\" is circled in red.\n> PORT QUIET GAZETTE\n> … Procedure Revision 114 …\n> ( R. Hale )  ← circled in red"
+    },
+    {
+     "label": "The evacuation plan",
+     "x": 50,
+     "y": 73,
+     "body": "A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2. A route is drawn over it in pen: from Break Room 2, along corridor E, to the elevator, which is circled.\n> ● You are here: Break Room 2\n>   ↓  corridor E, in pen\n> ( the elevator )  ← circled"
+    },
+    {
+     "label": "The photo",
+     "x": 48,
+     "y": 46,
+     "body": "A photo of a woman standing by a lighthouse."
+    }
+   ]
+  }
+ },
  "reveal": "W3sidGl0bGUiOiAiWW91IG5hbWVkIENsZW1lbnQiLCAiYm9keSI6ICIqKllvdSdyZSByaWdodC4qKiBDbGVtZW50IGtpbGxlZCBNci4gSGFsZS4iLCAibWV0YSI6IHsiZm9yIjogImNsZW1lbnQifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEFnbmVzIiwgImJvZHkiOiAiKipUaGF0J3MgdGhlIEFJJ3MgYW5zd2VyLCBhbmQgaXQncyB0aGUgbWlzdGFrZSB0aGUgY2FzZSBpcyBidWlsdCBhcm91bmQuKiogQWduZXMgaXMgdGhlIHJlYXNvbiBldmVyeW9uZSB3b2tlIHVwLCBidXQgc2hlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYWduZXMifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEJlcnRyYW0iLCAiYm9keSI6ICIqKk5vdCBxdWl0ZS4qKiBCZXJ0cmFtJ3Mgd2FmZmxlIGlyb24gY2F1c2VkIHRoZSBibGFja291dCBieSBhY2NpZGVudCwgYnV0IGhlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBJbiB0aGUgZGFyaywgaGUgd2FzIHRoZSBvbmUgc29tZW9uZSBzYWlkIHNvcnJ5IHRvLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYmVydHJhbSJ9fSwgeyJ0aXRsZSI6ICJOb3QgdGhlbSIsICJib2R5IjogIioqVGhhdCdzIG5vdCB3aG8gZGlkIGl0LioqIFRoZSBraWxsZXIgd2FzIENsZW1lbnQuIiwgIm1ldGEiOiB7ImZvciI6ICJvdGhlciJ9fSwgeyJ0aXRsZSI6ICJXaGF0IHJlYWxseSBoYXBwZW5lZCIsICJib2R5IjogIlRoYXQgbmlnaHQsIHRocmVlIHBlb3BsZSBoYWQgdGhyZWUgc2VwYXJhdGUgcGxhbnMuIE5vbmUgb2YgdGhlbSBrbmV3IGFib3V0IHRoZSBvdGhlcnMnIHBsYW5zLCBhbmQgbm9ib2R5IHBsYW5uZWQgdGhlIGJsYWNrb3V0LlxuXG4tICoqQWduZXMgd2FudHMgUGVnZ3kgdG8gZmluZCBoZXIgbm90ZXMuKiogQWduZXMsIHRoZSBzbGVlcHdhbGtlciwgaGlkZXMgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiwgUGVnZ3ksIGluIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZSBwYW5lbC4gVGhlIG5pZ2h0IGJlZm9yZSwgc2hlIGNoYW5nZXMgdGhlIGVtZXJnZW5jeSBzcGVha2VycycgZmFpbC1zYWZlIHRyYWNrIGZyb20gdGhlIGx1bGxhYnkgdG8gKkRlZmlhbnQgSmF6eiouIFRoZSBuZXh0IHRpbWUgdGhlIHBvd2VyIGdvZXMgb3V0LCB0aGUgamF6eiB3aWxsIHdha2UgUGVnZ3ksIHdobyB3aWxsIHdhbGsgdG93YXJkIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBsaWdodCBhbmQgZmluZCB0aGUgbm90ZXMuXG4tICoqQmVydHJhbSB3YW50cyBhIHdhZmZsZS4qKiBEdXJpbmcgdGhlIENvY29hIEhvdXIgaGUgc25lYWtzIG9mZiB0byB0aGUgc3VwcGx5IHJvb20gdG8gdXNlIGhpcyBiYW5uZWQgd2FmZmxlIGlyb24uIEl0IHRyaXBzIHRoZSBmbG9vcidzIG1haW4gYnJlYWtlci4gSXQncyBhbiBhY2NpZGVudC5cbi0gKipDbGVtZW50IHdhbnRzIEhhbGUgYWxvbmUuKiogQ2xlbWVudCBpcyAqbHVjaWQqOiBoZSdzIHRoZSBzYW1lIHBlcnNvbiBhdCB3b3JrIGFuZCBhdCBob21lLCBhbmQgcmVtZW1iZXJzIGJvdGggbGl2ZXMuIEhhbGUgc2lnbmVkIG9mZiBvbiB0aGUgcHJvY2VkdXJlIHRoYXQga2lsbGVkIENsZW1lbnQncyBzaXN0ZXIsIEp1bmUuIEEgY2hhdCBtZXNzYWdlIGZyb20gQmVydHJhbSB0b2xkIENsZW1lbnQgdGhhdCBIYWxlIHdvdWxkIHNsaXAgb2ZmIHRvIHRoZSBlbGV2YXRvciBkdXJpbmcgYSBDb2NvYSBIb3VyLiBTbyBDbGVtZW50IHRpbWVzIHRoZSB0ZWFtJ3MgbGFzdCBxdW90YSBmaWxlIHRvIHRyaWdnZXIgb25lLlxuXG5BdCAwMzowMiB0aGUgdGhyZWUgcGxhbnMgY29sbGlkZS4gVGhlIGJyZWFrZXIgdHJpcHMsIHRoZSBzcGVha2VycyBwbGF5ICpEZWZpYW50IEphenoqLCBhbmQgZXZlcnkgc2xlZXB3YWxrZXIgd2FrZXMgdXAgYXMgYSBzdHJhbmdlciBpbiB0aGUgZGFyay4gRXhjZXB0IENsZW1lbnQuIEhlJ3Mgc3RpbGwgaGltc2VsZiwgYW5kIG5vdyB0aGUgZGFyayBoaWRlcyBoaW0uIEhlIGxlYXZlcyBoaXMgYmFkZ2Ugb24gdGhlIGNoYWlyIGJ5IHRoZSBzcGVha2VyLCB3aGVyZSB0aGUgamF6eiBzaGFrZXMgdGhlIGNoYWlyIHNvIHRoZSBiYWRnZSBsb29rcyBsaWtlIHNvbWVvbmUgc2l0dGluZyBzdGlsbCwgYW5kIGZvbGxvd3MgUGVnZ3kgdG93YXJkIHRoZSBlbGV2YXRvcidzIGxpZ2h0LiBJbiBjb3JyaWRvciBFIGhlIHRyZWFkcyBvbiBCZXJ0cmFtJ3MgZGF6ZWQgd2FraW5nIHNlbGYgKFwiU29ycnksIFdhZmZsZXNcIikuIEF0IHRoZSBlbGV2YXRvciwgSGFsZSBncmFicyBQZWdneSdzIHdyaXN0IChcIllvdSBjYW4ndCBiZSBoZXJlXCIpIHdoaWxlIENsZW1lbnQgd2FpdHMgaW4gdGhlIGRhcmsgb2YgdGhlIGxvYmJ5LiBTaGUgcHVsbHMgZnJlZSBhbmQgcnVucy4gSGFsZSBwaWNrcyB1cCB0aGUgZWxldmF0b3IncyBlbWVyZ2VuY3kgcGhvbmUsIGFuZCBzZWNvbmRzIGxhdGVyIENsZW1lbnQgd2Fsa3MgaW4gYW5kIHN0cmFuZ2xlcyBoaW0uIENsZW1lbnQgZ29lcyBiYWNrIHRvIHRoZSBzcGVha2VyIGFuZCBwdXRzIGhpcyBiYWRnZSBiYWNrIG9uLiBQZWdneSB3YW5kZXJzIGJhY2sgdG93YXJkIHRoZSBsaWdodCwgZmluZHMgSGFsZSBhbmQgcHVsbHMgdGhlIGNhYmxlIG9mZiBoaXMgbmVjay4gQXQgMDM6MDcgdGhlIHBvd2VyIGNvbWVzIGJhY2sgYW5kIGV2ZXJ5b25lIGZhbGxzIGFzbGVlcCBhZ2Fpbi4gQWduZXMgdGhlIHNsZWVwd2Fsa2VyIGNvbWVzIHRvIGluIHRoZSBlbGV2YXRvciwgaG9sZGluZyB0aGUgY2FibGUuIiwgIm1ldGEiOiB7ImZvciI6ICJhbGwifX0sIHsidGl0bGUiOiAiSG93IGl0J3Mgc29sdmVkIiwgImJvZHkiOiAiKipUaGUgQUkgZG9lcyB0aGUgaGVhdnkgbGlmdGluZy4qKiBJdCBwaWVjZXMgdGhlIGJsYWNrb3V0IHRvZ2V0aGVyIGZyb20gZGF0YSB0aGF0IGFycml2ZWQgbGF0ZS4gSXQgZmluZHMgdGhlIHdhZmZsZSBpcm9uLCBjYXRjaGVzIEJlcnRyYW0ncyBsaWUsIGZpbmRzIHRoYXQgQWduZXMgY2hhbmdlZCB0aGUgZmFpbC1zYWZlIHRyYWNrLCBhbmQgYWNjdXNlcyBoZXIuICoqSXQncyByaWdodCB0aGF0IEFnbmVzIHdva2UgZXZlcnlvbmUgdXAsIGFuZCB3cm9uZyB0aGF0IHdob2V2ZXIgd29rZSBldmVyeW9uZSB1cCBraWxsZWQgSGFsZS4qKlxuXG4qKlRoZSBodW1hbiBsZWFwLioqIFNvbWVvbmUgc2FpZCBcIlNvcnJ5LCBXYWZmbGVzXCIgaW4gdGhlIGRhcmssIHdoaWxlIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdhcyB0aGVpciB3YWtpbmcgc2VsZi4gQSB3YWtpbmcgc2VsZiBjYW4ndCByZW1lbWJlciB3b3JrLiBTbyB3aG9ldmVyIHNhaWQgaXQgd2FzIGx1Y2lkLCBhbmQga25ldyBCZXJ0cmFtJ3Mgbmlja25hbWUgYXQgd29yay5cblxuLSAqKk5vdCBCZXJ0cmFtOioqIGhlJ3MgdGhlIG9uZSBiZWluZyBhcG9sb2dpc2VkIHRvLCBhbmQgaGUgYW5zd2VycyBsaWtlIGEgc3RyYW5nZXI6IFwiT3csIHdobydzLCBoZWxsbz8gSEVMTE8/XCJcbi0gKipOb3QgQWduZXM6Kiogc2hlIGlzbid0IGx1Y2lkLiBTaGUgd291bGRuJ3QgbmVlZCB0byBsZWF2ZSBub3RlcyBmb3IgaGVyIHdha2luZyBzZWxmIGlmIGhlciB0d28gc2VsdmVzIHNoYXJlZCBtZW1vcmllcy4gQXQgdGhlIGVsZXZhdG9yIHNoZSdzIFBlZ2d5LCBzaG91dGluZyBoZXIgd2FraW5nIG5hbWUuIEFuZCBQZWdneSBuZXZlciByZWFkIHRoZSBub3RlcyBiZWZvcmUgdGhhdCBuaWdodDogdGhleSB3ZXJlIHN0aWxsIHR1Y2tlZCB1bm9wZW5lZCBpbiB0aGUgcGhvbmUgcGFuZWwgd2hlbiB0aGV5IHdlcmUgZm91bmQuIFdoYXQgdGhlIHdobydzLXdobyBub3RlIHNheXMsIFBlZ2d5IGRpZG4ndCBrbm93LlxuLSAqKkNsZW1lbnQ6KiogaGUncyB0aGUgb25lIHdobyBjYWxscyBCZXJ0cmFtIFwiV2FmZmxlc1wiLiBBbmQgaGlzIG93biBpbnRlcnZpZXcgZ2l2ZXMgaGltIGF3YXk6IFwiU29tZW9uZSB3YXMgc2NyZWFtaW5nIGJ5IHRoZSBlbGV2YXRvci5cIiBUaGF0IHNjcmVhbWluZyBoYXBwZW5lZCBvbmx5IGluIHRoZSBkYXJrLCBhbmQgYSBzbGVlcHdhbGtlciBzaG91bGRuJ3QgcmVtZW1iZXIgdGhlIGRhcmsgYXQgYWxsLlxuXG4qKkNsZWFyaW5nIEFnbmVzLioqIEhlciBiYWRnZSBqb2x0cyBhdCAwMzowMzo1NiBhcyBzaGUgcHVsbHMgZnJlZS4gQXQgMDM6MDQ6MDEgSGFsZSBwaWNrcyB1cCB0aGUgZWxldmF0b3IncyBlbWVyZ2VuY3kgcGhvbmUuIE5vYm9keSBkb2VzIHRoYXQgd2hpbGUgc3RpbGwgaG9sZGluZyBvbiB0byBzb21lb25lLiBTbyB0aGUgc3RyYW5nbGluZyB3YXMgYSBuZXcgYXR0YWNrLCBhZnRlciBzaGUnZCBnb25lLlxuXG4qKlRoZSBjbHVlcyBvbmx5IGh1bWFucyBzYXc6KipcblxuLSAqKlRoZSBuaWNrbmFtZToqKiBBZ25lcydzIHdobydzLXdobyBub3RlLCBCZXJ0cmFtJ3MgXCJDbGVtZW50LiAnQ2hpbGwgb3V0LCBXYWZmbGVzLicgSGUncyB0aGUgb25seSBvbmUgd2hvIGNhbGxzIG1lIHRoYXRcIiwgYW5kIENsZW1lbnQncyBvd24gXCJjaGVja2VkIG9uIFdhZmZsZXNcIi5cbi0gKipUaGUgc2xpcDoqKiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3JcIiwgYW5kIFwiUGVnZ3lcIiBjcm9zc2VkIG91dCBvbiBoaXMgd3JpdHRlbiBzdGF0ZW1lbnQ6IGEgbmFtZSB0aGF0IHdhcyBvbmx5IHNob3V0ZWQgaW4gdGhlIGRhcmsuXG4tICoqVGhlIHNjYXJmOioqIHRoZSBtYW55LWNvbG91cmVkIHRocmVhZHMgaW4gSGFsZSdzIGNsb3NlZCBoYW5kIGFuZCBpbiBCZXJ0cmFtJ3MgaGFuZCBhdCBob21lIG1hdGNoIHRoZSBmcmluZ2Ugb24gQ2xlbWVudCdzIHNjYXJmLiBIZSBkaWRuJ3Qgc3RheSBieSB0aGUgc3BlYWtlci5cbi0gKipUaGUgbmFwa2luOioqIHRoZSBuYXBraW4gZnJvbSB0aGUgY2hhaXIgYnkgdGhlIHNwZWFrZXIgaXMgbWFya2VkIFwiQ1wiLiBDbGVtZW50IGlzIHRoZSBvbmx5IEMgb24gdGhlIGZsb29yLlxuLSAqKlRoZSBmb2xkZXI6KiogQ2xlbWVudCdzIHBob3RvIG9mIHRoZSBldmFjdWF0aW9uIHBsYW4sIHdpdGggaGlzIHJvdXRlIHRvIHRoZSBlbGV2YXRvciBkcmF3biBpbiBwZW4sIGFuZCBcIlIuIEhhbGVcIiBjaXJjbGVkIG9uIHRoZSBQcm9jZWR1cmUgUmV2aXNpb24gMTE0IGNsaXBwaW5nLlxuLSAqKlRoZSBtb3RpdmU6KiogSnVuZSdzIG9iaXR1YXJ5LCBhbmQgSGFsZSdzIGFwcHJvdmFsIG9mIFByb2NlZHVyZSBSZXZpc2lvbiAxMTQuXG5cbj4gVGhlIEFJIGFuc3dlcmVkIGV2ZXJ5IHF1ZXN0aW9uLiBJdCB0b29rIGEgaHVtYW4gdG8ga25vdyB3aGljaCBxdWVzdGlvbiB0byBhc2suIiwgIm1ldGEiOiB7ImZvciI6ICJhbGwifX1d"
 };

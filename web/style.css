@@ -184,18 +184,66 @@ p { margin: 0 0 10px; }
 .advert .card-body strong { color: var(--ad-accent); }
 @media (max-width: 640px) { .advert { padding: 18px 16px 14px; } }
 
-/* Header art: pixel-art scenes, kept crisp when scaled */
-.scene {
-  max-width: 72ch; margin: 0 0 16px;
-  border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+/* Header art: pixel-art scenes, kept crisp when scaled, with where we are and a caption */
+.scene { max-width: 72ch; margin: 0 0 16px; }
+.scene-where {
+  margin: 0 0 6px;
+  color: var(--accent); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.scene-art {
+  position: relative;
+  border: 1px solid var(--border); border-radius: 6px;
   background: var(--screen-bg);
 }
-.scene img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.scene img { display: block; width: 100%; height: auto; border-radius: 5px; image-rendering: pixelated; }
+.scene figcaption { margin-top: 6px; font-size: 14px; }
+.scene-caption { font-style: italic; }
+.scene-story { display: block; color: var(--muted); font-size: 13px; }
 @media (prefers-reduced-motion: no-preference) {
   .scene img { animation: scene-in 0.5s ease-out; }
 }
 @keyframes scene-in { from { opacity: 0; } }
 .advert-card .scene { max-width: 60ch; }
+
+/* Hotspots: numbered markers placed by game.js at a percentage of the image */
+.hotspot {
+  position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; padding: 0;
+  border: 2px solid #fff5d2; border-radius: 50%;
+  background: rgba(18, 46, 49, 0.85); color: #fff5d2;
+  font: 600 13px/24px var(--mono); text-align: center; cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(11, 37, 37, 0.35);
+}
+.hotspot:hover, .hotspot[aria-expanded="true"] { background: #8a4b00; }
+.hotspot:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: no-preference) {
+  .hotspot { animation: hotspot-breathe 3s ease-in-out infinite; }
+  .hotspot-note { animation: scene-in 0.15s ease-out; }
+}
+@keyframes hotspot-breathe { 50% { box-shadow: 0 0 0 7px rgba(11, 37, 37, 0.15); } }
+@media (max-width: 480px) {
+  .hotspot { width: 24px; height: 24px; margin: -12px 0 0 -12px; font-size: 12px; line-height: 20px; }
+}
+.hotspot-note {
+  position: absolute; z-index: 5;
+  width: max-content; max-width: min(22rem, 100%);
+  padding: 10px 12px;
+  border: 1px solid var(--accent); border-radius: 6px;
+  background: var(--bg); color: var(--text);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  font-size: 14px; line-height: 1.45;
+}
+.hotspot-note[hidden] { display: none; }
+.hotspot-note .hotspot-label { margin: 0 0 4px; color: var(--accent); font-weight: 600; }
+.hotspot-note .card-body p { margin: 0 0 6px; }
+.hotspot-note .card-body > :last-child { margin-bottom: 0; }
+/* A close-up of paper: the same in both themes */
+.hotspot-note .card-body .screen {
+  margin: 8px 0 0; padding: 10px 12px;
+  border: 1px solid #b9ab8a; border-radius: 2px;
+  background: #f1e9d4; color: #2b2a26;
+  font-family: Georgia, "Times New Roman", serif; font-size: 15px;
+}
 
 .reasoning {
   margin: 0 0 16px; padding: 8px 12px;

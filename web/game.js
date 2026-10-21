@@ -43,14 +43,14 @@
 
   // Header art: pixel-art scenes in assets/, cut from the comic sheet by web/build.py --art,
   // as name: [width, height]. They hold no clue text, so their alt text is empty and the
-  // story stays in the HTML. Lead options with a scene are listed by option name.
+  // story stays in the HTML. Which card shows which scene, its caption, the card's text
+  // beside the image and the hotspots come from C.art (game/SPOILERS-content/scene-art.md).
   var SCENES = {
     "scene-1-broadcast": [1086, 361],
     "scene-2-break-room": [1086, 346],
     "scene-3-elevator": [1086, 364],
     "scene-4-clement-home": [1086, 377],
   };
-  var LEAD_SCENES = { "Elevator car 1": "scene-3-elevator", "Clement at home": "scene-4-clement-home" };
 
   var main = document.getElementById("main");
   var leadsEl = document.getElementById("leads");
@@ -242,25 +242,123 @@
     return root;
   }
 
-  function scene(name) {
-    var size = SCENES[name];
-    var src = (HOST.scenes && HOST.scenes[name]) || "assets/" + name + ".webp";
-    return el("figure", { class: "scene" },
-      el("img", { src: src, alt: "", width: size[0], height: size[1], decoding: "async" }));
+  // ---- scene art and hotspots ---------------------------------------------------------
+  // Numbered markers on the image. Hovering, focusing or tapping one shows its note; a click
+  // or tap keeps it open until the next click, a click elsewhere or Escape. One note at a time.
+
+  var openSpot = null; // { button, note, pinned, hovered }
+  var spotIds = 0;
+
+  function showSpot(spot, pin) {
+    if (openSpot && openSpot !== spot) hideSpot();
+    if (pin) spot.pinned = true;
+    if (openSpot === spot) return;
+    openSpot = spot;
+    spot.note.hidden = false;
+    spot.button.setAttribute("aria-expanded", "true");
+    placeSpot(spot);
   }
+
+  function hideSpot() {
+    if (!openSpot) return;
+    openSpot.note.hidden = true;
+    openSpot.button.setAttribute("aria-expanded", "false");
+    openSpot.pinned = false;
+    openSpot = null;
+  }
+
+  // Beside the marker, inside the image's width, below it or above it, wherever it fits.
+  function placeSpot(spot) {
+    var b = spot.button, note = spot.note;
+    note.style.left = "0px";
+    note.style.top = "0px";
+    var width = b.parentNode.clientWidth, w = note.offsetWidth, h = note.offsetHeight;
+    var centre = b.offsetLeft + b.offsetWidth / 2;
+    note.style.left = Math.max(0, Math.min(width - w, centre - w / 2)) + "px";
+    var box = b.getBoundingClientRect();
+    var below = window.innerHeight - box.bottom, above = box.top;
+    var down = below >= h + 8 || below >= above;
+    note.style.top = (down ? b.offsetTop + b.offsetHeight + 6 : b.offsetTop - h - 6) + "px";
+  }
+
+  function hotspot(h, i) {
+    var id = "spot" + (++spotIds);
+    var text = cardBody(h.body);
+    text.id = id;
+    var note = el("div", { class: "hotspot-note", hidden: true }, [
+      el("p", { class: "hotspot-label", "aria-hidden": "true" }, (i + 1) + ". " + h.label),
+      text,
+    ]);
+    var button = el("button", {
+      type: "button", class: "hotspot", "aria-label": (i + 1) + ". " + h.label,
+      "aria-expanded": "false", "aria-describedby": id,
+    }, String(i + 1));
+    // Set through the style object, not a style attribute: the page's CSP allows only that.
+    button.style.left = h.x + "%";
+    button.style.top = h.y + "%";
+    var spot = { button: button, note: note, pinned: false, hovered: false };
+    button.addEventListener("pointerenter", function (e) {
+      if (e.pointerType !== "mouse") return;
+      spot.hovered = true;
+      if (!openSpot || !openSpot.pinned) showSpot(spot);
+    });
+    button.addEventListener("pointerleave", function (e) {
+      if (e.pointerType !== "mouse") return;
+      spot.hovered = false;
+      if (openSpot === spot && !spot.pinned && document.activeElement !== button) hideSpot();
+    });
+    button.addEventListener("focus", function () { showSpot(spot); });
+    // A kept note stays open while its text is clicked (focus goes nowhere), not when focus moves on.
+    button.addEventListener("blur", function (e) {
+      if (openSpot === spot && !spot.hovered && (!spot.pinned || e.relatedTarget)) hideSpot();
+    });
+    button.addEventListener("click", function () {
+      if (openSpot === spot && spot.pinned) hideSpot(); else showSpot(spot, true);
+    });
+    return [button, note];
+  }
+
+  document.addEventListener("click", function (e) {
+    if (openSpot && !openSpot.button.contains(e.target) && !openSpot.note.contains(e.target)) hideSpot();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && openSpot) { hideSpot(); e.preventDefault(); }
+  });
+  window.addEventListener("resize", function () { if (openSpot) placeSpot(openSpot); });
+
+  function scene(art) {
+    var size = SCENES[art.scene];
+    var src = (HOST.scenes && HOST.scenes[art.scene]) || "assets/" + art.scene + ".webp";
+    var frame = el("div", { class: "scene-art" },
+      el("img", { src: src, alt: "", width: size[0], height: size[1], decoding: "async" }));
+    art.hotspots.forEach(function (h, i) { hotspot(h, i).forEach(function (n) { frame.appendChild(n); }); });
+    return el("figure", { class: "scene" }, [
+      el("p", { class: "scene-where" }, art.where),
+      frame,
+      el("figcaption", null, [
+        el("span", { class: "scene-caption" }, art.caption),
+        art.story ? el("span", { class: "scene-story" }, art.story) : null,
+      ]),
+    ]);
+  }
+
+  // A card with a scene shows the scene's text for it, which leaves out what the image shows.
+  function sceneOf(c) { return C.art[c.title] || null; }
+  function bodyOf(c) { var art = sceneOf(c); return (art && art.body) || c.body; }
 
   function card(c, title, ruleLabel) {
     if (c.meta && c.meta.style === "advert") return advert(c, ruleLabel);
-    var body = cardBody(c.body);
-    var art = c.meta && LEAD_SCENES[c.meta.option] ? scene(LEAD_SCENES[c.meta.option]) : null;
-    if (c === C.coldOpen) {
-      // The break room goes above "What happened that night".
-      var at = [].find.call(body.children, function (n) { return /^What happened/.test(n.textContent); });
-      body.insertBefore(scene("scene-2-break-room"), at || body.firstChild);
+    var body = cardBody(bodyOf(c));
+    var art = sceneOf(c), top = null;
+    if (art && art.before) {
+      var at = [].find.call(body.children, function (n) { return n.textContent.indexOf(art.before) === 0; });
+      body.insertBefore(scene(art), at || body.firstChild);
+    } else if (art) {
+      top = scene(art);
     }
     return el("article", { class: "story" }, [
       ruleLabel ? rule(ruleLabel) : null,
-      art,
+      top,
       heading(title || c.title),
       body,
     ]);
@@ -269,7 +367,8 @@
   // The Kipsake advert: every line is its own paragraph (none of them are speaker lines).
   function advert(c, ruleLabel) {
     var body = el("div", { class: "card-body" });
-    c.body.split("\n").forEach(function (raw) {
+    var art = sceneOf(c);
+    bodyOf(c).split("\n").forEach(function (raw) {
       var line = raw.trim();
       if (!line) return;
       if (line.charAt(0) === "[" && line.slice(-1) === "]") {
@@ -280,7 +379,7 @@
     });
     return el("article", { class: "advert-card" }, [
       ruleLabel ? rule(ruleLabel) : null,
-      scene("scene-1-broadcast"),
+      art ? scene(art) : null,
       el("div", { class: "advert" }, [
         el("p", { class: "ad-label" }, "Advert"),
         heading(c.title),
@@ -698,6 +797,7 @@
   // ---- chrome ------------------------------------------------------------------------------
 
   function render(moveFocus) {
+    hideSpot();
     var view = views[state.view] ? state.view : "title";
     main.replaceChildren(views[view]());
     var started = view !== "title" || state.chosen.length > 0;

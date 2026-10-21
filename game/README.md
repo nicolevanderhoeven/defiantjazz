@@ -107,7 +107,7 @@ DJ_AI_CMD='ollama run --hidethinking --nowordwrap llama3.2:3b' python3 game/play
 | `test_SPOILERS_game.py` | **Spoilers:** the self-check, below |
 | `test_ai.py` | How the game picks the AI and builds each command line. No spoilers |
 | `ai-evidence/case-bundle.md` | What the AI sees |
-| `SPOILERS-content/` | **Spoilers:** the advert and cold open, interviews, the three decisions, the Outside World handout, `suspect-names.json` and `SPOILERS-reveal.md` |
+| `SPOILERS-content/` | **Spoilers:** the advert and cold open, interviews, the three decisions, the Outside World handout, `suspect-names.json`, `SPOILERS-reveal.md`, and `scene-art.md` (the web game's captions and hotspots for its scene art; the terminal game doesn't use it) |
 
 The cards are Markdown, one file per part of the game. `content.py` describes the format.
 

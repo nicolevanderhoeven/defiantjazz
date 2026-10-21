@@ -71,6 +71,8 @@ python3 web/build.py --art
 
 It needs [Pillow](https://pypi.org/project/Pillow/) (`python3 -m pip install Pillow`). The scenes are committed, so playing or building the page doesn't. To replace one scene, swap its file in `assets/`, keeping the name, and update its size in `SCENES` in `game.js`. If the sheet changes, update the seams in `SCENES` in `build.py` and run `--art` again. The art holds no clue text, so the images have empty alt text and all the story stays in the page's text. The Grafana Page build inlines the scenes as `data:` URLs, since a page's frame can't load files.
 
+**Spoilers:** what goes with each scene is in `game/SPOILERS-content/scene-art.md`: where and when we are, a caption, a line where the art doesn't match the story, and the web game's text for the card, which leaves out what the image shows. The terminal game keeps the cards as written. Each scene also has numbered hotspots, placed as a percentage of the image, that show a short note when hovered, focused or tapped, and stay open after a click or tap until Escape or a click elsewhere. The file's opening comment has the format. If a card with a scene changes, `build.py` stops until its web text is updated to match.
+
 ## Edit the story
 
 The cards live in `game/SPOILERS-content/`, shared with the terminal game. After editing any of them, rebuild the bundle:
@@ -87,7 +89,7 @@ python3 web/build.py
 python3 -m unittest discover -s web
 ```
 
-It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each scene is a small WebP file that `game.js` knows the size of, that `build.py --page` builds a complete page file with the scenes inlined, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
+It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that each scene has a caption and hotspots inside the image whose text names nothing the cards don't and quotes nothing from the reveal, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each scene is a small WebP file that `game.js` knows the size of, that `build.py --page` builds a complete page file with the scenes inlined, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
 
 ## Files
 
