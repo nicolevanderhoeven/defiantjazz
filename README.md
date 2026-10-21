@@ -93,20 +93,24 @@ That's about 4,300 lines across the four people on the Sleep Floor's night shift
    python3 loader/load.py --target cloud
    ```
 
-**Time shifting.** Grafana Cloud rejects metric samples more than about 2 hours behind the newest sample, and silently drops log lines more than a few hours old. So by default the loader shifts every timestamp so the incident happened just before "now". Timestamps inside log lines move by the same amount, so the data stays consistent. This moves the times of day too: the story's 03:02 lands at whatever time you loaded it. The loader prints the mode and the shift it used.
+**Time shifting.** Grafana Cloud rejects metric samples more than about 2 hours behind the newest sample, and log lines more than 7 days old. So by default the loader shifts every timestamp so the incident happened just before "now". Timestamps inside log lines move by the same amount, so the data stays consistent. This moves the times of day too: the story's 03:02 lands at whatever time you loaded it. The loader prints the mode and the shift it used.
 
 Because of those limits, Grafana Cloud gets:
-- the last 3 hours of logs, which includes the whole incident and every record
+- the last 7 days of logs (less one hour), which includes the whole incident, every record and the earlier nights
 - the last 2 hours of metrics, which includes the whole incident window
 - the last 7 days of traces, so the badge journeys of earlier nights are there too
 
 Older history is skipped, and the loader reports how much. To see the full 14 weeks, use the local stack.
 
-**Logs in Grafana Cloud.** Cloud Loki accepts a push of old log lines with no error (HTTP 204) and then drops them: one stack kept only lines less than about 3h40m old. So the loader sends only the last 3 hours of logs. To change that, use `--cloud-log-hours HOURS` or set `DJ_CLOUD_LOG_HOURS` in `loader/.env`; more only helps on a stack that keeps older lines.
+**Logs in Grafana Cloud.** Cloud Loki rejects log lines more than 7 days old, so the loader sends just under 7 days of logs. Lines from the last few hours are queryable straight away. Older lines are stored too, but they only show up in queries a few hours after loading, once Loki flushes them to storage. Until then a query for the earlier nights finds nothing, and Loki can keep serving that empty answer from its cache, so change the query slightly to see fresh results. To send less, use `--cloud-log-hours HOURS` or set `DJ_CLOUD_LOG_HOURS` in `loader/.env`.
 
-To find out what was really stored, set the optional `GRAFANA_LOKI_URL`, `GRAFANA_LOKI_USER` and `GRAFANA_LOKI_READ_TOKEN` (a token with `logs:read`) in `loader/.env`; see `loader/.env.example`. After loading, the loader then counts this load's lines in Loki (by `service_namespace` and `case_run`), retrying briefly while they're ingested, and warns if fewer were stored than sent. Without those settings it skips the check and says so. If lines were dropped, load into the local stack for the full history, or reload just before a demo so the incident is recent.
+To find out what was really stored, set the optional `GRAFANA_LOKI_URL`, `GRAFANA_LOKI_USER` and `GRAFANA_LOKI_READ_TOKEN` (a token with `logs:read`) in `loader/.env`; see `loader/.env.example`. After loading, the loader then counts this load's lines from the last 2 hours in Loki (by `service_namespace` and `case_run`), retrying briefly while they're ingested, and warns if fewer were stored than sent. Older lines can't be counted yet, because they aren't queryable until Loki flushes them. Without those settings it skips the check and says so.
 
 **Traces in Grafana Cloud.** The badge-journey traces can be opened by trace ID right away. Because their timestamps are hours or days old, they can take up to about an hour after loading to show up in TraceQL search. Every door-event log line also carries its journey's `trace_id`, so in Loki you can jump from a door event to its trace.
+
+**Pinning a load.** After every load, Cloud or local, the loader prints the incident night's absolute time window and the load's `case_run`, with links to the example dashboard and to Explore pinned to both. Set `GRAFANA_URL` in `loader/.env` to your stack's URL (for example `https://<your-stack>.grafana.net`) so the Cloud links are ready to open. The example dashboard's **Load (case_run)** drop-down lists the loads in its time range, newest first, and every panel shows only that load. Open the pinned dashboard link and save the dashboard with that time range, and the same load stays playable for as long as the stack keeps its data: about 30 days in Grafana Cloud (logs 31 days, traces 30 days, metrics 13 months).
+
+**Before a demo.** Load once, at least about 1.5 hours before the session, so the earlier nights' logs have flushed and show up in queries. Then use the printed links, or pin the dashboard to the printed window and `case_run`. Reload only when the story data changes or the 30 days are nearly up. There's no need to reload on a schedule: only a relative time range such as "last 6 hours" goes stale, not the data.
 
 **macOS note.** If the loader fails with `CERTIFICATE_VERIFY_FAILED`, install the requirements, which include `certifi`. The python.org build of Python doesn't use the system certificate store.
 
@@ -180,7 +184,7 @@ In the local Tempo, TraceQL searches limited to a time range may not find the hi
 --any-weekday            allow an --incident-date that isn't a Thursday
 --no-shift               keep original timestamps (local only)
 --incident-end ISO       pin the time that 2026-10-08T03:50:00Z maps to (default: now)
---cloud-log-hours HOURS  cloud only: hours of logs to send (default 3; env DJ_CLOUD_LOG_HOURS)
+--cloud-log-hours HOURS  cloud only: hours of logs to send (default 167; env DJ_CLOUD_LOG_HOURS)
 --dry-run                build and validate every payload without sending
 ```
 

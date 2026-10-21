@@ -15,8 +15,8 @@ works nights, and the blackout is at 03:02 on Thursday 2026-10-08. The loader
 moves every timestamp by one offset, chosen by one of three modes:
 
 - recent (default): the incident happened just before "now". Grafana Cloud
-  rejects metrics more than ~2 hours old and silently drops log lines more than
-  a few hours old, so use this there. Times of day move with the load time.
+  rejects metrics more than ~2 hours old and log lines more than 7 days old,
+  so use this there. Times of day move with the load time.
 - --incident-date YYYY-MM-DD|latest (or env DJ_INCIDENT_DATE): the incident
   falls on that day. The offset is whole weeks, so times of day and weekdays
   stay the story's own. "latest" picks the most recent Thursday whose data has
@@ -27,9 +27,16 @@ Timestamps inside log lines are shifted by the same amount, so the data stays
 internally consistent. Every signal carries case_run=<incident date> as a
 resource attribute, so two loads into one stack can be told apart.
 
-Grafana Cloud accepts old log lines with HTTP 204 and then drops them, so the
-loader sends only the last --cloud-log-hours (default 3) of logs there and,
-when GRAFANA_LOKI_URL etc. are set, asks Loki afterwards how many it stored.
+Grafana Cloud Loki rejects log lines more than 7 days old and stores the rest,
+but lines more than a few hours old only become queryable hours later, once
+Loki flushes them to object storage. So the loader sends the last
+--cloud-log-hours (default just under 7 days) of logs there and, when
+GRAFANA_LOKI_URL etc. are set, checks afterwards that the recent lines arrived.
+
+After a load it prints the incident night's absolute time window and links to
+the example dashboard and Explore pinned to that window and case_run, so one
+load stays playable for as long as the stack keeps the data (about 30 days in
+Grafana Cloud). Set GRAFANA_URL to your stack's URL to get full links there.
 """
 import argparse
 import base64
@@ -66,6 +73,10 @@ INCIDENT_AT = datetime(2026, 10, 8, 3, 2, 0, tzinfo=timezone.utc)
 # stream; they are ingested as one export at this time, with their original
 # dates kept in the line body.
 RECORDS_EXPORT_AT = datetime(2026, 10, 8, 3, 40, 0, tzinfo=timezone.utc)
+# The incident night as the dashboard shows it: from just before the night shift
+# badges in (20:45) until Floor Security has finished the scene.
+NIGHT_START = datetime(2026, 10, 7, 20, 30, 0, tzinfo=timezone.utc)
+NIGHT_END = REFERENCE + timedelta(minutes=10)
 NAMESPACE = "kipsake-sleep-floor"
 # The incident date of this load, as a resource attribute on every signal.
 CASE_RUN = INCIDENT_AT.date().isoformat()
@@ -78,9 +89,14 @@ LEVELS = {"debug": SeverityNumber.SEVERITY_NUMBER_DEBUG, "info": SeverityNumber.
           "warn": SeverityNumber.SEVERITY_NUMBER_WARN, "error": SeverityNumber.SEVERITY_NUMBER_ERROR,
           "critical": SeverityNumber.SEVERITY_NUMBER_FATAL}
 LOG_FILES = ["door-and-badge-events.log", "chat.log", "system.log", "ambient-mic.log", "records.log"]
-# Grafana Cloud Loki returns 204 for a push but drops lines older than a few
-# hours (about 3h40m on one stack in October 2026), so only send this much.
-CLOUD_LOG_HOURS = 3.0
+# Grafana Cloud Loki rejects lines more than 7 days old (HTTP 400 "timestamp too
+# old", reject_old_samples_max_age), so send just under that.
+CLOUD_LOG_HOURS = 7 * 24 - 1.0
+# Loki answers queries for the last few hours from its ingesters, so lines this
+# recent are queryable at once. Older lines are stored too, but only show up a
+# few hours later, after the ingesters flush them; the stored-count check
+# counts only these recent ones.
+CHECK_RECENT = timedelta(hours=2)
 
 
 # ---------------------------------------------------------------- helpers
@@ -423,7 +439,10 @@ def count_stored_logs(url, auth, oldest, newest):
     """How many log lines of this load (namespace and case_run) Loki holds between oldest and newest."""
     at = newest + timedelta(minutes=1)
     seconds = math.ceil((at - oldest).total_seconds()) + 60
-    query = (f'sum(count_over_time({{service_namespace="{NAMESPACE}"}} | case_run="{CASE_RUN}" [{seconds}s]))')
+    # the never-matching line filter makes each query new, so Loki's results cache
+    # can't answer it with a count from before the load
+    query = (f'sum(count_over_time({{service_namespace="{NAMESPACE}"}} | case_run="{CASE_RUN}" '
+             f'!= "dj-check-{time.time_ns()}" [{seconds}s]))')
     req = urllib.request.Request(f"{url}?{urllib.parse.urlencode({'query': query, 'time': int(at.timestamp())})}",
                                  headers={"Authorization": "Basic " + base64.b64encode(auth.encode()).decode()})
     with urllib.request.urlopen(req, timeout=30, context=tls_context()) as resp:
@@ -431,8 +450,8 @@ def count_stored_logs(url, auth, oldest, newest):
     return int(float(result[0]["value"][1])) if result else 0
 
 
-def check_cloud_logs(sent, oldest, newest, hours, attempts=6, wait=5):
-    """Compare the log lines sent with what Grafana Cloud stored, and say so plainly if some are missing.
+def check_cloud_logs(sent, oldest, newest, attempts=6, wait=5):
+    """Compare the recent log lines sent with what Grafana Cloud stored, and say so plainly if some are missing.
 
     Returns the stored count, or None when the check was skipped. Never fails the load."""
     reader = loki_reader()
@@ -453,16 +472,45 @@ def check_cloud_logs(sent, oldest, newest, hours, attempts=6, wait=5):
             print(f"logs: stored-count check skipped: Loki query failed ({getattr(e, 'reason', e)}).")
             return None
         if stored >= sent:
-            print(f"logs: Grafana Cloud stored all {sent} lines.")
+            print(f"logs: Grafana Cloud stored all {sent} lines from the last {CHECK_RECENT // timedelta(hours=1)} h. "
+                  "Older lines become queryable a few hours after loading, once Loki flushes them.")
             return stored
         if attempt < attempts - 1:
             time.sleep(wait)
-    print(f"logs: WARNING: sent {sent} log lines, but Grafana Cloud stored only {stored}. Cloud Loki accepts "
-          f"old lines without an error and drops them, so this stack keeps less than the {hours:g} h sent; "
-          "the oldest lines are the ones missing.\n"
-          "  For the full history, load into the local stack (--target local), or reload just before a demo. "
-          "--cloud-log-hours (env DJ_CLOUD_LOG_HOURS) sets how many hours of logs are sent.")
+    print(f"logs: WARNING: sent {sent} log lines from the last {CHECK_RECENT // timedelta(hours=1)} h, "
+          f"but Grafana Cloud shows only {stored}. Lines this recent should be queryable at once, so check "
+          "the stack's Loki limits (ingestion rate, streams, line size) and query again in a few minutes.")
     return stored
+
+
+# ---------------------------------------------------------------- links
+DASHBOARD_PATH = "/d/defiantjazz-game/the-defiant-jazz-incident"  # web/dashboard-example.json
+
+
+def pinned_links(base, loki_uid, start, end):
+    """(dashboard, Explore) links pinned to this load's case_run and the absolute window start..end."""
+    ms = {"from": str(int(start.timestamp() * 1000)), "to": str(int(end.timestamp() * 1000))}
+    dashboard = f"{base}{DASHBOARD_PATH}?" + urllib.parse.urlencode({**ms, "timezone": "utc", "var-case_run": CASE_RUN})
+    query = {"refId": "A", "datasource": {"type": "loki", "uid": loki_uid},
+             "expr": f'{{service_namespace="{NAMESPACE}"}} | case_run="{CASE_RUN}"'}
+    panes = {"dj": {"datasource": loki_uid, "queries": [query], "range": ms}}
+    explore = f"{base}/explore?" + urllib.parse.urlencode(
+        {"schemaVersion": 1, "orgId": 1, "panes": json.dumps(panes, separators=(",", ":"))})
+    return dashboard, explore
+
+
+def print_window(target, delta):
+    """Say which absolute window and case_run this load's incident night is, with links pinned to them."""
+    start, end = NIGHT_START + delta, NIGHT_END + delta
+    print(f"Incident night: {start:%Y-%m-%dT%H:%M:%SZ} to {end:%Y-%m-%dT%H:%M:%SZ}, case_run={CASE_RUN}")
+    base = os.environ.get("GRAFANA_URL", "").rstrip("/")
+    if not base:
+        base = "http://localhost:3000" if target == "local" else "https://<your-stack>.grafana.net"
+    dashboard, explore = pinned_links(base, "loki" if target == "local" else "grafanacloud-logs", start, end)
+    print(f"  dashboard: {dashboard}")
+    print(f"  Explore:   {explore}")
+    if target == "cloud" and not os.environ.get("GRAFANA_URL"):
+        print("  (set GRAFANA_URL in loader/.env to your stack's URL to get these links ready to open)")
 
 
 # ---------------------------------------------------------------- main
@@ -485,7 +533,7 @@ def main():
     ap.add_argument("--batch-size", type=int, default=2000)
     ap.add_argument("--cloud-log-hours", metavar="HOURS",
                     help=f"cloud only: send logs from the last HOURS (env DJ_CLOUD_LOG_HOURS; default {CLOUD_LOG_HOURS:g}); "
-                         "Grafana Cloud drops older lines without an error")
+                         "Grafana Cloud rejects lines more than 7 days old")
     ap.add_argument("--namespace", default=NAMESPACE,
                     help="service.namespace for every signal (use a new one to load a second copy into the same stack)")
     args = ap.parse_args()
@@ -506,7 +554,7 @@ def main():
             sys.exit("Set GRAFANA_OTLP_ENDPOINT, GRAFANA_INSTANCE_ID and GRAFANA_API_TOKEN (see loader/.env.example).")
         urls = {s: f"{base}/v1/{s}" for s in ("logs", "metrics", "traces")}
         auth = f"{user}:{token}" if user and token else None
-        # Grafana Cloud limits: metrics ~2h behind the newest sample, logs a few hours, traces 7 days.
+        # Grafana Cloud limits: metrics ~2h behind the newest sample, logs 7 days, traces 7 days.
         log_hours = cloud_log_hours(args.cloud_log_hours)
         max_age = {"metrics": timedelta(hours=2) - timedelta(minutes=5), "logs": timedelta(hours=log_hours),
                    "traces": timedelta(days=7) - timedelta(hours=1)}
@@ -534,12 +582,14 @@ def main():
         if len(kept) < len(items):
             print(f"{signal}: skipping {len(items) - len(kept)} of {len(items)} items outside the target's time limits")
             if signal == "logs" and args.target == "cloud":
-                print(f"logs: Grafana Cloud only keeps recent log lines, so only the last {log_hours:g} h are sent "
-                      "(--cloud-log-hours or DJ_CLOUD_LOG_HOURS to change); the local stack takes the full history.")
+                print(f"logs: Grafana Cloud rejects log lines more than 7 days old, so only the last {log_hours:g} h "
+                      "are sent (--cloud-log-hours or DJ_CLOUD_LOG_HOURS to change); the local stack takes the full history.")
         failed = send(sender, signal, kept, build, args.batch_size)
         failures += failed
-        if signal == "logs" and args.target == "cloud" and not args.dry_run and kept and len(kept) > failed:
-            check_cloud_logs(len(kept) - failed, kept[0][0], kept[-1][0], log_hours)
+        recent = [x for x in kept if x[0] >= now - CHECK_RECENT] if signal == "logs" else []
+        if args.target == "cloud" and not args.dry_run and recent and not failed:
+            check_cloud_logs(len(recent), recent[0][0], recent[-1][0])
+    print_window(args.target, delta)
     if args.dry_run:
         print("Dry run: all payloads built and validated; nothing was sent.")
     sys.exit(1 if failures else 0)

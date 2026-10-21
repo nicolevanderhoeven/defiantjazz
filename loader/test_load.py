@@ -137,7 +137,7 @@ CLOUD_ENV = {"GRAFANA_OTLP_ENDPOINT": "https://otlp.example/otlp", "GRAFANA_INST
              "GRAFANA_API_TOKEN": "glc_write_secret"}
 LOKI_ENV = {"GRAFANA_LOKI_URL": "https://logs.example/", "GRAFANA_LOKI_USER": "2",
             "GRAFANA_LOKI_READ_TOKEN": "glc_read_secret"}
-SETTINGS = ("DJ_INCIDENT_DATE", "DJ_CLOUD_LOG_HOURS", *CLOUD_ENV, *LOKI_ENV)
+SETTINGS = ("DJ_INCIDENT_DATE", "DJ_CLOUD_LOG_HOURS", "GRAFANA_URL", *CLOUD_ENV, *LOKI_ENV)
 
 
 class FakeResponse(io.BytesIO):
@@ -154,7 +154,8 @@ def loki_answer(count):
 
 
 class CloudLogs(unittest.TestCase):
-    """Cloud Loki drops old lines after a 204, so the loader caps the window and checks what was stored."""
+    """Cloud Loki rejects lines over 7 days old and shows older lines late, so the loader caps the window
+    and checks only the recent lines."""
 
     def setUp(self):
         saved = {k: os.environ.pop(k) for k in SETTINGS if k in os.environ}
@@ -196,17 +197,17 @@ class CloudLogs(unittest.TestCase):
         now = datetime.now(timezone.utc)
         return (now - datetime.fromtimestamp(min(r.time_unix_nano for r in posted) / 1e9, timezone.utc)) / timedelta(hours=1)
 
-    def test_window_defaults_to_three_hours(self):
+    def test_window_defaults_to_just_under_seven_days(self):
         posted, queries, out = self.run_main(env=CLOUD_ENV)
         self.assertTrue(posted)
-        self.assertLessEqual(self.age_hours(posted), 3.01)
-        self.assertGreater(self.age_hours(posted), 2.5)
-        self.assertIn("only the last 3 h are sent", out)
+        self.assertLessEqual(self.age_hours(posted), 167.01)
+        self.assertGreater(self.age_hours(posted), 160)
+        self.assertIn("only the last 167 h are sent", out)
         self.assertEqual(queries, [])
 
     def test_window_setting_flag_and_env(self):
-        self.assertEqual(load.cloud_log_hours(None), 3.0)
-        three_h, *_ = self.run_main(env=CLOUD_ENV)
+        self.assertEqual(load.cloud_log_hours(None), 167.0)
+        default, *_ = self.run_main(env=CLOUD_ENV)
         os.environ["DJ_CLOUD_LOG_HOURS"] = "12"
         self.assertEqual(load.cloud_log_hours(None), 12.0)
         self.assertEqual(load.cloud_log_hours("1.5"), 1.5)  # the flag wins over the env
@@ -215,8 +216,8 @@ class CloudLogs(unittest.TestCase):
                 load.cloud_log_hours(bad)
         twelve_h, *_ = self.run_main()
         one_h, *_ = self.run_main("--cloud-log-hours", "1")
-        self.assertLess(len(one_h), len(three_h))
-        self.assertLess(len(three_h), len(twelve_h))
+        self.assertLess(len(one_h), len(twelve_h))
+        self.assertLess(len(twelve_h), len(default))
         self.assertLessEqual(self.age_hours(one_h), 1.01)
         self.assertGreater(self.age_hours(twelve_h), 3.01)
         self.assertLessEqual(self.age_hours(twelve_h), 12.01)
@@ -225,9 +226,7 @@ class CloudLogs(unittest.TestCase):
         posted, queries, out = self.run_main(env={**CLOUD_ENV, **LOKI_ENV}, loki=[10, 50])
         sent = len(posted)
         self.assertGreater(sent, 50)
-        self.assertIn(f"sent {sent} log lines, but Grafana Cloud stored only 50", out)
-        self.assertIn("--target local", out)
-        self.assertIn("reload just before a demo", out)
+        self.assertIn("log lines from the last 2 h, but Grafana Cloud shows only 50", out)
         self.assertEqual(len(queries), 6)  # retried for ingestion delay
         self.assertEqual(self.sleeps.call_count, 5)
         url = queries[0].full_url
@@ -235,12 +234,14 @@ class CloudLogs(unittest.TestCase):
         query = load.urllib.parse.parse_qs(load.urllib.parse.urlsplit(url).query)["query"][0]
         self.assertIn('service_namespace="kipsake-sleep-floor"', query)
         self.assertIn(f'case_run="{load.CASE_RUN}"', query)
+        self.assertIn('!= "dj-check-', query)  # a new query each time, so the results cache can't answer
         self.assertNotIn("secret", out)
 
     def test_stops_retrying_once_everything_is_stored(self):
         posted, queries, out = self.run_main(env={**CLOUD_ENV, **LOKI_ENV}, loki=[None, 100000])
         self.assertEqual(len(queries), 2)
-        self.assertIn(f"stored all {len(posted)} lines", out)
+        self.assertIn("lines from the last 2 h", out)
+        self.assertIn("Older lines become queryable a few hours after loading", out)
         self.assertNotIn("WARNING", out)
 
     def test_check_skipped_without_loki_settings(self):
@@ -269,6 +270,36 @@ class CloudLogs(unittest.TestCase):
                 contextlib.redirect_stdout(io.StringIO()), self.assertRaises(SystemExit):
             load.main()
         self.assertEqual((posted, queries), (["logs"], []))
+
+    def test_prints_the_window_and_links_pinned_to_it(self):
+        _, _, out = self.run_main("--incident-end", "2026-10-21T13:42:26", env=CLOUD_ENV)
+        self.assertIn("Incident night: 2026-10-21T06:22:26Z to 2026-10-21T13:52:26Z, case_run=2026-10-21", out)
+        self.assertIn("set GRAFANA_URL", out)
+        os.environ["GRAFANA_URL"] = "https://stack.grafana.net/"
+        _, _, out = self.run_main("--incident-end", "2026-10-21T13:42:26")
+        self.assertNotIn("set GRAFANA_URL", out)
+        links = dict(line.split(": ", 1) for line in out.splitlines() if line.startswith("  ") and ": " in line)
+        dashboard = load.urllib.parse.urlsplit(links["  dashboard"])
+        self.assertEqual(dashboard.netloc + dashboard.path, "stack.grafana.net/d/defiantjazz-game/the-defiant-jazz-incident")
+        params = dict(load.urllib.parse.parse_qsl(dashboard.query))
+        start = int(datetime(2026, 10, 21, 6, 22, 26, tzinfo=timezone.utc).timestamp() * 1000)
+        self.assertEqual(params, {"from": str(start), "to": str(start + int(7.5 * 3600 * 1000)),
+                                  "timezone": "utc", "var-case_run": "2026-10-21"})
+        explore = load.urllib.parse.urlsplit(links["  Explore"].strip())
+        pane = json.loads(dict(load.urllib.parse.parse_qsl(explore.query))["panes"])["dj"]
+        self.assertEqual(pane["range"], {"from": params["from"], "to": params["to"]})
+        self.assertEqual(pane["datasource"], "grafanacloud-logs")
+        self.assertIn('| case_run="2026-10-21"', pane["queries"][0]["expr"])
+
+    def test_example_dashboard_filters_on_case_run(self):
+        board = json.loads((HERE.parent / "web" / "dashboard-example.json").read_text())
+        self.assertEqual(load.DASHBOARD_PATH.split("/")[2], board["uid"])
+        names = [v["name"] for v in board["templating"]["list"]]
+        self.assertIn("case_run", names)
+        exprs = [t["expr"] for panel in board["panels"] for t in panel["targets"]]
+        self.assertTrue(exprs)
+        for expr in exprs:
+            self.assertIn('case_run="$case_run"', expr)
 
 
 if __name__ == "__main__":

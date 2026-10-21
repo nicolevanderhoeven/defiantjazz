@@ -28,6 +28,41 @@
         "refresh": 1,
         "regex": "",
         "options": []
+      },
+      {
+        "name": "prometheus",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {},
+        "hide": 0,
+        "refresh": 1,
+        "regex": "",
+        "options": []
+      },
+      {
+        "name": "case_run",
+        "label": "Load (case_run)",
+        "description": "Which load to show. The newest load in the time range comes first; the loader prints a link pinned to each load.",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${prometheus}"
+        },
+        "query": {
+          "qryType": 1,
+          "query": "label_values(target_info{service_namespace=\"kipsake-sleep-floor\"},case_run)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "definition": "label_values(target_info{service_namespace=\"kipsake-sleep-floor\"},case_run)",
+        "current": {},
+        "hide": 0,
+        "refresh": 2,
+        "regex": "",
+        "sort": 2,
+        "includeAll": false,
+        "multi": false,
+        "options": []
       }
     ]
   },
@@ -78,7 +113,7 @@
             "uid": "${loki}"
           },
           "queryType": "range",
-          "expr": "sum by (service_name) (count_over_time({service_namespace=\"kipsake-sleep-floor\"} [$__auto]))",
+          "expr": "sum by (service_name) (count_over_time({service_namespace=\"kipsake-sleep-floor\"} | case_run=\"$case_run\" [$__auto]))",
           "legendFormat": "{{service_name}}"
         }
       ],
@@ -130,7 +165,7 @@
             "uid": "${loki}"
           },
           "queryType": "range",
-          "expr": "{service_namespace=\"kipsake-sleep-floor\"}"
+          "expr": "{service_namespace=\"kipsake-sleep-floor\"} | case_run=\"$case_run\""
         }
       ],
       "options": {
