@@ -1,8 +1,8 @@
 <!--
 SPOILERS: human-only. Never give this to the AI.
-The web game's scene art (web/assets/scene-*.webp) and what goes with it. The terminal game doesn't use this file.
+The web game's scene art and portraits (web/assets/scene-*.webp, portrait-*.webp) and what goes with it. The terminal game doesn't use this file.
 
-Each "## scene-..." card is one scene image, shown with the story card named in "card:" (by its title):
+Each "## scene-..." or "## portrait-..." card is one image, shown with the story card named in "card:" (by its title):
   where:   one line on where and when we are, above the image
   caption: a short caption under the image
   story:   optional, where the art doesn't match the story: the story's version, in one line
@@ -21,11 +21,10 @@ paper. Hotspot text comes from the story cards only, and never from the reveal.
 
 # Scene art
 
-## scene-1-broadcast
+## scene-broadcast
 card: Kipsake
 where: A Kipsake advert
 caption: Asleep, and at work.
-story: In the story, Dreamers check in at Kipsake and sleep in pods, not at home.
 source: db391f81
 Hi! I'm with Kipsake.
 You work hard all day. So why should your nights go to waste?
@@ -38,22 +37,21 @@ And don't worry: our lullaby keeps you sound asleep all night long. Even in a po
 Sweet dreams, Dreamers.
 
 ## Asleep
-at: 14, 55
+at: 24, 52
 Each night, you check in, settle into your pod, and drift off.
 
 ## Kipsake
-at: 66, 32
+at: 75, 22
 Kipsake rents your sleep. Earn while you sleep.
 
 ## The night shift
-at: 85, 69
+at: 72, 54
 Your sleepwalking self works the night shift for you. In the morning, you remember nothing at all.
 
-## scene-2-break-room
+## scene-break-room
 card: The Defiant Jazz Incident
 where: Break Room 2 · Sleep Floor · 03:00
 caption: The Cocoa Hour.
-story: In the story, it's just the three clerks, Agnes, Bertram and Clement, with Mr. Hale.
 before: What happened that night
 source: 08093bd7
 *The power went out for five minutes. When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.*
@@ -79,20 +77,28 @@ You're the investigator. Kipsake wants a name before dawn, when the shift wakes 
 - **accuse**: when you're ready, name the killer and say why.
 
 ## The emergency speaker
-at: 10, 11
+at: 36, 8
 Break Room 2's emergency speaker. In a power outage, the emergency speakers come on and play the lullaby.
 
-## Cocoa
-at: 15, 84
-The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together, with no music.
+## Agnes
+at: 17, 67
+Agnes, one of the three sleepwalking clerks of Deep Sleep Operations.
+
+## Bertram
+at: 37, 69
+Bertram, one of the three sleepwalking clerks of Deep Sleep Operations.
 
 ## Mr. Hale
-at: 46, 31
+at: 57, 47
 Mr. Reginald Hale, the night supervisor. He stays awake all shift.
 
 ## Clement
-at: 59, 64
+at: 77, 67
 Clement, one of the three sleepwalking clerks of Deep Sleep Operations.
+
+## Cocoa
+at: 94, 37
+The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together, with no music.
 
 ## scene-3-elevator
 card: Elevator car 1
@@ -108,41 +114,51 @@ Car 1 stopped at the Sleep Floor, with its doors open.
 at: 50, 55
 Where Mr. Hale was found. Floor Security's evidence from here is laid out below.
 
-## scene-4-clement-home
+## scene-clement-home
 card: Clement at home
 where: Clement's flat · Port Quiet · 06:40
-caption: Clement's waking self, with the folder.
-story: In the story, it's morning, he wears no lanyard, and the three things are in a cardboard folder, not a box.
+caption: Clement's waking self, at home.
 source: 4f4f4ff4
 You: Clement? You sleepwalk for Kipsake.
 Clement: I don't remember work. That's rather the point.
-[In the open folder, three things: a clipping from the local paper, a printed photo of the Sleep Floor's fire-evacuation plan, and a photo of a woman by a lighthouse. Select each one on the picture to look closer.]
+[On the table, out of his cardboard folder, three things: a clipping from the local paper, a printed photo of the Sleep Floor's fire-evacuation plan, and a photo of a woman by a lighthouse. Select each one on the picture to look closer.]
 You: We read about June.
 Clement: Then you know everything I do.
-[He closes the folder and holds it against his chest.]
+[He gathers them back into the folder and holds it against his chest.]
 
 ## Clement
-at: 22, 42
+at: 61, 39
 Clement's waking self, at home. He's wearing the fringed scarf.
 
-## The folder
-at: 62, 62
-An open cardboard folder, lying flat, with three things inside.
-
 ## The clipping
-at: 38, 84
+at: 43, 87
 A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114. "R. Hale" is circled in red.
 > PORT QUIET GAZETTE
 > … Procedure Revision 114 …
 > ( R. Hale )  ← circled in red
 
 ## The evacuation plan
-at: 50, 73
+at: 55, 85
 A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red "You are here" dot is in Break Room 2. A route is drawn over it in pen: from Break Room 2, along corridor E, to the elevator, which is circled.
 > ● You are here: Break Room 2
 >   ↓  corridor E, in pen
 > ( the elevator )  ← circled
 
 ## The photo
-at: 48, 46
+at: 65, 85
 A photo of a woman standing by a lighthouse.
+
+## portrait-agnes
+card: T-A · Agnes · 03:30
+where: An interview at Kipsake · 03:30
+caption: Agnes, a DSO clerk.
+
+## portrait-bertram
+card: T-B · Bertram · 03:40
+where: An interview at Kipsake · 03:40
+caption: Bertram, another DSO clerk.
+
+## portrait-clement
+card: T-C · Clement · 03:20
+where: An interview at Kipsake · 03:20
+caption: Clement, the third DSO clerk.

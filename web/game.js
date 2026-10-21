@@ -41,16 +41,21 @@
     ["Grafana MCP server", "https://github.com/grafana/mcp-grafana"],
   ];
 
-  // Header art: pixel-art scenes in assets/, cut from the comic sheet by web/build.py --art,
-  // as name: [width, height]. They hold no clue text, so their alt text is empty and the
-  // story stays in the HTML. Which card shows which scene, its caption, the card's text
-  // beside the image and the hotspots come from C.art (game/SPOILERS-content/scene-art.md).
+  // Header art: pixel-art scenes and portraits in assets/, made by web/build.py --art, as
+  // name: [width, height], and the title's key art. They hold no clue text, so their alt text
+  // is empty and the story stays in the HTML. Which card shows which picture, its caption, the
+  // card's text beside it and the hotspots come from C.art (game/SPOILERS-content/scene-art.md).
   var SCENES = {
-    "scene-1-broadcast": [1086, 361],
-    "scene-2-break-room": [1086, 346],
+    "scene-broadcast": [1200, 400],
+    "scene-break-room": [1200, 400],
     "scene-3-elevator": [1086, 364],
-    "scene-4-clement-home": [1086, 377],
+    "scene-clement-home": [1200, 400],
+    "portrait-agnes": [1200, 400],
+    "portrait-bertram": [1200, 400],
+    "portrait-clement": [1200, 400],
+    "title-splash": [1536, 864],
   };
+  var TITLE_ART = "title-splash";
 
   var main = document.getElementById("main");
   var leadsEl = document.getElementById("leads");
@@ -326,11 +331,14 @@
   });
   window.addEventListener("resize", function () { if (openSpot) placeSpot(openSpot); });
 
+  function picture(name) {
+    var size = SCENES[name];
+    var src = (HOST.scenes && HOST.scenes[name]) || "assets/" + name + ".webp";
+    return el("img", { src: src, alt: "", width: size[0], height: size[1], decoding: "async" });
+  }
+
   function scene(art) {
-    var size = SCENES[art.scene];
-    var src = (HOST.scenes && HOST.scenes[art.scene]) || "assets/" + art.scene + ".webp";
-    var frame = el("div", { class: "scene-art" },
-      el("img", { src: src, alt: "", width: size[0], height: size[1], decoding: "async" }));
+    var frame = el("div", { class: "scene-art" }, picture(art.scene));
     art.hotspots.forEach(function (h, i) { hotspot(h, i).forEach(function (n) { frame.appendChild(n); }); });
     return el("figure", { class: "scene" }, [
       el("p", { class: "scene-where" }, art.where),
@@ -483,14 +491,18 @@
 
   views.title = function () {
     var resume = state.chosen.length > 0;
-    return el("section", { class: "title-view" }, [
-      el("h1", { class: "sr-only" }, "The Defiant Jazz Incident"),
-      el("pre", { class: "banner", "aria-hidden": "true" }, C.banner),
-      el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
-      el("div", { class: "actions" }, [
-        button(resume ? "Continue" : "Start", function () { go(resume ? "hub" : "advert"); }, "btn-primary"),
+    // The title sits on the key art's quiet left half, or under it on a narrow screen.
+    return el("section", { class: "title-view" }, el("div", { class: "title-art" }, [
+      picture(TITLE_ART),
+      el("div", { class: "title-text" }, [
+        el("h1", { class: "sr-only" }, "The Defiant Jazz Incident"),
+        el("pre", { class: "banner", "aria-hidden": "true" }, C.banner),
+        el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
+        el("div", { class: "actions" }, [
+          button(resume ? "Continue" : "Start", function () { go(resume ? "hub" : "advert"); }, "btn-primary"),
+        ]),
       ]),
-    ]);
+    ]));
   };
 
   views.advert = function () {

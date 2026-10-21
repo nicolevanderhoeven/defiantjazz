@@ -9,6 +9,7 @@
     python3 web/build.py --page --check           # exit 1 if that file is out of date
 
     python3 web/build.py --art     # cut the comic sheet into web/assets/scene-*.webp
+    python3 web/build.py --art FILE NAME   # make web/assets/NAME.webp from the picture FILE
 
 --page builds the game as a Grafana Page: a page export file to import in Grafana
 (Pages > Import page). A page is a small React project that Grafana builds itself,
@@ -19,10 +20,12 @@ since only a page Grafana made has the versions that Grafana's builder expects.
 
 --art cuts the four scene strips out of the comic prototype's art sheet,
 comic-prototype/assets/scenes.png (read only, never changed), into one WebP file per
-scene in web/assets/. The game shows them as header art. Each scene is its own file, so
-new art for one scene just replaces that file. It needs Pillow (python3 -m pip install
-Pillow); the scenes are committed, so nothing else needs it. Their captions, hotspots and
-the web game's text beside them are in game/SPOILERS-content/scene-art.md, bundled with the cards.
+scene in web/assets/. With FILE and NAME, it makes one of the game's pictures (IMAGES below)
+from any picture instead, at the size the game uses. The game shows them as header art,
+and the title's key art. Each picture is its own file, so new art for one just replaces
+that file. It needs Pillow (python3 -m pip install Pillow); the pictures are committed, so
+nothing else needs it. Their captions, hotspots and the web game's text beside them are in
+game/SPOILERS-content/scene-art.md, bundled with the cards.
 
 SPOILERS: the bundle holds every card in game/SPOILERS-content/, including the
 reveal. The reveal is base64-encoded so a glance at the file doesn't spoil it,
@@ -48,13 +51,28 @@ ASSETS = os.path.join(HERE, "assets")
 ART_PATH = os.path.join(os.path.dirname(HERE), "game", "SPOILERS-content", "scene-art.md")
 SHEET = os.path.join(os.path.dirname(HERE), "comic-prototype", "assets", "scenes.png")
 # The sheet's four scene strips, top to bottom, as (name, first row, end row). The strips
-# aren't quite equal, so these are the seams measured in the sheet. game.js knows the sizes.
+# aren't quite equal, so these are the seams measured in the sheet.
 SCENES = (
     ("scene-1-broadcast", 0, 361),
     ("scene-2-break-room", 361, 707),
     ("scene-3-elevator", 707, 1071),
     ("scene-4-clement-home", 1071, 1448),
 )
+# The pictures the game shows, as name: (width, height). Wide scenes and portraits are 3:1,
+# the title's key art 16:9; game.js knows the sizes. The partner's sheet scenes that new art
+# replaced stay in web/assets/, unused, so they can be put back by naming them here.
+IMAGES = {
+    "scene-broadcast": (1200, 400),
+    "scene-break-room": (1200, 400),
+    "scene-3-elevator": (1086, 364),
+    "scene-clement-home": (1200, 400),
+    "portrait-agnes": (1200, 400),
+    "portrait-bertram": (1200, 400),
+    "portrait-clement": (1200, 400),
+    "title-splash": (1536, 864),
+}
+# The title's key art goes with the title screen, not a card, so scene-art.md doesn't list it.
+TITLE_ART = "title-splash"
 # Lossy WebP: the sheet is painted, not drawn on a pixel grid, so lossless is 5 to 10 times
 # larger for no visible gain. The page scales the scenes with image-rendering: pixelated.
 WEBP_QUALITY = 80
@@ -110,15 +128,15 @@ def scene_art(cards=None, path=ART_PATH):
     shown = [cards.advert, cards.cold_open, cards.outside_world] + list(cards.testimonies)
     shown += [c for d in cards.decisions for c in d.options]
     by_title = {c.title: c for c in shown}
-    names = [name for name, _, _ in SCENES]
+    names = [name for name in IMAGES if name != TITLE_ART]
     with open(path, encoding="utf-8") as f:
         section = content.parse_section(f.read(), path)
     art, current = {}, None
     for c in section.cards:
         where = f"{os.path.relpath(path)}: {c.title!r}"
-        if c.title.startswith("scene-"):
+        if c.title.startswith(("scene-", "portrait-")):
             if c.title not in names:
-                raise content.ContentError(f"{where}: no such scene in web/assets/")
+                raise content.ContentError(f"{where}: no such picture in IMAGES in web/build.py")
             card = by_title.get(c.meta.get("card"))
             if not card or card.title in art:
                 raise content.ContentError(f"{where}: 'card:' must name a story card no other scene has")
@@ -172,6 +190,24 @@ def cut_scenes(sheet=SHEET, out=ASSETS):
             path = os.path.join(out, name + ".webp")
             im.crop((0, top, im.width, bottom)).save(path, "WEBP", quality=WEBP_QUALITY, method=6)
             print(f"Wrote {os.path.relpath(path)} ({os.path.getsize(path) // 1024} KB).")
+
+
+def make_image(src, name, out=ASSETS):
+    """Write web/assets/NAME.webp from the picture src, scaled to the size IMAGES gives it."""
+    try:
+        from PIL import Image
+    except ImportError:
+        sys.exit("--art needs Pillow: python3 -m pip install Pillow")
+    if name not in IMAGES:
+        sys.exit(f"{name} isn't one of the game's pictures: {', '.join(IMAGES)}")
+    size = IMAGES[name]
+    with Image.open(src) as im:
+        if abs(im.width / im.height - size[0] / size[1]) > 0.01:
+            sys.exit(f"{os.path.relpath(src)} is {im.width}x{im.height}, not the shape of {name} "
+                     f"({size[0]}x{size[1]}): crop it first, or change its size in IMAGES and game.js.")
+        path = os.path.join(out, name + ".webp")
+        im.convert("RGB").resize(size, Image.LANCZOS).save(path, "WEBP", quality=WEBP_QUALITY, method=6)
+    print(f"Wrote {os.path.relpath(path)} ({os.path.getsize(path) // 1024} KB).")
 
 
 # ---- Grafana Page ----------------------------------------------------------------
@@ -289,9 +325,9 @@ def read_template(path):
 
 
 def scene_modules():
-    """src/scenes.ts and one module per scene, each scene a data: URL (the frame allows those)."""
+    """src/scenes.ts and one module per picture, each a data: URL (the frame allows those)."""
     files, imports, entries = {}, [], []
-    for i, (name, _, _) in enumerate(SCENES):
+    for i, name in enumerate(IMAGES):
         with open(scene_path(name), "rb") as f:
             url = "data:image/webp;base64," + base64.b64encode(f.read()).decode("ascii")
         files[f"src/scenes/{name}.ts"] = f"// {GENERATED}\nexport default '{url}';\n"
@@ -349,17 +385,23 @@ def main(argv=None):
     p = argparse.ArgumentParser(description="Bundle game/SPOILERS-content/ for the web game.")
     p.add_argument("--check", action="store_true", help="exit 1 if the output is out of date")
     p.add_argument("--page", action="store_true", help="build the Grafana Page export file instead")
-    p.add_argument("--art", action="store_true",
-                   help="cut comic-prototype/assets/scenes.png into web/assets/scene-*.webp")
+    p.add_argument("--art", nargs="*", metavar=("FILE", "NAME"),
+                   help="cut comic-prototype/assets/scenes.png into web/assets/scene-*.webp, "
+                        "or with FILE NAME, make web/assets/NAME.webp from FILE")
     p.add_argument("--template", metavar="FILE",
                    help="with --page: an exported page whose project to build on (default: the last build's)")
     args = p.parse_args(argv)
     if args.template and not args.page:
         p.error("--template needs --page")
-    if args.art:
+    if args.art is not None:
         if args.page or args.check or args.template:
             p.error("--art takes no other options")
-        cut_scenes()
+        if len(args.art) not in (0, 2):
+            p.error("--art takes no arguments, or FILE NAME")
+        if args.art:
+            make_image(*args.art)
+        else:
+            cut_scenes()
         return
     if args.page:
         out, rebuild = PAGE_PATH, "python3 web/build.py --page"

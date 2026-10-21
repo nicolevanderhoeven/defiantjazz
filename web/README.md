@@ -63,15 +63,18 @@ Spoilers: anyone who can open a page can export its source, and Grafana Assistan
 
 ## Scene art
 
-Four pixel-art scenes sit above parts of the story: the Kipsake advert, the cold open's "What happened that night", and the Elevator car 1 and Clement at home leads. They're one WebP file each in `assets/`, cut from the comic prototype's sheet, `comic-prototype/assets/scenes.png`, which isn't changed:
+Pixel-art pictures sit above parts of the story: key art on the title screen, a scene above the Kipsake advert, the cold open's "What happened that night", and the Elevator car 1 and Clement at home leads, and a portrait above each suspect's opening statement. They're one WebP file each in `assets/`, listed with their sizes in `IMAGES` in `build.py` and `SCENES` in `game.js`.
+
+The elevator scene is the comic prototype's, cut from the comic prototype's sheet, `comic-prototype/assets/scenes.png`, which isn't changed. The title art, the portraits and the broadcast, break room and Clement at home scenes are AI-generated in the comic prototype's style, and were picked by the game's author. They replaced the prototype's versions of those three scenes, which stay in `assets/` (`scene-1-broadcast`, `scene-2-break-room`, `scene-4-clement-home`), unused, so they can be put back.
 
 ```sh
-python3 web/build.py --art
+python3 web/build.py --art                        # cut the sheet into assets/scene-1..4-*.webp
+python3 web/build.py --art picture.png portrait-agnes   # make assets/portrait-agnes.webp from any picture
 ```
 
-It needs [Pillow](https://pypi.org/project/Pillow/) (`python3 -m pip install Pillow`). The scenes are committed, so playing or building the page doesn't. To replace one scene, swap its file in `assets/`, keeping the name, and update its size in `SCENES` in `game.js`. If the sheet changes, update the seams in `SCENES` in `build.py` and run `--art` again. The art holds no clue text, so the images have empty alt text and all the story stays in the page's text. The Grafana Page build inlines the scenes as `data:` URLs, since a page's frame can't load files.
+It needs [Pillow](https://pypi.org/project/Pillow/) (`python3 -m pip install Pillow`). The pictures are committed, so playing or building the page doesn't. To replace a picture, run `--art FILE NAME` with a picture of the same shape, or, for a new size, update it in both `IMAGES` and `SCENES` first. If the sheet changes, update the seams in `SCENES` in `build.py` and run `--art` again. The art holds no clue text, so the images have empty alt text and all the story stays in the page's text. The Grafana Page build inlines the pictures as `data:` URLs, since a page's frame can't load files.
 
-**Spoilers:** what goes with each scene is in `game/SPOILERS-content/scene-art.md`: where and when we are, a caption, a line where the art doesn't match the story, and the web game's text for the card, which leaves out what the image shows. The terminal game keeps the cards as written. Each scene also has numbered hotspots, placed as a percentage of the image, that show a short note when hovered, focused or tapped, and stay open after a click or tap until Escape or a click elsewhere. The file's opening comment has the format. If a card with a scene changes, `build.py` stops until its web text is updated to match.
+**Spoilers:** what goes with each scene and portrait is in `game/SPOILERS-content/scene-art.md`: where and when we are, a caption, an optional line where the art doesn't match the story, and an optional web text for the card, which leaves out what the image shows. The terminal game keeps the cards as written. Each scene also has numbered hotspots, placed as a percentage of the image, that show a short note when hovered, focused or tapped, and stay open after a click or tap until Escape or a click elsewhere. The portraits have none: the statement below each one says what's on screen. The file's opening comment has the format. If a card with web text changes, `build.py` stops until that text is updated to match.
 
 ## Edit the story
 
@@ -89,7 +92,7 @@ python3 web/build.py
 python3 -m unittest discover -s web
 ```
 
-It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that each scene has a caption and hotspots inside the image whose text names nothing the cards don't and quotes nothing from the reveal, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each scene is a small WebP file that `game.js` knows the size of, that `build.py --page` builds a complete page file with the scenes inlined, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
+It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that each scene has a caption and hotspots inside the image (portraits need only a caption) whose text names nothing the cards don't and quotes nothing from the reveal, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each picture is a small WebP file of the size `build.py` and `game.js` give it, that `build.py --page` builds a complete page file with the pictures inlined, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
 
 ## Files
 
@@ -99,9 +102,9 @@ It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds 
 | `game.js` | The game: views, saved progress, copy or Ask Assistant buttons |
 | `theme.js` | Picks the theme before the first paint |
 | `style.css` | Layout and the dark and light themes |
-| `assets/scene-*.webp` | The four scenes, cut by `build.py --art` |
+| `assets/*.webp` | The title art, scenes and portraits, made by `build.py --art` |
 | `SPOILERS-content.js` | **Spoilers:** the story cards, generated by `build.py` |
-| `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/`, with `--page` the Grafana Page file, and with `--art` the scenes |
+| `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/`, with `--page` the Grafana Page file, and with `--art` the pictures |
 | `dist/SPOILERS-defiantjazz.page.json` | **Spoilers:** the Grafana Page file, written by `build.py --page`, not committed |
 | `test_web.py` | The self-check |
 | `dashboard-example.json` | An example dashboard with the game panel and two telemetry panels |

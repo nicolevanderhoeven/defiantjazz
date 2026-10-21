@@ -139,7 +139,7 @@ def webp_size(path):
 
 
 class SceneArtTest(unittest.TestCase):
-    """The header art: one WebP file per scene, cut from the comic sheet by build.py --art."""
+    """The header art: one WebP file per picture, made by build.py --art."""
 
     def test_one_small_webp_per_scene(self):
         self.assertTrue(os.path.exists(build.SHEET), "the comic sheet is the source of the scenes")
@@ -151,12 +151,18 @@ class SceneArtTest(unittest.TestCase):
             self.assertEqual(webp_size(path)[1], bottom - top, name)
             self.assertLess(os.path.getsize(path), 150 * 1024, f"{name} should stay small")
 
-    def test_game_knows_each_scene(self):
+    def test_one_small_webp_per_picture(self):
+        for name, size in build.IMAGES.items():
+            path = build.scene_path(name)
+            self.assertEqual(webp_size(path), size, name)
+            self.assertLess(os.path.getsize(path), 150 * 1024, f"{name} should stay small")
+
+    def test_game_knows_each_picture(self):
         game = read("game.js")
-        for name, _, _ in build.SCENES:
-            width, height = webp_size(build.scene_path(name))
+        for name, (width, height) in build.IMAGES.items():
             self.assertIn(f'"{name}": [{width}, {height}]', game, f"SCENES in game.js is out of date for {name}")
-        self.assertIn('"assets/" + art.scene + ".webp"', game)
+        self.assertIn(f'var TITLE_ART = "{build.TITLE_ART}"', game)
+        self.assertIn('"assets/" + name + ".webp"', game)
         self.assertIn('alt: ""', game, "the art holds no clue text, so it needs no alt text")
         self.assertIn("img-src 'self'", read("index.html"))
 
@@ -164,8 +170,11 @@ class SceneArtTest(unittest.TestCase):
         # The leads' scenes come with their lead cards, so they show only once a lead is followed.
         art = build.scene_art(CONTENT)
         lead_cards = {o.title for d in CONTENT.decisions for o in d.options}
-        self.assertEqual(set(art), {CONTENT.advert.title, CONTENT.cold_open.title} | (set(art) & lead_cards))
+        statements = {t.title for t in CONTENT.testimonies}
+        self.assertEqual(set(art), {CONTENT.advert.title, CONTENT.cold_open.title} | statements
+                         | (set(art) & lead_cards))
         self.assertEqual(len(set(art) & lead_cards), 2)
+        self.assertEqual({art[t]["scene"] for t in statements}, {n for n in build.IMAGES if n.startswith("portrait-")})
         self.assertEqual(bundle_data()["art"], art)
 
     def test_art_stays_crisp_and_still_for_reduced_motion(self):
@@ -214,9 +223,11 @@ class SceneTextTest(unittest.TestCase):
             yield h["body"]
 
     def test_every_scene_has_text_and_hotspots(self):
+        # Portraits have none: the statement below one says what's on screen.
         for title, scene in self.art.items():
             self.assertTrue(scene["where"] and scene["caption"], title)
-            self.assertTrue(scene["hotspots"], f"{title} has no hotspots")
+            if scene["scene"].startswith("scene-"):
+                self.assertTrue(scene["hotspots"], f"{title} has no hotspots")
             for h in scene["hotspots"]:
                 self.assertTrue(h["label"].strip() and h["body"].strip(), title)
 
@@ -312,12 +323,15 @@ class PageBuildTest(unittest.TestCase):
 
     def test_page_inlines_the_scenes(self):
         index = self.files["src/scenes.ts"]
-        for name, _, _ in build.SCENES:
+        for name in build.IMAGES:
             with open(build.scene_path(name), "rb") as f:
                 url = "data:image/webp;base64," + base64.b64encode(f.read()).decode("ascii")
             self.assertIn(f"'{url}'", self.files[f"src/scenes/{name}.ts"])
             self.assertIn(f"from './scenes/{name}'", index)
         self.assertIn("scenes: SCENES", self.files["src/host.ts"])
+        for name in build.IMAGES:
+            self.assertLess(len(self.files[f"src/scenes/{name}.ts"].encode("utf-8")), 120 * 1024,
+                            f"{name}: Grafana writes a page's files at most 128 KB at a time")
         self.assertLess(len(build.render_page(fake_template(), CONTENT).encode("utf-8")), 4 << 20,
                         "the page file should stay well inside Grafana's limits")
 
