@@ -12,20 +12,21 @@ Keep all implementation, assets, documentation, and any new checks inside `comic
 
 ### Approved visual direction
 
-Cinematic, detailed pixel art with dithered shading and consistent characters, inspired by 1980s text adventures and corporate daylight horror. Use cream, faded teal, dusty peach, and institutional symmetry; transition to bruised purple and emergency red during the blackout. The world is Port Quiet and the corporation is Kipsake. Kipsake pays people to sleep while their sleepwalking selves work. Waking selves remember home; sleepwalkers remember work. Day staff remain awake.
+Cinematic, detailed pixel art with dithered shading and consistent characters, inspired by 1980s text adventures and corporate daylight horror. Use cream, faded teal, dusty peach, and institutional symmetry; transition to bruised purple and emergency red during the blackout. The world is Port Quiet and the corporation is Kipsake. Kipsake pays people to sleep while their sleepwalking selves work. Waking selves remember home; sleepwalkers remember work. Mr. Hale, the night supervisor, remains awake. Workers check into sleep pods at Kipsake; the prototype’s bed-to-desk advertisement is a visual metaphor, not a change to that story rule.
 
 Use a wide illustrated panel above a persistent, crisp text console. Keep text, captions, and clue details in accessible HTML rather than relying on words inside the artwork. Support small ambient animations, readable close-ups, responsive layouts, keyboard navigation, visible focus, and reduced motion. Keep the experience silent. No heavy CRT distortion, external fonts, CDNs, or runtime service dependencies for the prototype.
 
 The existing artwork in `assets/scenes.png` is an approved starting point. Preserve subsequent human art edits. Do not regenerate or overwrite assets just because this prompt is being reused; replace art only when explicitly requested, saving variants separately. The sheet has four equal horizontal scene strips stacked vertically. Use the imagegen skill for raster artwork when available.
 
-### Recreate the four-scene prototype
+### Recreate the five-chapter prototype
 
 Use plain static HTML, CSS, and JavaScript, with scenes defined as data containing frames, narration, hotspots, aliases, and authored responses. No installation or build step. Serve the directory with Python’s static HTTP server; direct file opening should also work.
 
-1. **Recruitment broadcast:** corporate advertising promises productive sleep: “Your days are yours. Let your nights work for you.” Show a serene household beside an immense office of sleeping workers. Reveal unsettling details through inspection and successive captions.
-2. **Cocoa Hour:** three Deep Sleep Operations clerks (Agnes, Bertram, and Clement) and Mr. Hale celebrate a quota reward in Break Room 2. Inspect cups, cocoa urn, emergency speaker, badges, and coworkers. Clement has brown wavy hair, a mustard shirt, and a multicoloured fringed scarf. Establish the memory split without resolving the mystery.
-3. **Elevator and music:** main power fails, jazz wakes the workers, then stops when power returns five minutes later. Convey sound with captions and lighting. The supervisor is discovered dead; do not identify the killer. Use the canonical story for precise events.
-4. **Clement at home:** at 06:40, Clement has no lanyard but wears his scarf and holds an open cardboard box. This deliberately adapts the original folder. Inspect the newspaper clipping, marked evacuation plan, and lighthouse photograph through readable, repeatable close-ups. Clearly distinguish physical evidence from telemetry.
+1. **Recruitment broadcast:** one panel using `assets/sleep-self-v4.png`. Kipsake logo and “Your rest. Our progress.” at upper left; “Earn while you sleep” at upper right above the worker. A transparent sleepwalking figure overlaps the bed in the middle foreground. No extra subtitle or additional recruitment panels.
+2. **Cocoa Hour:** one panel at 03:00 using `assets/cocoa-night.png`, headed “Please enjoy your reward.” Exactly three seated sleepwalking clerks (Agnes, Bertram, Clement) plus standing awake supervisor Mr. Hale. Inspect cups, urn, speaker, badges, and coworkers. Clement has brown wavy hair, a mustard shirt, and a multicoloured fringed scarf.
+3. **Elevator and music:** one panel summarizing the 03:02–03:07 blackout, jazz waking the three workers, return to sleep, and discovery of Mr. Hale with Agnes holding a cable. Keep the culprit unresolved. NEXT opens Agnes’s interview.
+4. **Statements:** Agnes, then Bertram, then Clement. Each person gets a page containing three panels of their own exchanges with the player investigator. Keep the canonical dialogue and observed gestures. NEXT advances to the next person. TALK repeats the current person’s complete statement. Use `assets/statements.png` with the correct portrait repeated across the person’s page.
+5. **Clement at home:** at 06:40, Clement has no lanyard but wears his scarf and holds an open cardboard box. This deliberately adapts the original folder. Inspect the newspaper clipping, marked evacuation plan, and lighthouse photograph through readable, repeatable close-ups. Clearly distinguish physical evidence from telemetry.
 
 Label time/location jumps as selected scenes. Support HELP, LOOK, EXAMINE <object>, TALK <person>, NEXT, and RESTART. Hotspots and suggested command buttons must use the same response path as typed commands. Unknown input should give useful guidance. Include review navigation between scenes. Label authored interaction honestly: no simulated AI query answers. No accusation, persistence, or live Grafana connection is needed for this prototype.
 
@@ -42,7 +43,7 @@ Adapt the complete canonical flow, rather than inventing a new solution:
 - Keep unrestricted scene navigation confined to an explicitly labelled preview mode; the full game must respect evidence unlocks. Reuse canonical content through a documented local authoring/build process if useful, but output a self-contained directory and never change the source game.
 - Keep readable physical clues and interviews available for review after unlocking them. Present an explicit confirmation before an accusation ends play and unlocks the solution.
 
-For the first full-story adaptation, keep Grafana Assistant or another investigator AI alongside the comic, as in the existing web game, with copyable example questions. Never send human-only panels, dialogue, clue contents, or the solution automatically to that AI. A future embedded AI connection is a separate integration task: establish its backend, authentication, read-only Grafana access, and context boundary before implementing it. Never embed credentials in static assets or pretend authored answers came from Grafana.
+For the first full-story adaptation, keep Grafana Assistant or another investigator AI alongside the comic, as in the existing web game, with copyable example questions. Never send human-only panels, dialogue, clue contents, or the solution automatically to that AI. As in main, the player may explicitly tell their AI about evidence they have seen. A future embedded AI connection is a separate integration task: establish its backend, authentication, read-only Grafana access, and context boundary before implementing it. Never embed credentials in static assets or pretend authored answers came from Grafana.
 
 ### Validation and delivery
 
@@ -50,9 +51,9 @@ For the prototype, manually walk every frame and scene; compare typed and clicke
 
 For the full game, add meaningful checks inside `comic-prototype/` for branching/unlocking, evidence review, accusation confirmation, and keeping human-only evidence out of AI handoff payloads. Verify representative complete paths against the canonical engine. Document how to run, what is mocked or external, and any remaining limitations. Keep all changes reviewable as an isolated PR; do not merge automatically.
 
-### Original artwork generation brief
+### Archived original artwork generation brief
 
-If replacement artwork is explicitly requested, use this brief as a starting point:
+This historical brief explains the archived sheet. It is superseded by the five-chapter specification above; do not recreate its old crowd or daytime advertisement when regenerating the current prototype.
 
 > One cinematic pixel-art contact sheet, exactly four equal wide landscape panels stacked vertically, no gutters, no text or UI. Detailed adventure-game pixel art with dithered shading and cream, dusty teal, peach colours. Panel 1: serene sleeping woman in a peach bed on the left; immense teal office with rows of sleeping workers and an artificial sun on the right, cheerful but sinister. Panel 2: symmetrical cream-and-teal break room, exactly three seated office clerks (Agnes, Bertram, and Clement) and one standing older male supervisor in a dark suit, cocoa cups on a long table, silver cocoa urn on the right, emergency speaker high on the left; Clement has brown wavy hair, mustard shirt, multicoloured fringed scarf. Panel 3: centred open elevator in a dark purple corridor with red emergency lighting, overhead indicator and wall speaker; no corpse or violence. Panel 4: the same Clement at home holding an open cardboard box, warm lamp, rainy window, lighthouse photograph and folded papers; intimate and melancholy. Consistent characters, deliberate pixels, full bleed.
 
