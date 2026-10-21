@@ -29,19 +29,18 @@
   var THEME_KEY = "defiantjazz.theme";
   var LEADS = C.decisions.length;
 
-  // Examples only: the player asks whatever they like, in whichever AI they like. Each one names
-  // where the data is, so it works on its own, and shows off something Assistant can do.
+  // Examples only: the player asks whatever they like, in whichever AI they like. Each one points
+  // at the case's data, so it works on its own, and shows off something Assistant can do.
   // The loader can move the data to just before the load, so these avoid clock times.
-  var DATA = "The Kipsake Sleep Floor telemetry is in this stack, under service_namespace " +
-    "\"kipsake-sleep-floor\" in Loki, Prometheus and Tempo. ";
+  var DATA = "Using the Kipsake data in this stack, ";
   var QUESTIONS = [
-    ["Ask for a verdict", DATA + "During a five-minute power outage on the night shift, Night Supervisor " +
+    ["Ask for a verdict", DATA + "during a five-minute power outage on the night shift, Night Supervisor " +
       "Mr. Hale was killed in the elevator. Who killed Mr. Hale? Name one person, your confidence, and " +
       "the records behind it."],
-    ["Build a page", DATA + "Create a page with an interactive map of the Kipsake Sleep Floor and a " +
+    ["Build a page", DATA + "create a page with an interactive map of the Kipsake Sleep Floor and a " +
       "timeline slider across the power outage, showing where each badge was and what the microphones " +
       "heard at each moment."],
-    ["Make a graph", DATA + "Graph Mr. Hale's heart rate against the badge movements of Agnes, Bertram " +
+    ["Make a graph", DATA + "graph Mr. Hale's heart rate against the badge movements of Agnes, Bertram " +
       "and Clement during the power outage, on one chart."],
   ];
 
