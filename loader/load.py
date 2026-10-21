@@ -15,8 +15,8 @@ works nights, and the blackout is at 03:02 on Thursday 2026-10-08. The loader
 moves every timestamp by one offset, chosen by one of three modes:
 
 - recent (default): the incident happened just before "now". Grafana Cloud
-  rejects metrics more than ~2 hours old and logs more than ~7 days old, so use
-  this there. Times of day move with the load time.
+  rejects metrics more than ~2 hours old and silently drops log lines more than
+  a few hours old, so use this there. Times of day move with the load time.
 - --incident-date YYYY-MM-DD|latest (or env DJ_INCIDENT_DATE): the incident
   falls on that day. The offset is whole weeks, so times of day and weekdays
   stay the story's own. "latest" picks the most recent Thursday whose data has
@@ -26,16 +26,23 @@ moves every timestamp by one offset, chosen by one of three modes:
 Timestamps inside log lines are shifted by the same amount, so the data stays
 internally consistent. Every signal carries case_run=<incident date> as a
 resource attribute, so two loads into one stack can be told apart.
+
+Grafana Cloud accepts old log lines with HTTP 204 and then drops them, so the
+loader sends only the last --cloud-log-hours (default 3) of logs there and,
+when GRAFANA_LOKI_URL etc. are set, asks Loki afterwards how many it stored.
 """
 import argparse
 import base64
 import hashlib
+import json
+import math
 import os
 import re
 import ssl
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
@@ -71,6 +78,9 @@ LEVELS = {"debug": SeverityNumber.SEVERITY_NUMBER_DEBUG, "info": SeverityNumber.
           "warn": SeverityNumber.SEVERITY_NUMBER_WARN, "error": SeverityNumber.SEVERITY_NUMBER_ERROR,
           "critical": SeverityNumber.SEVERITY_NUMBER_FATAL}
 LOG_FILES = ["door-and-badge-events.log", "chat.log", "system.log", "ambient-mic.log", "records.log"]
+# Grafana Cloud Loki returns 204 for a push but drops lines older than a few
+# hours (about 3h40m on one stack in October 2026), so only send this much.
+CLOUD_LOG_HOURS = 3.0
 
 
 # ---------------------------------------------------------------- helpers
@@ -386,6 +396,75 @@ def send(sender, signal, items, build, batch_size):
     return failed
 
 
+# ---------------------------------------------------------------- checking
+def cloud_log_hours(value):
+    """The Cloud log window in hours, from --cloud-log-hours or DJ_CLOUD_LOG_HOURS."""
+    if value is None:
+        value = os.environ.get("DJ_CLOUD_LOG_HOURS") or CLOUD_LOG_HOURS
+    try:
+        hours = float(value)
+    except ValueError:
+        raise SystemExit(f"--cloud-log-hours / DJ_CLOUD_LOG_HOURS: expected a number of hours, got {value!r}")
+    if not hours > 0:
+        raise SystemExit(f"--cloud-log-hours / DJ_CLOUD_LOG_HOURS: must be more than 0, got {value!r}")
+    return hours
+
+
+def loki_reader():
+    """(query URL, basic auth) for the Cloud Loki read API, or None when it isn't configured."""
+    base = os.environ.get("GRAFANA_LOKI_URL", "").rstrip("/")
+    user, token = os.environ.get("GRAFANA_LOKI_USER"), os.environ.get("GRAFANA_LOKI_READ_TOKEN")
+    if not (base and user and token):
+        return None
+    return f"{base}/loki/api/v1/query", f"{user}:{token}"
+
+
+def count_stored_logs(url, auth, oldest, newest):
+    """How many log lines of this load (namespace and case_run) Loki holds between oldest and newest."""
+    at = newest + timedelta(minutes=1)
+    seconds = math.ceil((at - oldest).total_seconds()) + 60
+    query = (f'sum(count_over_time({{service_namespace="{NAMESPACE}"}} | case_run="{CASE_RUN}" [{seconds}s]))')
+    req = urllib.request.Request(f"{url}?{urllib.parse.urlencode({'query': query, 'time': int(at.timestamp())})}",
+                                 headers={"Authorization": "Basic " + base64.b64encode(auth.encode()).decode()})
+    with urllib.request.urlopen(req, timeout=30, context=tls_context()) as resp:
+        result = json.load(resp)["data"]["result"]
+    return int(float(result[0]["value"][1])) if result else 0
+
+
+def check_cloud_logs(sent, oldest, newest, hours, attempts=6, wait=5):
+    """Compare the log lines sent with what Grafana Cloud stored, and say so plainly if some are missing.
+
+    Returns the stored count, or None when the check was skipped. Never fails the load."""
+    reader = loki_reader()
+    if reader is None:
+        print("logs: stored-count check skipped: set GRAFANA_LOKI_URL, GRAFANA_LOKI_USER and "
+              "GRAFANA_LOKI_READ_TOKEN (see loader/.env.example) to check what Grafana Cloud kept.")
+        return None
+    url, auth = reader
+    stored = 0
+    for attempt in range(attempts):  # ingestion takes a moment, so ask again while the count is short
+        try:
+            stored = count_stored_logs(url, auth, oldest, newest)
+        except urllib.error.HTTPError as e:
+            hint = " (the read token needs logs:read)" if e.code in (401, 403) else ""
+            print(f"logs: stored-count check skipped: Loki query returned HTTP {e.code}{hint}.")
+            return None
+        except (urllib.error.URLError, OSError, ValueError, KeyError, IndexError) as e:
+            print(f"logs: stored-count check skipped: Loki query failed ({getattr(e, 'reason', e)}).")
+            return None
+        if stored >= sent:
+            print(f"logs: Grafana Cloud stored all {sent} lines.")
+            return stored
+        if attempt < attempts - 1:
+            time.sleep(wait)
+    print(f"logs: WARNING: sent {sent} log lines, but Grafana Cloud stored only {stored}. Cloud Loki accepts "
+          f"old lines without an error and drops them, so this stack keeps less than the {hours:g} h sent; "
+          "the oldest lines are the ones missing.\n"
+          "  For the full history, load into the local stack (--target local), or reload just before a demo. "
+          "--cloud-log-hours (env DJ_CLOUD_LOG_HOURS) sets how many hours of logs are sent.")
+    return stored
+
+
 # ---------------------------------------------------------------- main
 def main():
     here = Path(__file__).resolve().parent
@@ -404,6 +483,9 @@ def main():
                     help="allow an --incident-date that isn't a Thursday (moves work onto weekends)")
     ap.add_argument("--dry-run", action="store_true", help="build and validate payloads without sending")
     ap.add_argument("--batch-size", type=int, default=2000)
+    ap.add_argument("--cloud-log-hours", metavar="HOURS",
+                    help=f"cloud only: send logs from the last HOURS (env DJ_CLOUD_LOG_HOURS; default {CLOUD_LOG_HOURS:g}); "
+                         "Grafana Cloud drops older lines without an error")
     ap.add_argument("--namespace", default=NAMESPACE,
                     help="service.namespace for every signal (use a new one to load a second copy into the same stack)")
     args = ap.parse_args()
@@ -424,8 +506,9 @@ def main():
             sys.exit("Set GRAFANA_OTLP_ENDPOINT, GRAFANA_INSTANCE_ID and GRAFANA_API_TOKEN (see loader/.env.example).")
         urls = {s: f"{base}/v1/{s}" for s in ("logs", "metrics", "traces")}
         auth = f"{user}:{token}" if user and token else None
-        # Grafana Cloud limits: metrics ~2h behind the newest sample, logs 7 days.
-        max_age = {"metrics": timedelta(hours=2) - timedelta(minutes=5), "logs": timedelta(days=7) - timedelta(hours=1),
+        # Grafana Cloud limits: metrics ~2h behind the newest sample, logs a few hours, traces 7 days.
+        log_hours = cloud_log_hours(args.cloud_log_hours)
+        max_age = {"metrics": timedelta(hours=2) - timedelta(minutes=5), "logs": timedelta(hours=log_hours),
                    "traces": timedelta(days=7) - timedelta(hours=1)}
     else:
         urls = {"logs": os.environ.get("LOCAL_LOKI_OTLP", "http://localhost:3100/otlp/v1/logs"),
@@ -450,7 +533,13 @@ def main():
         kept = [x for x in items if when(x) <= future_limit and (oldest is None or when(x) >= oldest)]
         if len(kept) < len(items):
             print(f"{signal}: skipping {len(items) - len(kept)} of {len(items)} items outside the target's time limits")
-        failures += send(sender, signal, kept, build, args.batch_size)
+            if signal == "logs" and args.target == "cloud":
+                print(f"logs: Grafana Cloud only keeps recent log lines, so only the last {log_hours:g} h are sent "
+                      "(--cloud-log-hours or DJ_CLOUD_LOG_HOURS to change); the local stack takes the full history.")
+        failed = send(sender, signal, kept, build, args.batch_size)
+        failures += failed
+        if signal == "logs" and args.target == "cloud" and not args.dry_run and kept and len(kept) > failed:
+            check_cloud_logs(len(kept) - failed, kept[0][0], kept[-1][0], log_hours)
     if args.dry_run:
         print("Dry run: all payloads built and validated; nothing was sent.")
     sys.exit(1 if failures else 0)

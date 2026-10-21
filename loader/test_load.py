@@ -1,4 +1,4 @@
-"""Self-check for the loader's time shift. Builds payloads in memory, never sends.
+"""Self-check for the loader's time shift and Cloud log checks. Builds payloads in memory, never sends.
 
     python3 -m unittest discover -s loader
 """
@@ -6,9 +6,12 @@
 import argparse
 import contextlib
 import io
+import json
 import os
 import sys
 import unittest
+import urllib.error
+from unittest import mock
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -128,6 +131,144 @@ class IncidentDate(unittest.TestCase):
                 self.assertEqual(attrs["case_run"], "2026-10-22")
         finally:
             load.set_case_run(load.INCIDENT_AT.date())
+
+
+CLOUD_ENV = {"GRAFANA_OTLP_ENDPOINT": "https://otlp.example/otlp", "GRAFANA_INSTANCE_ID": "1",
+             "GRAFANA_API_TOKEN": "glc_write_secret"}
+LOKI_ENV = {"GRAFANA_LOKI_URL": "https://logs.example/", "GRAFANA_LOKI_USER": "2",
+            "GRAFANA_LOKI_READ_TOKEN": "glc_read_secret"}
+SETTINGS = ("DJ_INCIDENT_DATE", "DJ_CLOUD_LOG_HOURS", *CLOUD_ENV, *LOKI_ENV)
+
+
+class FakeResponse(io.BytesIO):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+def loki_answer(count):
+    result = [{"metric": {}, "value": [0, str(count)]}] if count is not None else []
+    return FakeResponse(json.dumps({"status": "success", "data": {"resultType": "vector", "result": result}}).encode())
+
+
+class CloudLogs(unittest.TestCase):
+    """Cloud Loki drops old lines after a 204, so the loader caps the window and checks what was stored."""
+
+    def setUp(self):
+        saved = {k: os.environ.pop(k) for k in SETTINGS if k in os.environ}
+        self.addCleanup(os.environ.update, saved)
+        self.addCleanup(lambda: [os.environ.pop(k, None) for k in SETTINGS])
+        self.addCleanup(load.set_case_run, load.INCIDENT_AT.date())
+        self.addCleanup(load.set_namespace, load.NAMESPACE)
+        sleep = mock.patch.object(load.time, "sleep")
+        self.sleeps = sleep.start()
+        self.addCleanup(sleep.stop)
+
+    def run_main(self, *argv, env=(), loki=()):
+        """Run the loader against stubs: returns (log items posted, Loki query URLs, output)."""
+        os.environ.update(dict(env))
+        posted, queries = [], []
+        answers = list(loki)
+
+        def post(sender, signal, message):
+            if signal == "logs":
+                posted.extend(r for rl in message.resource_logs for sl in rl.scope_logs for r in sl.log_records)
+            return True
+
+        def urlopen(req, **kw):
+            queries.append(req)
+            answer = answers.pop(0) if len(answers) > 1 else answers[0]
+            if isinstance(answer, Exception):
+                raise answer
+            return loki_answer(answer)
+
+        with mock.patch.object(load.Sender, "post", post), mock.patch.object(load, "load_env_file"), \
+                mock.patch.object(load.urllib.request, "urlopen", urlopen), \
+                mock.patch.object(sys, "argv", ["load.py", "--target", "cloud", "--signals", "logs", *argv]), \
+                contextlib.redirect_stdout(io.StringIO()) as out, self.assertRaises(SystemExit) as done:
+            load.main()
+        self.assertEqual(done.exception.code, 0)
+        return posted, queries, out.getvalue()
+
+    def age_hours(self, posted):
+        now = datetime.now(timezone.utc)
+        return (now - datetime.fromtimestamp(min(r.time_unix_nano for r in posted) / 1e9, timezone.utc)) / timedelta(hours=1)
+
+    def test_window_defaults_to_three_hours(self):
+        posted, queries, out = self.run_main(env=CLOUD_ENV)
+        self.assertTrue(posted)
+        self.assertLessEqual(self.age_hours(posted), 3.01)
+        self.assertGreater(self.age_hours(posted), 2.5)
+        self.assertIn("only the last 3 h are sent", out)
+        self.assertEqual(queries, [])
+
+    def test_window_setting_flag_and_env(self):
+        self.assertEqual(load.cloud_log_hours(None), 3.0)
+        three_h, *_ = self.run_main(env=CLOUD_ENV)
+        os.environ["DJ_CLOUD_LOG_HOURS"] = "12"
+        self.assertEqual(load.cloud_log_hours(None), 12.0)
+        self.assertEqual(load.cloud_log_hours("1.5"), 1.5)  # the flag wins over the env
+        for bad in ("three", "0", "-1"):
+            with self.assertRaises(SystemExit):
+                load.cloud_log_hours(bad)
+        twelve_h, *_ = self.run_main()
+        one_h, *_ = self.run_main("--cloud-log-hours", "1")
+        self.assertLess(len(one_h), len(three_h))
+        self.assertLess(len(three_h), len(twelve_h))
+        self.assertLessEqual(self.age_hours(one_h), 1.01)
+        self.assertGreater(self.age_hours(twelve_h), 3.01)
+        self.assertLessEqual(self.age_hours(twelve_h), 12.01)
+
+    def test_warns_when_cloud_stored_fewer_lines(self):
+        posted, queries, out = self.run_main(env={**CLOUD_ENV, **LOKI_ENV}, loki=[10, 50])
+        sent = len(posted)
+        self.assertGreater(sent, 50)
+        self.assertIn(f"sent {sent} log lines, but Grafana Cloud stored only 50", out)
+        self.assertIn("--target local", out)
+        self.assertIn("reload just before a demo", out)
+        self.assertEqual(len(queries), 6)  # retried for ingestion delay
+        self.assertEqual(self.sleeps.call_count, 5)
+        url = queries[0].full_url
+        self.assertTrue(url.startswith("https://logs.example/loki/api/v1/query?"), url)
+        query = load.urllib.parse.parse_qs(load.urllib.parse.urlsplit(url).query)["query"][0]
+        self.assertIn('service_namespace="kipsake-sleep-floor"', query)
+        self.assertIn(f'case_run="{load.CASE_RUN}"', query)
+        self.assertNotIn("secret", out)
+
+    def test_stops_retrying_once_everything_is_stored(self):
+        posted, queries, out = self.run_main(env={**CLOUD_ENV, **LOKI_ENV}, loki=[None, 100000])
+        self.assertEqual(len(queries), 2)
+        self.assertIn(f"stored all {len(posted)} lines", out)
+        self.assertNotIn("WARNING", out)
+
+    def test_check_skipped_without_loki_settings(self):
+        posted, queries, out = self.run_main(env={**CLOUD_ENV, "GRAFANA_LOKI_URL": "https://logs.example"})
+        self.assertTrue(posted)
+        self.assertEqual(queries, [])
+        self.assertIn("stored-count check skipped: set GRAFANA_LOKI_URL, GRAFANA_LOKI_USER and GRAFANA_LOKI_READ_TOKEN", out)
+
+    def test_check_skipped_when_loki_refuses(self):
+        refused = urllib.error.HTTPError("https://logs.example", 401, "Unauthorized", {}, io.BytesIO(b""))
+        _, queries, out = self.run_main(env={**CLOUD_ENV, **LOKI_ENV}, loki=[refused])
+        self.assertEqual(len(queries), 1)
+        self.assertIn("check skipped: Loki query returned HTTP 401 (the read token needs logs:read)", out)
+        self.assertNotIn("secret", out)
+        _, _, out = self.run_main(env={**CLOUD_ENV, **LOKI_ENV}, loki=[urllib.error.URLError("no route")])
+        self.assertIn("check skipped: Loki query failed (no route)", out)
+
+    def test_no_check_on_dry_run_or_local(self):
+        _, queries, _ = self.run_main("--dry-run", env={**CLOUD_ENV, **LOKI_ENV}, loki=[0])
+        self.assertEqual(queries, [])
+        os.environ.update({**CLOUD_ENV, **LOKI_ENV})
+        posted, queries = [], []
+        with mock.patch.object(load.Sender, "post", lambda s, sig, m: posted.append(sig) or True), \
+                mock.patch.object(load.urllib.request, "urlopen", lambda *a, **k: queries.append(a)), \
+                mock.patch.object(sys, "argv", ["load.py", "--target", "local", "--signals", "logs"]), \
+                contextlib.redirect_stdout(io.StringIO()), self.assertRaises(SystemExit):
+            load.main()
+        self.assertEqual((posted, queries), (["logs"], []))
 
 
 if __name__ == "__main__":
