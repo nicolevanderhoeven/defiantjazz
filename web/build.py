@@ -61,9 +61,9 @@ SCENES = (
 )
 # Every picture the game shows, as name: (width, height). A picture whose file isn't in
 # web/assets/ yet shows as a placeholder panel the same shape, so new art drops in by name:
-# `--art FILE NAME`, then rebuild. Wide scenes and portraits are 3:1, the title's key art 16:9,
-# the flyer 2:3. The bundle tells game.js which ones are there. The partner's sheet scenes that
-# new art replaced stay in web/assets/, unused, so they can be put back by naming them here.
+# `--art FILE NAME`, then rebuild. The bundle tells game.js which ones are there. The partner's
+# sheet scenes and the broadcast scene that newer art replaced stay in web/assets/, unused, so
+# they can be put back by naming them here.
 IMAGES = {
     "title-splash": (1536, 864),
     "flyer-kipsake": (800, 1200),
@@ -72,18 +72,17 @@ IMAGES = {
     "portrait-agnes": (1200, 400),
     "portrait-bertram": (1200, 400),
     "portrait-clement": (1200, 400),
-    "scene-outside-world": (1200, 400),
-    "scene-elevator-evidence": (1200, 400),
-    "scene-break-room-camera-1": (1200, 400),
-    "scene-break-room-camera-2": (1200, 400),
-    "scene-supply-room": (1200, 400),
-    "scene-agnes-home": (1200, 400),
-    "scene-bertram-home": (1200, 400),
+    "scene-outside-world": (720, 1080),
+    "scene-elevator-evidence": (1050, 700),
+    "scene-break-room-camera": (1050, 700),
+    "scene-supply-room": (1050, 700),
+    "scene-agnes-home": (1050, 700),
+    "scene-bertram-home": (1050, 700),
     "scene-clement-home": (1200, 400),
-    "portrait-agnes-push": (1200, 400),
-    "portrait-bertram-push": (1200, 400),
-    "portrait-clement-push": (1200, 400),
-    "scene-reveal": (1200, 400),
+    "portrait-agnes-push": (1050, 700),
+    "portrait-bertram-push": (1050, 700),
+    "portrait-clement-push": (1050, 700),
+    "scene-reveal": (1050, 700),
 }
 # The title's key art goes with the title screen and the reveal's picture with the verdict, not
 # with a card. A panel may show them too.
@@ -91,7 +90,10 @@ TITLE_ART = "title-splash"
 REVEAL_ART = "scene-reveal"
 # Lossy WebP: the sheet is painted, not drawn on a pixel grid, so lossless is 5 to 10 times
 # larger for no visible gain. The page scales the scenes with image-rendering: pixelated.
+# --art FILE NAME lowers the quality in steps until the file fits MAX_BYTES: a Grafana Page
+# takes a file of at most 128 KB, and the picture goes in one as base64.
 WEBP_QUALITY = 80
+MAX_BYTES = 88 * 1024
 # Spoiler-free: Grafana shows the title in lists and gives it to Assistant as context.
 PAGE_TITLE = "The Defiant Jazz Incident"
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), "game"))
@@ -165,8 +167,8 @@ def scene_art(cards=None, path=ART_PATH):
             image = c.meta["image"]
             if image != "none" and image not in IMAGES:
                 raise content.ContentError(f"{where}: no picture {image!r} in IMAGES in web/build.py")
-            if c.meta.get("style") not in (None, "flyer", "role") or c.meta.get("dim") not in (None, "yes"):
-                raise content.ContentError(f"{where}: 'style:' is flyer or role, and 'dim:' is yes")
+            if c.meta.get("style") not in (None, "role") or c.meta.get("dim") not in (None, "yes"):
+                raise content.ContentError(f"{where}: 'style:' is role, and 'dim:' is yes")
             current = {"image": None if image == "none" else image, "body": c.body, "hotspots": []}
             current.update({k: c.meta[k] for k in ("where", "headline", "sound", "style") if k in c.meta})
             if "dim" in c.meta:
@@ -242,8 +244,12 @@ def make_image(src, name, out=ASSETS):
             sys.exit(f"{os.path.relpath(src)} is {im.width}x{im.height}, not the shape of {name} "
                      f"({size[0]}x{size[1]}): crop it first, or change its size in IMAGES.")
         path = os.path.join(out, name + ".webp")
-        im.convert("RGB").resize(size, Image.LANCZOS).save(path, "WEBP", quality=WEBP_QUALITY, method=6)
-    print(f"Wrote {os.path.relpath(path)} ({os.path.getsize(path) // 1024} KB). "
+        im = im.convert("RGB").resize(size, Image.LANCZOS)
+        for quality in range(WEBP_QUALITY, 45, -5):
+            im.save(path, "WEBP", quality=quality, method=6)
+            if os.path.getsize(path) <= MAX_BYTES:
+                break
+    print(f"Wrote {os.path.relpath(path)} ({os.path.getsize(path) // 1024} KB, quality {quality}). "
           "Run python3 web/build.py to put it in the game.")
 
 
@@ -327,10 +333,13 @@ window.DJ_HOST = {{
 let opened = false;
 async function askAssistant(prompt: string) {{
   await openAssistant({{ prompt }});
-  if (opened) {{
-    return;
+  if (!opened) {{
+    opened = true;
+    void again(prompt);
   }}
-  opened = true;
+}}
+
+async function again(prompt: string) {{
   for (const wait of [700, 1800]) {{
     await new Promise((resolve) => setTimeout(resolve, wait));
     await openAssistant({{ prompt }}).catch(() => undefined);

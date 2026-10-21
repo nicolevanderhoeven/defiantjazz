@@ -182,10 +182,13 @@ class SceneArtTest(unittest.TestCase):
         # Each interview opens on that suspect's portrait.
         for t in CONTENT.testimonies:
             self.assertTrue(art[t.title][0]["image"].startswith("portrait-"), t.title)
-        # The flyer is the advert, on its own, with nothing to hover.
+        # The flyer is the advert, on its own picture, with nothing to hover.
         flyer = art[CONTENT.advert.title]
-        self.assertEqual([p.get("style") for p in flyer], ["flyer"])
-        self.assertEqual(flyer[0]["hotspots"], [])
+        self.assertEqual([(p["image"], p["hotspots"]) for p in flyer], [("flyer-kipsake", [])])
+        # The reveal's picture names the killer: no panel shows it, only the verdict.
+        for panels in art.values():
+            self.assertNotIn(build.REVEAL_ART, [p["image"] for p in panels])
+        self.assertNotIn(build.REVEAL_ART, read("game.js").replace(f'var REVEAL_ART = "{build.REVEAL_ART}"', ""))
 
     def test_art_stays_crisp_and_still_for_reduced_motion(self):
         css = read("style.css")
@@ -269,8 +272,10 @@ class SceneTextTest(unittest.TestCase):
         for title, p in self.panels():
             if p.get("headline"):
                 self.assertLessEqual(len(words(p["headline"])), 8, title)
+            # Lines marked "(drawn)" are in the picture, so they don't show under it.
+            shown = [l for l in p["body"].splitlines() if not l.startswith("(drawn) ")]
             if p.get("style") != "role":
-                self.assertLessEqual(len(p["body"].splitlines()), 8, title)
+                self.assertLessEqual(len(shown), 8, title)
 
     def test_no_tell_tale_absences(self):
         # Saying what someone isn't wearing points at what matters.

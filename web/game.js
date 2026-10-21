@@ -46,8 +46,8 @@
 
   // Pixel-art pictures in assets/, made by web/build.py --art. C.pictures gives every picture's
   // size as name: [width, height]; a panel whose picture is still to come (C.toCome) shows a
-  // placeholder the same shape.
-  // The art holds no clue text, so its alt text is empty and the story stays in the HTML.
+  // placeholder the same shape. Alt text is empty: the story stays in the HTML, and words drawn
+  // in a picture are in its panel's transcript.
   var TITLE_ART = "title-splash";
   var REVEAL_ART = "scene-reveal";
   var PORTRAITS = { agnes: "portrait-agnes", bertram: "portrait-bertram", clement: "portrait-clement" };
@@ -379,12 +379,21 @@
 
   function framesOf(c) { return C.art[c.title]; }
 
-  // The flyer's printed copy: lettering on the placeholder, or what screen readers hear.
-  function flyer(frame, shown) {
-    var lines = frame.body.split("\n").map(function (l) { return l.replace(/^>\s?/, ""); }).filter(Boolean);
-    return el("div", { class: shown ? "flyer" : "sr-only" }, lines.map(function (line, i) {
-      return inline(line, el("p", { class: i === 0 ? "flyer-brand" : null }));
-    }));
+  // A panel's text, less the lines marked "(drawn)": words the picture shows legibly. They
+  // aren't repeated under it, but stay a click away, for a small screen or a screen reader;
+  // under a picture with nothing else to say (the flyer), only screen readers get them.
+  // Without the picture yet, they show like the rest.
+  var DRAWN = /^\(drawn\) /;
+  function panelText(frame, pictured) {
+    var lines = frame.body.split("\n");
+    var drawn = lines.filter(function (l) { return DRAWN.test(l); });
+    if (!pictured || !drawn.length) return cardBody(lines.map(function (l) { return l.replace(DRAWN, ""); }).join("\n"));
+    var rest = lines.filter(function (l) { return !DRAWN.test(l); }).join("\n");
+    var copy = cardBody(drawn.map(function (l) { return l.replace(DRAWN, ""); }).join("\n"));
+    if (!rest.trim()) return el("div", { class: "sr-only" }, copy);
+    var body = cardBody(rest);
+    body.appendChild(el("details", { class: "drawn" }, [el("summary", null, "Text in the picture"), copy]));
+    return body;
   }
 
   // The panel's list as tiles, each led by an icon for its first word (ask, investigate, accuse).
@@ -409,35 +418,33 @@
     var size = name ? C.pictures[name] : [1200, 400];
     var pic = el("div", { class: "panel-pic" });
     pic.style.aspectRatio = size[0] + " / " + size[1];
-    var flyerStyle = frame.style === "flyer";
+    // The whole picture, never cropped: one taller than the 3:1 panels is narrower, to fit the screen.
+    pic.style.maxWidth = "calc(" + (72 * size[0] / size[1]).toFixed(1) + "vh)";
+    var pictured = hasPicture(name);
     if (!name) {
       pic.classList.add("panel-black");
-    } else if (hasPicture(name)) {
+    } else if (pictured) {
       pic.appendChild(picture(name));
       frame.hotspots.forEach(function (h, i) { hotspot(h, i).forEach(function (n) { pic.appendChild(n); }); });
     } else {
       // Art to come: the same frame, and a quiet label. The file to add is in data-picture.
       pic.classList.add("panel-placeholder");
       pic.setAttribute("data-picture", name);
-      if (flyerStyle) pic.appendChild(flyer(frame, true));
-      else pic.appendChild(el("span", { class: "placeholder-label", "aria-hidden": "true" }, "Illustration to come"));
+      pic.appendChild(el("span", { class: "placeholder-label", "aria-hidden": "true" }, "Illustration to come"));
     }
     if (frame.dim) pic.classList.add("panel-dim");
-    if (size[1] > size[0]) pic.classList.add("panel-tall");
-    // A picture taller than the 3:1 panels is cropped to fit the screen; such a panel has no hotspots.
-    else if (size[0] / size[1] < 2.5 && !frame.hotspots.length) pic.classList.add("panel-cap");
     if (frame.sound) pic.appendChild(el("p", { class: "panel-sound" }, frame.sound));
     var head = frame.where || frame.headline ? el("div", { class: "panel-head" }, [
       frame.where ? el("p", { class: "panel-where" }, frame.where) : null,
       frame.headline ? heading(frame.headline) : null,
     ]) : null;
     var text = null;
-    if (flyerStyle) text = hasPicture(name) ? flyer(frame, false) : null;
-    else if (frame.body) text = frame.style === "role" ? roleBody(frame.body) : cardBody(frame.body);
+    if (frame.body) text = frame.style === "role" ? roleBody(frame.body) : panelText(frame, pictured);
+    var quiet = text && text.classList.contains("sr-only");
     return el("figure", { class: "panel" + (frame.style ? " panel-" + frame.style : "") }, [
       // "Your role" has no picture: its headline sits over its tiles.
-      el("div", { class: "panel-art" }, [head, frame.style === "role" ? null : pic]),
-      text ? el("figcaption", { class: "panel-text" }, text) : null,
+      el("div", { class: "panel-art" + (head ? " has-head" : "") }, [head, frame.style === "role" ? null : pic]),
+      text ? el("figcaption", { class: quiet ? null : "panel-text" }, text) : null,
     ]);
   }
 
@@ -956,7 +963,8 @@
     ])];
     if (i === 0) {
       var stop = /\.$/.test(a.label) ? "" : ".";
-      parts.push(panel({ image: REVEAL_ART, where: "Incident File SF-1008 · case closed", hotspots: [], body: "" }));
+      // The reveal's picture names the killer, so it's only ever made here, after the accusation.
+      parts.push(panel({ image: REVEAL_ART, hotspots: [], body: "" }));
       parts.push(el("p", { class: "accused" }, el("strong", null, "You accused " + a.label + stop)));
       if (state.reasoning) parts.push(el("blockquote", { class: "reasoning" }, state.reasoning));
       parts.push(card(verdict, a.key === "other" ? "You named " + a.label : verdict.title));

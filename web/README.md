@@ -63,26 +63,11 @@ Spoilers: anyone who can open a page can export its source, and Grafana Assistan
 
 ## Scene art
 
-The web game tells the story in full-image panels, after the comic prototype: each story card is a few panels, each one pixel-art picture with where we are and a short headline over it, and a line or two of caption, the spoken lines and any paper close up under it. **Next panel** steps through them (or the arrow keys). The title screen has key art, and the verdict a picture of its own. Every picture is one WebP file in `assets/`, listed with its size in `IMAGES` in `build.py`, and the bundle tells `game.js` which ones are there.
+The web game tells the story in full-image panels, after the comic prototype: each story card is a few panels, each one pixel-art picture with where we are and a short headline over it (unless the picture says so itself), and a line or two of caption, the spoken lines and any paper close up under it. **Next panel** steps through them (or the arrow keys). The title screen has key art, and the verdict a picture of its own. Every picture is one WebP file in `assets/`, listed with its size in `IMAGES` in `build.py`, and the bundle tells `game.js` which ones are there.
 
-A picture that isn't in `assets/` yet shows as a placeholder panel the same shape, with a quiet "Illustration to come" label. The Kipsake flyer's placeholder is lettered in HTML. These are still to come, all 1200×400 except the flyer, which is 800×1200:
+Some pictures have words drawn in: the flyer's copy, evidence labels, the Gazette, speech bubbles. A panel doesn't repeat those under the picture. They're its lines marked `(drawn)` in `scene-art.md`, a transcript behind **Text in the picture** for a small screen or a screen reader (or only for screen readers, when the panel has nothing else to say, like the flyer). The verdict's picture names the killer, so only the verdict shows it, after the accusation.
 
-| File | Panels |
-|---|---|
-| `flyer-kipsake.webp` | The Kipsake flyer that opens the cold open |
-| `scene-outside-world.webp` | The Outside World handout |
-| `scene-elevator-evidence.webp` | Lead 1, Elevator car 1: Floor Security's evidence |
-| `scene-break-room-camera-1.webp` | Lead 1, Break Room 2: the camera at 03:01:20 |
-| `scene-break-room-camera-2.webp` | Lead 1, Break Room 2: the camera at 03:07:03 |
-| `scene-supply-room.webp` | Lead 1, Supply Room B: the evidence |
-| `scene-agnes-home.webp` | Lead 2, Agnes at home (Peggy) |
-| `scene-bertram-home.webp` | Lead 2, Bertram at home |
-| `portrait-agnes-push.webp` | Lead 3, Agnes's last interview |
-| `portrait-bertram-push.webp` | Lead 3, Bertram's last interview |
-| `portrait-clement-push.webp` | Lead 3, Clement's last interview |
-| `scene-reveal.webp` | The verdict, after the accusation |
-
-To add one, run `--art FILE NAME` and rebuild. If it has another shape, change its size in `IMAGES` first. Then add its hotspots in `scene-art.md`, by looking at it: placeholders have none.
+A picture that isn't in `assets/` yet shows as a placeholder panel the same shape, with a quiet "Illustration to come" label, and its `(drawn)` lines show as text. Every picture the game names is in place now. To add or replace one, run `--art FILE NAME` and rebuild. If it has another shape, change its size in `IMAGES` first. `--art` lowers the WebP quality until the file is at most 88 KB, so it fits in a Grafana Page file. Then add its hotspots in `scene-art.md`, by looking at it: a placeholder has none.
 
 ```sh
 python3 web/build.py --art picture.png scene-supply-room   # make assets/scene-supply-room.webp from any picture
@@ -90,9 +75,9 @@ python3 web/build.py                                       # then put it in the 
 python3 web/build.py --art                                 # cut the comic sheet into assets/scene-1..4-*.webp
 ```
 
-It needs [Pillow](https://pypi.org/project/Pillow/) (`python3 -m pip install Pillow`). The pictures are committed, so playing or building the page doesn't. The art holds no clue text, so the images have empty alt text and all the story stays in the page's text; the flyer's printed copy is read out to screen readers. The Grafana Page build inlines the pictures as `data:` URLs, since a page's frame can't load files.
+It needs [Pillow](https://pypi.org/project/Pillow/) (`python3 -m pip install Pillow`). The pictures are committed, so playing or building the page doesn't. The images have empty alt text: the story stays in the page's text, and the words drawn in a picture are in its transcript. The Grafana Page build inlines the pictures as `data:` URLs, since a page's frame can't load files.
 
-The elevator scene is the comic prototype's, cut from its sheet, `comic-prototype/assets/scenes.png`, which isn't changed. The title art, the portraits and the break room and Clement at home scenes are AI-generated in the comic prototype's style, and were picked by the game's author. They replaced the prototype's versions of those scenes, which stay in `assets/` (`scene-1-broadcast`, `scene-2-break-room`, `scene-4-clement-home`) with the earlier broadcast scene (`scene-broadcast`), unused, so they can be put back.
+The elevator scene is the comic prototype's, cut from its sheet, `comic-prototype/assets/scenes.png`, which isn't changed. Every other picture is AI-generated in the comic prototype's style and was picked by the game's author: the title art, the portraits, the break room and Clement at home scenes, and the flyer, Gazette, lead and verdict pictures. Earlier versions they replaced stay in `assets/` (`scene-1-broadcast`, `scene-2-break-room`, `scene-4-clement-home` and `scene-broadcast`), unused, so they can be put back.
 
 **Spoilers:** the panels are in `game/SPOILERS-content/scene-art.md`: for each story card, its panels' pictures, where and when we are, headline, sound and text, retold from the card. The terminal game keeps the cards as written. A panel can also have numbered hotspots, placed as a percentage of the picture, that show a short note when hovered, focused or tapped, and stay open after a click or tap until Escape or a click elsewhere. The file's opening comment has the format. If a card changes, `build.py` stops until its panels are updated to match.
 

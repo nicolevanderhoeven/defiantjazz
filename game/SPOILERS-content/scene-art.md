@@ -11,10 +11,12 @@ Each "## ..." card with "image:" is one panel. The panels of a story card follow
   headline: optional, a few words over the picture
   sound:    optional, what we hear, in a caption on the picture
   dim:      optional, "yes" shows the picture darker (the power cut)
-  style:    optional, "flyer" (the text is the flyer's printed copy, shown only while its picture is
-            missing, and read out to screen readers) or "role" (the list shows as three tiles)
+  style:    optional, "role" (the list shows as three tiles)
 The panel's text goes under the picture, short: plain lines are captions, "[...]" lines say what's on
 screen, "Name: ..." lines are spoken, and "> ..." lines are paper or a screen, shown close up.
+A line that starts "(drawn) " is words the picture shows legibly: it isn't repeated under the picture,
+but kept as its transcript, behind "Text in the picture" (or for screen readers only, when the panel
+has nothing else to say). Write it as the picture has it. Without the picture yet, it shows as text.
 If the card's text changes, `python3 web/build.py` stops and prints the new fingerprint: update the
 panels to match, then "source:".
 
@@ -31,15 +33,13 @@ them when the picture lands, by looking at it.
 card: Kipsake
 source: db391f81
 image: flyer-kipsake
-style: flyer
-> KIPSAKE
-> At Kipsake, we rent your sleep.
-> You work hard all day. So why should your nights go to waste?
-> Each night, you check in, settle into your pod, and drift off. Your sleepwalking self works the night shift for you.
-> In the morning, you wake up rested, paid, and remembering nothing at all.
-> Our lullaby keeps you sound asleep all night long. Even in a power outage.
-> **Earn while you sleep.**
-> Sweet dreams, Dreamers.
+(drawn) > KIPSAKE
+(drawn) > WE RENT YOUR SLEEP
+(drawn) > Earn while you sleep.
+(drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.
+(drawn) > Wake rested, paid, and remembering nothing.
+(drawn) > Our lullaby keeps you asleep. Even in a power outage.
+(drawn) > Sweet dreams, Dreamers.
 
 ## The incident
 card: The Defiant Jazz Incident
@@ -217,124 +217,117 @@ A fringed scarf, looped once so both ends hang down his chest. The threads of it
 at: 49, 86
 Folded in his lap. His hands are clean.
 
-## The obituary
+## The Gazette
 card: Outside World handout
 source: 64da3e8d
 image: scene-outside-world
-where: The Outside World
-headline: Port Quiet Gazette
 These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.
-> **Port Quiet Gazette · Obituaries**
-> **June, 41.** June died suddenly in March in what her employer, Kipsake, has described as "a workplace incident." She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.
-
-## The local news
-image: scene-outside-world
-where: The Outside World
-headline: Port Quiet Gazette
-> **Port Quiet Gazette · Local**
-> **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal "Procedure Revision 114" was withdrawn after the death of a sleepwalker in March. Records obtained by the Gazette show the revision was approved by night supervisor R. Hale. Kipsake declined to comment further.
+(drawn) > **Port Quiet Gazette · Obituaries**
+(drawn) > **June, 41.** June died suddenly in March in what her employer, Kipsake, has described as a workplace incident. She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.
+(drawn) > **Port Quiet Gazette · Local**
+(drawn) > **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal Procedure Revision 114 was withdrawn after the death of a sleepwalker in March. Records obtained by the Gazette show the revision was approved by night supervisor R. Hale. Kipsake declined to comment further.
 
 ## The evidence
 card: Elevator car 1
 source: 072db044
 image: scene-elevator-evidence
-where: Elevator car 1 · 03:09 · as found
-headline: Floor Security's evidence
-[Laid out on a dark cloth, filmed from above. Three numbered markers.]
-> 1 · A grey cable in an evidence bag. Ligature. Recovered from Agnes's hands.
-> 2 · Three folded notes. Phone panel, cover loose. Three folded notes, still tucked inside, unopened.
-> 3 · A small evidence bag holding a loose twist of five or six threads, in several different colours. Found in the victim's closed right hand. Not from his own clothing.
+[Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]
+(drawn) > 03:09 · Elevator car 1
+(drawn) > 1 · Ligature. Recovered from Agnes's hands.
+(drawn) > 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.
+(drawn) > 3 · Found in the victim's closed right hand. Not from his own clothing.
+(drawn) > Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby.
+(drawn) > Corridor E and lobby compliance mics ran on emergency power.
 
-## Mr. Hale's route
-image: scene-elevator-evidence
-where: Elevator car 1 · 03:09 · as found
-headline: Mr. Hale's route
-> Mr. Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby.
-> The corridor E and lobby compliance mics ran on emergency power.
-[Close-up of marker 3 in daylight, on a plain light surface: the twist of threads, every colour clear.]
+## Marker 1
+at: 18, 29
+A grey cable in an evidence bag.
 
-## 03:01:20
+## Marker 2
+at: 38, 45
+Three folded notes, from the elevator's phone panel. Unopened.
+
+## Marker 3
+at: 22, 73
+A small evidence bag holding a loose twist of five or six threads, in several different colours.
+
+## In daylight
+at: 77, 80
+Close-up of marker 3 in daylight, on a plain light surface: the twist of threads, every colour clear.
+
+## Two frames
 card: Break Room 2
 source: b0b1e7a8
-image: scene-break-room-camera-1
-where: Break Room 2 camera · 03:01:20
-headline: Floor Security's own footage
-sound: Voices murmuring, cups, no music
-[Grainy, filmed from high up, close on the emergency speaker and the chair beside it. It isn't in the telemetry the AI has.]
-[Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top. The camera slowly zooms in on the cable and the napkin.]
+image: scene-break-room-camera
+[Two frames from the Break Room 2 security camera. This is Floor Security's own footage, so it isn't in the telemetry the AI has. Grainy, filmed from high up, close on the room's emergency speaker and the chair beside it. The camera slowly zooms in on the cable and the napkin.]
+(drawn) > BREAK ROOM 2 · SECURITY CAMERA
+(drawn) > 03:01:20 · Voices. Cups. No music.
+(drawn) > 03:02:00 · CAMERAS OFFLINE · Jazz begins.
+(drawn) > 03:07:03
 
-## 03:02:00
-image: none
-where: Break Room 2 camera · 03:02:00
-headline: Cameras offline.
-sound: ♪ Jazz starts playing on the emergency speaker
-[The screen is black.]
+## 03:01:20
+at: 21, 59
+Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top.
 
 ## 03:07:03
-image: scene-break-room-camera-2
-where: Break Room 2 camera · 03:07:03
-headline: Same angle, same zoom.
-[The cable and the napkin are gone from the chair. Clement sits on the floor beside the chair, in his fringed scarf, wearing his lanyard with the badge facing out. Nobody else is in the shot.]
+at: 77, 59
+Same angle, same zoom. The cable and the napkin are gone from the chair.
+
+## Clement
+at: 87, 72
+Clement sits on the floor beside the chair, in his fringed scarf, wearing his lanyard with the badge facing out. Nobody else is in the shot.
 
 ## The waffle
 card: Supply Room B
 source: 9eae6fd9
 image: scene-supply-room
-where: Supply Room B · 03:18
-headline: Floor Security's evidence
-[Laid out on a dark cloth, filmed from above.]
-> An evidence bag holding a pale, half-cooked waffle, tagged "SR-B-03 · unregistered appliance (waffle iron) · confiscated."
-> Beside it, a printed certificate in a plastic sleeve: "KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM"
+[Floor Security's evidence, already laid out on a dark cloth, filmed from above.]
+(drawn) > SR-B-03 · unregistered appliance (waffle iron) · confiscated
+(drawn) > KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM
+(drawn) > Supply Room B · 03:18. Circuit C-7: Break Room 2 cocoa urn and lights, Supply Room B. Overload. Main breaker tripped, 03:02:00.
 
-## Circuit C-7
-image: scene-supply-room
-where: Supply Room B · 03:18
-headline: Circuit C-7
-> Supply Room B · 03:18. Circuit C-7 (Break Room 2 cocoa urn and lights, Supply Room B): overload. Main breaker tripped, 03:02:00.
+## The bag
+at: 28, 46
+An evidence bag holding a pale, half-cooked waffle.
 
-## Peggy, 1
+## Peggy
 card: Agnes at home
 source: 965d6d35
 image: scene-agnes-home
-where: Port Quiet · Peggy's flat · 06:40
-headline: Peggy
-At home, Agnes goes by Peggy. Her waking self sits on the same chair. No lanyard. Her right wrist is in a crepe bandage.
+At home, Agnes goes by Peggy. Her waking self, Peggy, sits on the same chair. No lanyard.
 You: Peggy? You were there last night.
-Peggy: A man grabbed my wrist. "You can't be here." I ran.
-
-## Peggy, 2
-image: scene-agnes-home
-where: Port Quiet · Peggy's flat · 06:40
-headline: Peggy
+(drawn) > 06:40 · Port Quiet · Peggy's flat
+(drawn) Peggy: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.
 [She holds her bandaged wrist, arms wrapped around herself.]
-Peggy: When I came back, he wasn't moving.
 You: Anything else?
-Peggy: This was in my pocket. It isn't mine.
+(drawn) Peggy: This was in my pocket. It isn't mine.
+
+## Her wrist
+at: 34, 70
+Her right wrist is in a crepe bandage.
 
 ## The napkin
-image: scene-agnes-home
-where: Port Quiet · Peggy's flat · 06:40
-headline: The napkin
-[She holds out a folded cloth napkin. Close-up: on one corner, in laundry marker, a single block capital:]
-> C
+at: 40, 85
+A folded cloth napkin. On one corner, in laundry marker, a single block capital: "C".
 
-## Bertram at home, 1
+## Bertram at home
 card: Bertram at home
 source: 61ef3767
 image: scene-bertram-home
-where: Port Quiet · Bertram's flat · 06:40
-headline: Bertram
 Bertram's waking self sits on the same chair. No lanyard.
 You: Bertram? You were on that floor last night.
-Bertram: Someone trod on me in the dark. I grabbed at them.
-
-## Bertram at home, 2
-image: scene-bertram-home
-where: Port Quiet · Bertram's flat · 06:40
-headline: Bertram
-[He opens his hand toward the camera: a tuft of threads in several different colours, twisted together into one piece. Then he touches his right shoulder.]
-Bertram: They said sorry. Called me "Waffles". Who's Waffles?
+(drawn) > 06:40 · Port Quiet · Bertram's flat
+(drawn) Bertram: Someone trod on me in the dark. I grabbed at them.
+(drawn) Bertram: They said sorry. Called me 'Waffles'. Who's Waffles?
 [He looks puzzled.]
+
+## His hand
+at: 39, 76
+He opens his hand toward the camera: a tuft of threads in several different colours, twisted together into one piece.
+
+## His shoulder
+at: 40, 37
+He touches his right shoulder.
 
 ## Clement at home, 1
 card: Clement at home
@@ -376,71 +369,54 @@ You: We read about June.
 Clement: Then you know everything I do.
 [He gathers them back into the folder and holds it against his chest.]
 
-## Agnes pushed, 1
+## Agnes pushed
 card: Agnes
 source: 9676ab5f
 image: portrait-agnes-push
-where: An interview at Kipsake · 04:30
-headline: Agnes
-[Wearing her lanyard. Her right wrist is in a crepe bandage from the medical exam. Four notes in evidence bags lie in her lap.]
-> One of them is the note found in Mr. Hale's jacket. It begins "If you are reading this, you are me…" and ends "Don't trust them."
+[Agnes, wearing her lanyard, in tears. Four notes in evidence bags lie in her lap.]
+(drawn) > 04:30 · Kipsake · Agnes
 You: These were in the elevator phone panel.
-Agnes: They're for her. The other me.
-
-## Agnes pushed, 2
-image: portrait-agnes-push
-where: An interview at Kipsake · 04:30
-headline: Agnes
+(drawn) Agnes: They're for her. The other me.
 [She takes the folded note from behind her badge card and adds it to the pile.]
 You: Why?
-Agnes: So she knows who to trust.
+(drawn) Agnes: So she knows who to trust.
+[She holds one bag up to the camera. The note in it is in joined-up handwriting, with "Waffles" underlined:]
+(drawn) > WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.
 
-## Agnes pushed, 3
-image: portrait-agnes-push
-where: An interview at Kipsake · 04:30
-headline: Who's who
-[In tears, she holds one bag up to the camera. The note in it is in joined-up handwriting, with "Waffles" underlined:]
-> WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.
+## Her wrist
+at: 15, 76
+Her right wrist is in a crepe bandage from the medical exam.
 
-## Bertram pushed, 1
+## Mr. Hale's note
+at: 36, 74
+One of the notes is the note found in Mr. Hale's jacket. It begins "If you are reading this, you are me…" and ends "Don't trust them."
+
+## Bertram pushed
 card: Bertram
 source: b3c47a41
 image: portrait-bertram-push
-where: An interview at Kipsake · 04:30
-headline: Bertram
-[Wearing his lanyard, the ice pack on his shoulder.]
-You: You weren't having cocoa, Bertram.
-[His shoulders slump.]
-Bertram: Fine. I was making a waffle.
+[Bertram, wearing his lanyard, the ice pack on his shoulder. His shoulders slump.]
+(drawn) > 04:30 · Kipsake · Bertram
+(drawn) You: You weren't having cocoa, Bertram.
+(drawn) Bertram: Fine. I was making a waffle.
+(drawn) You: And who brought you the ice?
+(drawn) Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.
 
-## Bertram pushed, 2
-image: portrait-bertram-push
-where: An interview at Kipsake · 04:30
-headline: Bertram
-You: And who brought you the ice?
-Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.
-
-## Clement pushed, 1
+## Clement pushed
 card: Clement
 source: d528783f
 image: portrait-clement-push
-where: An interview at Kipsake · 04:30
-headline: Clement
-[Wearing his lanyard and scarf. On his lap is a clipboard with a Kipsake "Incident Statement" form.]
+[Clement, wearing his lanyard and scarf, with a clipboard and a Kipsake "Incident Statement" form.]
+(drawn) > 04:30 · Kipsake · Clement
 You: For the record, Clement. In your own hand. What did you do after the lights came back?
+[He writes without speaking, in block capitals, line by line:]
+(drawn) > KIPSAKE · INCIDENT STATEMENT
+(drawn) > 03:07 LIGHTS RETURNED. I WAS SEATED BY THE SPEAKER.
+(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON WAFFLES (SHOULDER).
+(drawn) > I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.
+[The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment.]
+(drawn) Clement: Is that all?
 
-## Clement pushed, 2
-image: portrait-clement-push
-where: An interview at Kipsake · 04:30
-headline: Incident Statement
-[He writes without speaking. What he writes on the form, in block capitals, line by line:]
-> 03:07 Lights returned. I was seated by the speaker.
-> I went to the corridor and checked on Waffles (shoulder).
-> I hope ~~Peggy~~ Agnes is being looked after.
-
-## Clement pushed, 3
-image: portrait-clement-push
-where: An interview at Kipsake · 04:30
-headline: Clement
-[The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. His hands are clean. He holds out the clipboard to you.]
-Clement: Is that all?
+## His hand
+at: 45, 57
+His hands are clean. He holds out the clipboard to you.
