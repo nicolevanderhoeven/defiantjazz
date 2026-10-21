@@ -28,15 +28,15 @@
   }
 
   function renderStatements(s) {
-    const panels = s.witnesses.map((w, i) => {
-      const beat = w.beats[frameIndex];
+    const w = s.witnesses[frameIndex];
+    const panels = w.beats.map((beat, i) => {
       const card = document.createElement('article');
       card.className = 'interview';
       const heading = document.createElement('h2');
-      heading.textContent = `${w.name} / ${w.time}`;
+      heading.textContent = `${w.name} / ${w.time} / ${i + 1}`;
       const portrait = document.createElement('div');
       portrait.className = 'portrait';
-      portrait.style.backgroundPosition = `${i * 50}% center`;
+      portrait.style.backgroundPosition = `${frameIndex * 50}% center`;
       portrait.setAttribute('role', 'img');
       portrait.setAttribute('aria-label', w.description);
       const question = document.createElement('p');
@@ -86,7 +86,8 @@
       b.setAttribute('aria-label', o[3]);
       $('hotspots').append(b);
     });
-    $('suggestions').replaceChildren(...s.suggest.map(c => button(c, () => run(c))));
+    const suggestions = statements ? [`TALK ${s.witnesses[frameIndex].key.toUpperCase()}`, 'NEXT'] : s.suggest;
+    $('suggestions').replaceChildren(...suggestions.map(c => button(c, () => run(c))));
     $('chapters').replaceChildren(...scenes.map((s, i) => {
       const b = button('', () => enter(i));
       const small = document.createElement('small');
@@ -128,7 +129,7 @@
     log(value.toUpperCase(), true);
     const cmd = value.toLowerCase().replace(/[.!?]+$/, '').replace(/\s+/g, ' ');
     if (cmd === 'help') {
-      log('LOOK describes the scene. EXAMINE <object> inspects it. TALK <person> starts a conversation. NEXT advances a panel. RESTART returns to the opening. Click numbered markers for the same commands. Statement pages show all three interviews in parallel; NEXT continues their statements. This demo uses authored responses; it has no AI connection.');
+      log('LOOK describes the scene. EXAMINE <object> inspects it. TALK <person> starts a conversation. NEXT advances a panel. RESTART returns to the opening. Click numbered markers for the same commands. Each interview page shows one person’s complete statement in three panels; NEXT moves to the next person. This demo uses authored responses; it has no AI connection.');
       return;
     }
     if (cmd === 'restart') { enter(0); return; }
@@ -140,9 +141,10 @@
     const talk = cmd.match(/^(?:talk(?: to)?|ask) (.+)$/);
     if (talk) {
       const who = talk[1] === 'c' ? 'clement' : talk[1];
-      const witness = scene().witnesses?.find(w => w.key === who);
-      const response = witness ? `${witness.name}: “${witness.beats[frameIndex][1]}”` : scene().talk[who];
-      log(response || 'No response from that person here. Try: ' + Object.keys(scene().talk).map(n => 'TALK ' + n.toUpperCase()).join(', ') + '.');
+      const activeWitness = scene().witnesses?.[frameIndex];
+      const witness = activeWitness?.key === who ? activeWitness : null;
+      const response = witness ? witness.beats.map(beat => `${witness.name}: “${beat[1]}”`).join('\n') : activeWitness ? null : scene().talk[who];
+      log(response || 'No response from that person here. Try: ' + (activeWitness ? [activeWitness.key] : Object.keys(scene().talk)).map(n => 'TALK ' + n.toUpperCase()).join(', ') + '.');
       if (response && !scene().witnesses) {
         $('scene-speech').textContent = response;
         $('scene-speech').hidden = false;

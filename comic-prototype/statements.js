@@ -24,9 +24,9 @@
   const statement = {
     name: 'The statements', location: 'AFTER THE OUTAGE / FLOOR SECURITY / SELECTED INTERVIEWS',
     layout: 'statements', witnesses,
-    frames: ['What they remember.', 'What they cannot explain.', 'What they leave you with.'].map((title, i) => [
-      `FLOOR SECURITY / STATEMENTS ${i + 1} OF 3`, title, '',
-      'You interviewed all three soon after the power came back. These are their statements, not verified events.\n\n' + witnesses.map(w => `${w.name} · ${w.time}\n${w.beats[i][0] ? 'You: “' + w.beats[i][0] + '”\n' : ''}${w.name}: “${w.beats[i][1]}”\n${w.beats[i][2]}`).join('\n\n')
+    frames: witnesses.map(w => [
+      `FLOOR SECURITY / ${w.time}`, `${w.name}’s statement.`, '',
+      'You interviewed ' + w.name + ' soon after the power came back. This is a statement, not a verified account.\n\n' + w.beats.map(beat => `${beat[0] ? 'You: “' + beat[0] + '”\n' : ''}${w.name}: “${beat[1]}”\n${beat[2]}`).join('\n\n')
     ]),
     objects: witnesses.map((w, i) => [w.key, 18 + i * 32, 50, `TALK ${w.key.toUpperCase()}`, w.key === 'clement' ? ['c', 'scarf'] : [], w.description]),
     talk: Object.fromEntries(witnesses.map(w => [w.key, `${w.name}: “${w.beats[0][1]}”`])),
