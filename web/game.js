@@ -868,7 +868,7 @@
     other.value = d.other || "";
     Object.keys(C.suspects).concat(["other"]).forEach(function (key) {
       var id = "s-" + key;
-      var input = el("input", { type: "radio", name: "suspect", id: id, value: key, checked: d.suspect === key, class: "sr-only" });
+      var input = el("input", { type: "radio", name: "suspect", id: id, value: key, checked: d.suspect === key });
       input.addEventListener("change", function () {
         d.suspect = key;
         error.textContent = "";
