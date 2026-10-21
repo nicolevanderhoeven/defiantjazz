@@ -30,3 +30,6 @@ After the elevator chapter, The statements shows Agnes, Bertram, and Clement in 
 The transparent sleepwalking figure belongs in the middle foreground, in front of the bed: her body overlaps the duvet, which remains visible through her. Preserve the earlier image variants when revising the art.
 
 The recruitment chapter has one panel: Kipsake and “Your rest. Our progress.” at upper left, “Earn while you sleep” at upper right above the worker. NEXT goes directly to Cocoa Hour.
+
+
+Cocoa Hour is one panel (“Please enjoy your reward.”), using `assets/cocoa-night.png`. Its cast is exactly three sleepwalking clerks plus awake supervisor Mr. Hale. Timings, first-name character labels, and interview dialogue follow Nicole’s updated night-shift story: cocoa at 03:00, outage at 03:02–03:07, interviews after the outage, home visit at 06:40. The player asks the questions. The older six-clerk art remains only in the archived sheet; the runtime uses the new scene image.

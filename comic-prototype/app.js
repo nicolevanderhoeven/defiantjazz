@@ -4,9 +4,9 @@
   const scenes = window.COMIC_SCENES;
   const descriptions = [
     'A corporate advertisement: peaceful sleep beside rows of office workers.',
-    'Clerks and their supervisor at a cocoa celebration in a teal break room.',
+    'Three sleepwalking clerks and their awake night supervisor at a 03:00 cocoa celebration.',
     'An open elevator in a dark corridor under red emergency lighting.',
-    'Clement in his flat, holding a box, wearing a fringed scarf.'
+    'Clement in his flat at 06:40, holding a box, wearing a fringed scarf.'
   ];
   let sceneIndex = 0, frameIndex = 0;
   const scene = () => scenes[sceneIndex];
@@ -41,7 +41,7 @@
       portrait.setAttribute('aria-label', w.description);
       const question = document.createElement('p');
       question.className = 'interviewer';
-      question.textContent = beat[0] ? `OKONJO / ${beat[0]}` : 'OKONJO / CONTINUED STATEMENT';
+      question.textContent = beat[0] ? `YOU / ${beat[0]}` : 'YOU / CONTINUED STATEMENT';
       const bubble = document.createElement('blockquote');
       bubble.className = 'speech-bubble';
       bubble.textContent = beat[1];
