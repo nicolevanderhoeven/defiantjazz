@@ -7,7 +7,7 @@ Kipsake rents your sleep: at night its Dreamers sleep in pods while their sleepw
 This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice. It also has the game itself, in a terminal version for demos and playtests and a web version to embed in a Grafana dashboard.
 
 > [!WARNING]
-> **Spoilers live in `game/SPOILERS-content/`, `game/test_SPOILERS_game.py` and `web/SPOILERS-content.js`.** The folder holds the human-only story clips and `SPOILERS-reveal.md`, which names the killer and explains the solution. The test names the killer too, and the web bundle is built from that folder. Don't open them if you want to play.
+> **Spoilers live in `game/SPOILERS-content/`, `game/test_SPOILERS_game.py`, `web/SPOILERS-content.js` and, once you build it, `web/dist/SPOILERS-defiantjazz.page.json`.** The folder holds the human-only story clips and `SPOILERS-reveal.md`, which names the killer and explains the solution. The test names the killer too, and the web bundle and page file are built from that folder. Don't open them if you want to play.
 >
 > Everything else is safe to read: `CASE-BRIEF.md`, `telemetry/`, `loader/`, `local/` and `game/ai-evidence/` hold only what an investigator is given, never the solution. The rest of `web/` is spoiler-free too.
 
@@ -50,7 +50,7 @@ The same game as a static web page, made to embed in a Grafana dashboard panel n
 python3 -m http.server 8080 --bind 127.0.0.1 --directory web
 ```
 
-Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embedding it in a dashboard with the example dashboard, and has no spoilers.
+Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embedding it in a dashboard with the example dashboard, and building it as a Grafana Page with Grafana Assistant beside it. It has no spoilers.
 
 > [!WARNING]
 > **`web/SPOILERS-content.js` contains spoilers.** It's built from `game/SPOILERS-content/` and includes the solution, so don't open it if you want to play.
@@ -61,7 +61,7 @@ Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embe
 |---|---|
 | `CASE-BRIEF.md` | The incident brief Floor Security hands to investigators |
 | `game/` | The terminal game. **`game/SPOILERS-content/` and `game/test_SPOILERS_game.py` contain spoilers.** |
-| `web/` | The web version, for a browser or a Grafana dashboard panel. **`web/SPOILERS-content.js` contains spoilers.** |
+| `web/` | The web version, for a browser, a Grafana dashboard panel or a Grafana Page. **`web/SPOILERS-content.js` and `web/dist/` contain spoilers.** |
 | `telemetry/door-and-badge-events.log` | Door readers, badge journeys and trace spans |
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |

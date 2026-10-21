@@ -1,9 +1,9 @@
 # The Defiant Jazz Incident: web game
 
-The terminal game as a static web page, made to sit in a Grafana dashboard panel next to the case's telemetry.
+The terminal game as a static web page, made to sit in a Grafana dashboard panel next to the case's telemetry. The same code also builds as a [Grafana Page](#make-it-a-grafana-page).
 
 > [!WARNING]
-> **`SPOILERS-content.js` contains spoilers.** It's every story card from `game/SPOILERS-content/`, including the solution. The solution is encoded so a glance doesn't give it away, but don't read the file before you play. Everything else in this folder is spoiler-free.
+> **`SPOILERS-content.js` contains spoilers**, and so does `dist/SPOILERS-defiantjazz.page.json` once you build it. They hold every story card from `game/SPOILERS-content/`, including the solution. The solution is encoded so a glance doesn't give it away, but don't read the files before you play. Everything else in this folder is spoiler-free.
 
 The flow is the same as `python3 game/play.py`: the Kipsake advert and the cold open, your interviews with the suspects, then the case, where you follow up your three leads (one option each), review what you've unlocked, and accuse the killer. The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the Grafana MCP server or `gcx`, about the telemetry loaded in the stack. The page offers example questions with copy buttons.
 
@@ -35,6 +35,32 @@ The game panel is 24 columns wide and 18 rows tall, with two telemetry panels be
 - `?theme=dark` or `?theme=light` in the iframe URL sets the page's theme to match the dashboard. Without it, the page follows the viewer's system setting. The **Light theme / Dark theme** button overrides both, and the browser remembers it.
 - Copy buttons use the clipboard when the frame allows it. If the panel's frame blocks the clipboard, the page selects the question so the player can press Ctrl+C (⌘C on a Mac).
 
+## Make it a Grafana Page
+
+[Grafana Pages](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/pages/) (public preview, Grafana Cloud only) runs the game inside Grafana, with no hosting and no dashboard. The example questions get **Ask Assistant** buttons that open the question in Grafana Assistant for the player to check and send. Progress is saved in the player's Grafana account, and the game follows Grafana's light or dark theme.
+
+A page is a small project that Grafana builds itself, so `build.py --page` writes source, not a finished bundle: an export file to import. Its project files (`package.json`, the lockfile and the pages SDK) come from a page Grafana made, so you need one exported page to start from:
+
+1. In Grafana, open any page under **Pages** and choose **Export**. A page on [Grafana Play](https://play.grafana.org/) works too.
+2. Build the page file from it:
+
+   ```sh
+   python3 web/build.py --page --template ~/Downloads/some-page.page.json
+   ```
+
+   It writes `web/dist/SPOILERS-defiantjazz.page.json`, which isn't committed. Later builds reuse that file's project, so plain `python3 web/build.py --page` is enough. `--page --check` exits with an error if it's out of date.
+3. In **Pages**, choose **Import page**, pick the file, then open the page and **Publish** it. Grafana rebuilds the page in your stack when you import it.
+
+Import and export can be turned off on a stack separately from Pages. If **Import page** is missing or fails, import the file on a stack where it works.
+
+Who can play:
+
+- On your own stack, only signed-in members of your Grafana organization can open a page. **Publish** can share it with people you add, with anyone in the organization who has the link, or through a folder.
+- Pages aren't public. Anonymous visitors can only open pages on a stack with anonymous access, such as Grafana Play.
+- Players also need read access to the Loki, Prometheus and Tempo data sources with the case's telemetry.
+
+Spoilers: anyone who can open a page can export its source, and Grafana Assistant can read a published page's source when asked. The solution stays encoded, the page's title is spoiler-free, and **Ask Assistant** sends only the question, never story text. To discourage Assistant from reading the page, add a tenant-wide Assistant rule to the stack telling it never to read the page's source or reveal its solution. That's a soft guard, not a lock.
+
 ## Edit the story
 
 The cards live in `game/SPOILERS-content/`, shared with the terminal game. After editing any of them, rebuild the bundle:
@@ -51,17 +77,18 @@ python3 web/build.py
 python3 -m unittest discover -s web
 ```
 
-It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that the solution isn't readable in it, that the page loads nothing from the network, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
+It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that `build.py --page` builds a complete page file, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
 
 ## Files
 
 | Path | Contents |
 |---|---|
 | `index.html` | The page |
-| `game.js` | The game: views, saved progress, copy buttons |
+| `game.js` | The game: views, saved progress, copy or Ask Assistant buttons |
 | `theme.js` | Picks the theme before the first paint |
 | `style.css` | Layout and the dark and light themes |
 | `SPOILERS-content.js` | **Spoilers:** the story cards, generated by `build.py` |
-| `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/` |
+| `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/`, and with `--page` the Grafana Page file |
+| `dist/SPOILERS-defiantjazz.page.json` | **Spoilers:** the Grafana Page file, written by `build.py --page`, not committed |
 | `test_web.py` | The self-check |
 | `dashboard-example.json` | An example dashboard with the game panel and two telemetry panels |

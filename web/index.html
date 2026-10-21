@@ -25,14 +25,12 @@
 </main>
 <div class="toast" id="status" role="status" aria-live="polite"></div>
 <dialog id="restart-dialog" aria-labelledby="restart-title">
-  <form method="dialog">
-    <h2 id="restart-title">Start over?</h2>
-    <p>This clears your progress in this browser and goes back to the start.</p>
-    <div class="actions">
-      <button class="btn btn-danger" value="restart">Start over</button>
-      <button class="btn" value="cancel" autofocus>Cancel</button>
-    </div>
-  </form>
+  <h2 id="restart-title">Start over?</h2>
+  <p>This clears your saved progress and goes back to the start.</p>
+  <div class="actions">
+    <button type="button" class="btn btn-danger" value="restart">Start over</button>
+    <button type="button" class="btn" value="cancel" autofocus>Cancel</button>
+  </div>
 </dialog>
 <script src="SPOILERS-content.js"></script>
 <script src="game.js"></script>

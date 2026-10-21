@@ -7,11 +7,20 @@
  *
  * Story text comes from SPOILERS-content.js, built from game/SPOILERS-content/
  * by web/build.py. The reveal stays encoded until the player accuses and confirms.
+ *
+ * The same script runs as a static page and as a Grafana Page (web/build.py --page).
+ * A Page runs in a sandboxed frame with no forms, modals or localStorage, so the game
+ * uses click handlers rather than form submits, and a host set up before this script
+ * (window.DJ_HOST) can supply, each optionally:
+ *   storage.getItem(key) / storage.setItem(key, value)  saved progress, may return promises
+ *   onTheme(callback)          calls callback("dark" | "light") whenever the host's theme changes
+ *   askAssistant(prompt)       opens Grafana Assistant with the prompt; returns a promise
  */
 (function () {
   "use strict";
 
   var C = window.DJ_CONTENT;
+  var HOST = window.DJ_HOST || {};
   var STORE_KEY = "defiantjazz.web.v1";
   var THEME_KEY = "defiantjazz.theme";
   var LEADS = C.decisions.length;
@@ -54,12 +63,45 @@
     };
   }
 
-  function load() {
+  // ---- storage ----------------------------------------------------------------
+  // localStorage on a static page, or the host's store. Either may be missing or fail:
+  // the game then plays on without saving.
+
+  var storage = HOST.storage || {
+    getItem: function (key) { return localStorage.getItem(key); },
+    setItem: function (key, value) { localStorage.setItem(key, value); },
+  };
+
+  function noop() {}
+
+  // Resolves to the stored text, or null when there's none, storage fails, or a host
+  // store takes more than a few seconds to answer.
+  function readStored(key) {
+    var read = new Promise(function (resolve) { resolve(storage.getItem(key)); }).catch(function () { return null; });
+    var late = new Promise(function (resolve) { setTimeout(function () { resolve(null); }, 5000); });
+    return Promise.race([read, late]);
+  }
+
+  // One write at a time, and only the newest pending one: a host store is a round trip.
+  var writing = false, pending = null;
+  function writeStored(key, value) {
+    pending = [key, value];
+    if (writing) return;
+    writing = true;
+    (function next() {
+      if (!pending) { writing = false; return; }
+      var w = pending;
+      pending = null;
+      new Promise(function (resolve) { resolve(storage.setItem(w[0], w[1])); }).catch(noop).then(next);
+    })();
+  }
+
+  function load(text) {
     var s = fresh();
     try {
-      var saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      var saved = JSON.parse(text || "null");
       if (saved && typeof saved === "object") Object.assign(s, saved);
-    } catch (e) { /* no storage, or nothing usable: start fresh */ }
+    } catch (e) { /* nothing usable: start fresh */ }
     // Drop anything that doesn't fit the content (for example after the cards change).
     var ok = Array.isArray(s.chosen) && s.chosen.length <= LEADS && s.chosen.every(function (v, i) {
       return Number.isInteger(v) && v >= 0 && v < C.decisions[i].options.length;
@@ -71,10 +113,10 @@
     return s;
   }
 
-  var state = load();
+  var state = fresh();
 
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* play on without saving */ }
+    writeStored(STORE_KEY, JSON.stringify(state));
   }
 
   function go(view, extra, opts) {
@@ -277,13 +319,7 @@
       } catch (e) { ok = false; }
       if (btn) btn.focus();
       if (ok) return done();
-      try {
-        var range = document.createRange();
-        range.selectNodeContents(sourceNode);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      } catch (e) { /* nothing more to try */ }
+      selectText(sourceNode);
       announce("Couldn't copy from here. The question is selected: press Ctrl+C (⌘C on a Mac).");
     }
     if (navigator.clipboard && window.isSecureContext) {
@@ -291,6 +327,27 @@
     } else {
       fallback();
     }
+  }
+
+  function selectText(node) {
+    try {
+      var range = document.createRange();
+      range.selectNodeContents(node);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (e) { /* nothing more to try */ }
+  }
+
+  // Inside a Grafana Page: open the question in Grafana Assistant for the player to send.
+  // Only the question goes, never story text.
+  function ask(text, sourceNode) {
+    Promise.resolve().then(function () { return HOST.askAssistant(text); }).then(function () {
+      announce("Opened in Grafana Assistant. Check the question, then send it.");
+    }, function () {
+      selectText(sourceNode);
+      announce("Couldn't open Grafana Assistant. The question is selected: press Ctrl+C (⌘C on a Mac) to copy it.");
+    });
   }
 
   // ---- views ----------------------------------------------------------------------------
@@ -361,8 +418,9 @@
     var list = el("ol", { class: "questions" });
     QUESTIONS.forEach(function (q, i) {
       var text = el("span", { class: "q", id: "q" + i }, q);
-      var btn = button("Copy", null, "btn-small", { "aria-describedby": "q" + i });
-      btn.addEventListener("click", function () { copy(q, text, btn); });
+      var btn = HOST.askAssistant
+        ? button("Ask Assistant", function () { ask(q, text); }, "btn-small", { "aria-describedby": "q" + i })
+        : button("Copy", function () { copy(q, text, btn); }, "btn-small", { "aria-describedby": "q" + i });
       list.appendChild(el("li", null, [text, btn]));
     });
     var ai = el("section", { class: "panel area-ai", "aria-labelledby": "h-ai" }, [
@@ -373,6 +431,8 @@
         "or anything you find. If you want it to know something, tell it."),
       el("p", null, "Ask it anything. These are only examples, if you're not sure where to start:"),
       list,
+      HOST.askAssistant ? el("p", { class: "note" }, "Ask Assistant opens the question in Grafana Assistant " +
+        "for you to check and send. Using your own AI? Select a question and copy it.") : null,
       el("p", { class: "note" }, "The data's times are UTC. If it was loaded on an incident date, the " +
         "story's 03:02 is 03:02 in Grafana set to UTC. If it was loaded to end just before the load, " +
         "03:02 is a different clock time there. Either way, your AI can find the outage in the data."),
@@ -422,7 +482,7 @@
     if (n >= LEADS) return views.hub();
     var d = C.decisions[n];
     var error = el("p", { class: "error", role: "alert" });
-    var form = el("form", { novalidate: true });
+    var form = el("div", { class: "lead-form" });
     var choices = el("div", { class: "choices" });
     d.options.forEach(function (opt, i) {
       var id = "opt" + i;
@@ -438,17 +498,17 @@
     });
     form.appendChild(el("fieldset", null, [el("legend", null, "Choose one. You'll see only the one you pick."), choices]));
     form.appendChild(error);
-    form.appendChild(el("div", { class: "actions" }, [
-      el("button", { type: "submit", class: "btn btn-primary" }, "Follow this lead"),
-      button("Decide later", function () { go("hub"); announce("No rush. Investigate when you're ready."); }),
-    ]));
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
+    // A click handler, not a form submit: a Grafana Page's sandbox blocks form submission.
+    function follow() {
       var picked = form.querySelector("input[name=lead]:checked");
       if (!picked) { error.textContent = "Pick 1, 2 or 3."; return; }
       var chosen = state.chosen.concat([Number(picked.value)]);
       go("result", { chosen: chosen, picking: null });
-    });
+    }
+    form.appendChild(el("div", { class: "actions" }, [
+      button("Follow this lead", follow, "btn-primary"),
+      button("Decide later", function () { go("hub"); announce("No rush. Investigate when you're ready."); }),
+    ]));
     return el("section", { class: "story" }, [
       rule("Lead " + (n + 1) + " of " + LEADS),
       heading(leadTitle(n)),
@@ -536,24 +596,26 @@
     var reasoning = el("textarea", { id: "reasoning", rows: "6" });
     reasoning.value = d.reasoning || "";
     reasoning.addEventListener("input", function () { d.reasoning = reasoning.value; save(); });
-    var form = el("form", { novalidate: true }, [
-      el("fieldset", null, [el("legend", null, "Who killed Mr. Hale?"), choices]),
-      el("label", { class: "block", for: "reasoning" }, "Why? Explain your reasoning."),
-      reasoning,
-      error,
-      el("div", { class: "actions" }, [
-        el("button", { type: "submit", class: "btn btn-primary" }, "Accuse"),
-        button("Back to the case", function () { go("hub"); }),
-      ]),
-    ]);
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
+    function submit() {
       if (!accusation()) {
         error.textContent = d.suspect === "other" ? "Type the name of the person you're accusing." : "Choose who you're accusing.";
         return;
       }
       go("confirm");
+    }
+    other.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); submit(); }
     });
+    var form = el("div", { class: "accuse-form" }, [
+      el("fieldset", null, [el("legend", null, "Who killed Mr. Hale?"), choices]),
+      el("label", { class: "block", for: "reasoning" }, "Why? Explain your reasoning."),
+      reasoning,
+      error,
+      el("div", { class: "actions" }, [
+        button("Accuse", submit, "btn-primary"),
+        button("Back to the case", function () { go("hub"); }),
+      ]),
+    ]);
     return el("section", { class: "story" }, [rule("Accuse"), heading("Name the killer"), leadsNote(), form]);
   };
 
@@ -635,6 +697,14 @@
     themeBtn.setAttribute("aria-label", "Switch to the " + next + " theme");
   }
 
+  // In a Grafana Page the game follows Grafana's theme, so it has no toggle of its own.
+  if (HOST.onTheme) {
+    themeBtn.hidden = true;
+    HOST.onTheme(function (mode) {
+      if (mode === "dark" || mode === "light") document.documentElement.dataset.theme = mode;
+    });
+  }
+
   themeBtn.addEventListener("click", function () {
     var next = currentTheme() === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
@@ -657,14 +727,24 @@
     if (dialog && typeof dialog.showModal === "function") {
       dialog.returnValue = "";
       dialog.showModal();
-    } else if (window.confirm("Start over? This clears your progress in this browser.")) {
+    } else if (window.confirm("Start over? This clears your saved progress.")) {
       restart();
     }
   }
 
   restartBtn.addEventListener("click", askRestart);
-  if (dialog) dialog.addEventListener("close", function () { if (dialog.returnValue === "restart") restart(); });
+  if (dialog) {
+    // The buttons close the dialog themselves: a Grafana Page's sandbox blocks <form method="dialog">.
+    [].forEach.call(dialog.querySelectorAll("button[value]"), function (btn) {
+      btn.addEventListener("click", function () { dialog.close(btn.value); });
+    });
+    dialog.addEventListener("close", function () { if (dialog.returnValue === "restart") restart(); });
+  }
 
   paintThemeButton();
-  render(false);
+  // Saved progress may come from an async store, so the first render waits for it.
+  readStored(STORE_KEY).then(function (text) {
+    state = load(text);
+    render(false);
+  });
 })();
