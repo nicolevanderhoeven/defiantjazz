@@ -89,7 +89,8 @@ class PageTest(unittest.TestCase):
 
     def test_links_open_in_a_new_tab(self):
         game = read("game.js")
-        urls = re.findall(r"\"(https?://[^\"]+)\"", game)
+        # The SVG namespace names the icons' markup, it isn't a link.
+        urls = [u for u in re.findall(r"\"(https?://[^\"]+)\"", game) if u != "http://www.w3.org/2000/svg"]
         self.assertTrue(urls)
         for url in urls:
             self.assertIn(f'"{url}"]', game, f"{url} should be in LINKS")
@@ -139,7 +140,7 @@ def webp_size(path):
 
 
 class SceneArtTest(unittest.TestCase):
-    """The header art: one WebP file per picture, made by build.py --art."""
+    """The pictures: one WebP file each, made by build.py --art, or a placeholder until it's added."""
 
     def test_one_small_webp_per_scene(self):
         self.assertTrue(os.path.exists(build.SHEET), "the comic sheet is the source of the scenes")
@@ -152,35 +153,44 @@ class SceneArtTest(unittest.TestCase):
             self.assertLess(os.path.getsize(path), 150 * 1024, f"{name} should stay small")
 
     def test_one_small_webp_per_picture(self):
-        for name, size in build.IMAGES.items():
+        present = build.pictures()
+        for name in present:
             path = build.scene_path(name)
-            self.assertEqual(webp_size(path), size, name)
+            self.assertEqual(webp_size(path), build.IMAGES[name], name)
             self.assertLess(os.path.getsize(path), 150 * 1024, f"{name} should stay small")
+        # The title's key art and the interview portraits are always there.
+        for name in (build.TITLE_ART, "portrait-agnes", "portrait-bertram", "portrait-clement"):
+            self.assertIn(name, present)
 
-    def test_game_knows_each_picture(self):
+    def test_bundle_knows_each_picture(self):
+        data = bundle_data()
+        self.assertEqual(data["pictures"], {n: list(size) for n, size in build.IMAGES.items()})
+        self.assertEqual(data["toCome"], [n for n in build.IMAGES if n not in build.pictures()])
         game = read("game.js")
-        for name, (width, height) in build.IMAGES.items():
-            self.assertIn(f'"{name}": [{width}, {height}]', game, f"SCENES in game.js is out of date for {name}")
         self.assertIn(f'var TITLE_ART = "{build.TITLE_ART}"', game)
+        self.assertIn(f'var REVEAL_ART = "{build.REVEAL_ART}"', game)
         self.assertIn('"assets/" + name + ".webp"', game)
         self.assertIn('alt: ""', game, "the art holds no clue text, so it needs no alt text")
         self.assertIn("img-src 'self'", read("index.html"))
 
-    def test_art_stays_on_the_cards_it_illustrates(self):
-        # The leads' scenes come with their lead cards, so they show only once a lead is followed.
+    def test_every_card_is_told_in_panels(self):
         art = build.scene_art(CONTENT)
-        lead_cards = {o.title for d in CONTENT.decisions for o in d.options}
-        statements = {t.title for t in CONTENT.testimonies}
-        self.assertEqual(set(art), {CONTENT.advert.title, CONTENT.cold_open.title} | statements
-                         | (set(art) & lead_cards))
-        self.assertEqual(len(set(art) & lead_cards), 2)
-        self.assertEqual({art[t]["scene"] for t in statements}, {n for n in build.IMAGES if n.startswith("portrait-")})
+        self.assertEqual(set(art), {c.title for c in all_cards()})
         self.assertEqual(bundle_data()["art"], art)
+        for title, panels in art.items():
+            self.assertTrue(panels, title)
+        # Each interview opens on that suspect's portrait.
+        for t in CONTENT.testimonies:
+            self.assertTrue(art[t.title][0]["image"].startswith("portrait-"), t.title)
+        # The flyer is the advert, on its own, with nothing to hover.
+        flyer = art[CONTENT.advert.title]
+        self.assertEqual([p.get("style") for p in flyer], ["flyer"])
+        self.assertEqual(flyer[0]["hotspots"], [])
 
     def test_art_stays_crisp_and_still_for_reduced_motion(self):
         css = read("style.css")
         self.assertIn("image-rendering: pixelated", css)
-        self.assertRegex(css, r"prefers-reduced-motion: no-preference\) \{\s*\.scene img \{ animation")
+        self.assertRegex(css, r"prefers-reduced-motion: no-preference\) \{\s*\.panel-pic img \{ animation")
 
     def test_markers_are_buttons_with_notes(self):
         game, css = read("game.js"), read("style.css")
@@ -206,67 +216,88 @@ def phrases(text, n=4):
 
 
 class SceneTextTest(unittest.TestCase):
-    """game/SPOILERS-content/scene-art.md: captions, the cards' text beside the art, hotspots."""
+    """game/SPOILERS-content/scene-art.md: the panels' text and hotspots."""
 
     def setUp(self):
         self.art = build.scene_art(CONTENT)
 
-    def texts(self, scene):
-        yield scene["where"]
-        yield scene["caption"]
-        if scene["story"]:
-            yield scene["story"]
-        if scene["body"]:
-            yield scene["body"]
-        for h in scene["hotspots"]:
+    def panels(self):
+        for title, panels in self.art.items():
+            for p in panels:
+                yield title, p
+
+    def texts(self, panel):
+        for key in ("where", "headline", "sound", "body"):
+            if panel.get(key):
+                yield panel[key]
+        for h in panel["hotspots"]:
             yield h["label"]
             yield h["body"]
 
-    def test_every_scene_has_text_and_hotspots(self):
-        # Portraits have none: the statement below one says what's on screen.
-        for title, scene in self.art.items():
-            self.assertTrue(scene["where"] and scene["caption"], title)
-            if scene["scene"].startswith("scene-"):
-                self.assertTrue(scene["hotspots"], f"{title} has no hotspots")
-            for h in scene["hotspots"]:
+    def test_hotspots_have_text(self):
+        for title, p in self.panels():
+            for h in p["hotspots"]:
                 self.assertTrue(h["label"].strip() and h["body"].strip(), title)
 
+    def test_hotspots_only_on_pictures_there_are(self):
+        # A placeholder has no picture to point at: its hotspots come with its art.
+        for title, p in self.panels():
+            if p["hotspots"]:
+                self.assertIn(p["image"], build.pictures(), title)
+
     def test_hotspots_sit_inside_the_image(self):
-        for title, scene in self.art.items():
-            for h in scene["hotspots"]:
+        for title, p in self.panels():
+            for h in p["hotspots"]:
                 for v in (h["x"], h["y"]):
                     self.assertTrue(3 <= v <= 97, f"{title}: {h['label']} is at the edge of the image")
             # Markers far enough apart to tap: 4% of the width is about 14px on a phone.
-            spots = scene["hotspots"]
+            spots = p["hotspots"]
             for i, a in enumerate(spots):
                 for b in spots[i + 1:]:
                     self.assertGreater(abs(a["x"] - b["x"]) + abs(a["y"] - b["y"]) / 3, 4,
                                        f"{title}: {a['label']} and {b['label']} overlap")
 
-    def test_before_names_a_line_of_the_text(self):
-        for title, scene in self.art.items():
-            if scene["before"]:
-                body = scene["body"] or next(c.body for c in all_cards() if c.title == title)
-                self.assertIn(scene["before"], body, title)
+    def test_hotspots_say_more_than_a_name(self):
+        for title, p in self.panels():
+            bodies = [h["body"] for h in p["hotspots"]]
+            self.assertEqual(len(bodies), len(set(bodies)), f"{title}: two hotspots say the same thing")
+            for h in p["hotspots"]:
+                self.assertGreater(len(words(h["body"])), 4, f"{title}: {h['label']} says too little")
+
+    def test_panels_stay_short(self):
+        # A headline is a few words; the text under a picture is a few short lines.
+        for title, p in self.panels():
+            if p.get("headline"):
+                self.assertLessEqual(len(words(p["headline"])), 8, title)
+            if p.get("style") != "role":
+                self.assertLessEqual(len(p["body"].splitlines()), 8, title)
+
+    def test_no_tell_tale_absences(self):
+        # Saying what someone isn't wearing points at what matters.
+        for title, p in self.panels():
+            for text in self.texts(p):
+                self.assertNotRegex(text.lower(), r"\bno (scarf|pattern)", title)
+        for card in all_cards():
+            self.assertNotRegex(card.body.lower(), r"\bno (scarf|pattern)", card.title)
 
     def test_nothing_from_the_reveal(self):
         # Any four words in a row that the reveal has must also be in a card the player sees.
         reveal = set().union(*(phrases(c.body) | phrases(c.title) for c in CONTENT.reveal.cards))
         shown = set().union(*(phrases(c.body) for c in all_cards()))
-        for title, scene in self.art.items():
-            for text in self.texts(scene):
-                self.assertFalse((phrases(text) & reveal) - shown, f"{title}: scene text quotes the reveal")
+        for title, p in self.panels():
+            for text in self.texts(p):
+                self.assertFalse((phrases(text) & reveal) - shown, f"{title}: panel text quotes the reveal")
 
     def test_names_and_numbers_come_from_the_cards(self):
-        # Scene text retells the cards: no name, place, time or number the cards don't have.
+        # Panel text retells the cards: no name, place, time or number the cards don't have.
         known = {t.lower() for c in all_cards() for t in re.findall(r"[A-Za-z0-9]+", c.title + " " + c.body)}
-        for title, scene in self.art.items():
-            for text in self.texts(scene):
+        for title, p in self.panels():
+            for text in self.texts(p):
                 for m in re.finditer(r"[A-Za-z0-9]+", text):
-                    t, before = m.group(), text[:m.start()].rstrip(" *\"(\u201c>●↓")
+                    t, before = m.group(), text[:m.start()].rstrip(" *\"(\u201c>●↓♪-")
                     name = t[0].isupper() and before and before[-1] not in ".!?:\n"
                     if any(ch.isdigit() for ch in t) or name:
-                        self.assertTrue(t.lower() in known, f"{title}: a name or number that no card has")
+                        self.assertTrue(t.lower() in known, f"{title}: {t!r}, a name or number that no card has")
 
     def test_a_changed_card_stops_the_build(self):
         changed = content.load()
@@ -324,12 +355,15 @@ class PageBuildTest(unittest.TestCase):
     def test_page_inlines_the_scenes(self):
         index = self.files["src/scenes.ts"]
         for name in build.IMAGES:
+            if name not in build.pictures():
+                self.assertNotIn(f"src/scenes/{name}.ts", self.files)
+                continue
             with open(build.scene_path(name), "rb") as f:
                 url = "data:image/webp;base64," + base64.b64encode(f.read()).decode("ascii")
             self.assertIn(f"'{url}'", self.files[f"src/scenes/{name}.ts"])
             self.assertIn(f"from './scenes/{name}'", index)
         self.assertIn("scenes: SCENES", self.files["src/host.ts"])
-        for name in build.IMAGES:
+        for name in build.pictures():
             self.assertLess(len(self.files[f"src/scenes/{name}.ts"].encode("utf-8")), 120 * 1024,
                             f"{name}: Grafana writes a page's files at most 128 KB at a time")
         self.assertLess(len(build.render_page(fake_template(), CONTENT).encode("utf-8")), 4 << 20,
@@ -350,7 +384,8 @@ class PageBuildTest(unittest.TestCase):
                 if len(line.strip()) >= 25:
                     self.assertNotIn(line.strip(), text, "reveal text is readable in the page")
         # Assistant gets the question only, never story text as context.
-        self.assertIn("openAssistant({ prompt })", self.files["src/host.ts"])
+        host = self.files["src/host.ts"]
+        self.assertEqual(re.findall(r"openAssistant\(([^)]*)\)", host), ["{ prompt }", "{ prompt }"])
 
     def test_file_keeps_spoilers_in_its_name(self):
         self.assertTrue(os.path.basename(build.PAGE_PATH).startswith("SPOILERS-"))

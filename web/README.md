@@ -5,7 +5,7 @@ The terminal game as a static web page, made to sit in a Grafana dashboard panel
 > [!WARNING]
 > **`SPOILERS-content.js` contains spoilers**, and so does `dist/SPOILERS-defiantjazz.page.json` once you build it. They hold every story card from `game/SPOILERS-content/`, including the solution. The solution is encoded so a glance doesn't give it away, but don't read the files before you play. Everything else in this folder is spoiler-free.
 
-The flow is the same as `python3 game/play.py`: the Kipsake advert and the cold open, your interviews with the suspects, then the case, where you follow up your three leads (one option each), review what you've unlocked, and accuse the killer. The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the Grafana MCP server or `gcx`, about the telemetry loaded in the stack. The page offers example questions with copy buttons.
+The flow is the same as `python3 game/play.py`, told in full-image panels after the comic prototype: the Kipsake flyer and the cold open, your interviews with the suspects, then the case, where you follow up your three leads (one option each), review what you've unlocked, and accuse the killer. The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the Grafana MCP server or `gcx`, about the telemetry loaded in the stack. The page offers example questions with copy buttons.
 
 The page makes no network requests of its own: no CDNs, fonts or analytics. Progress is saved in the browser's `localStorage`, so reloading the dashboard keeps your place, and **Restart** clears it. Without storage the game still plays, it just forgets on reload.
 
@@ -37,7 +37,7 @@ The game panel is 24 columns wide and 18 rows tall, with two telemetry panels be
 
 ## Make it a Grafana Page
 
-[Grafana Pages](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/pages/) (public preview, Grafana Cloud only) runs the game inside Grafana, with no hosting and no dashboard. The example questions get **Ask Assistant** buttons that open the question in Grafana Assistant for the player to check and send. Progress is saved in the player's Grafana account, and the game follows Grafana's light or dark theme.
+[Grafana Pages](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/pages/) (public preview, Grafana Cloud only) runs the game inside Grafana, with no hosting and no dashboard. The example questions get **Ask Assistant** buttons: one click opens Grafana Assistant with the question filled in, and copies it too where the frame allows. The player presses Enter to send it: a page can only open Assistant with a draft, not send it. Progress is saved in the player's Grafana account, and the game follows Grafana's light or dark theme.
 
 A page is a small project that Grafana builds itself, so `build.py --page` writes source, not a finished bundle: an export file to import. Its project files (`package.json`, the lockfile and the pages SDK) come from a page Grafana made, so you need one exported page to start from:
 
@@ -63,18 +63,38 @@ Spoilers: anyone who can open a page can export its source, and Grafana Assistan
 
 ## Scene art
 
-Pixel-art pictures sit above parts of the story: key art on the title screen, a scene above the Kipsake advert, the cold open's "What happened that night", and the Elevator car 1 and Clement at home leads, and a portrait above each suspect's opening statement. They're one WebP file each in `assets/`, listed with their sizes in `IMAGES` in `build.py` and `SCENES` in `game.js`.
+The web game tells the story in full-image panels, after the comic prototype: each story card is a few panels, each one pixel-art picture with where we are and a short headline over it, and a line or two of caption, the spoken lines and any paper close up under it. **Next panel** steps through them (or the arrow keys). The title screen has key art, and the verdict a picture of its own. Every picture is one WebP file in `assets/`, listed with its size in `IMAGES` in `build.py`, and the bundle tells `game.js` which ones are there.
 
-The elevator scene is the comic prototype's, cut from the comic prototype's sheet, `comic-prototype/assets/scenes.png`, which isn't changed. The title art, the portraits and the broadcast, break room and Clement at home scenes are AI-generated in the comic prototype's style, and were picked by the game's author. They replaced the prototype's versions of those three scenes, which stay in `assets/` (`scene-1-broadcast`, `scene-2-break-room`, `scene-4-clement-home`), unused, so they can be put back.
+A picture that isn't in `assets/` yet shows as a placeholder panel the same shape, with a quiet "Illustration to come" label. The Kipsake flyer's placeholder is lettered in HTML. These are still to come, all 1200×400 except the flyer, which is 800×1200:
+
+| File | Panels |
+|---|---|
+| `flyer-kipsake.webp` | The Kipsake flyer that opens the cold open |
+| `scene-outside-world.webp` | The Outside World handout |
+| `scene-elevator-evidence.webp` | Lead 1, Elevator car 1: Floor Security's evidence |
+| `scene-break-room-camera-1.webp` | Lead 1, Break Room 2: the camera at 03:01:20 |
+| `scene-break-room-camera-2.webp` | Lead 1, Break Room 2: the camera at 03:07:03 |
+| `scene-supply-room.webp` | Lead 1, Supply Room B: the evidence |
+| `scene-agnes-home.webp` | Lead 2, Agnes at home (Peggy) |
+| `scene-bertram-home.webp` | Lead 2, Bertram at home |
+| `portrait-agnes-push.webp` | Lead 3, Agnes's last interview |
+| `portrait-bertram-push.webp` | Lead 3, Bertram's last interview |
+| `portrait-clement-push.webp` | Lead 3, Clement's last interview |
+| `scene-reveal.webp` | The verdict, after the accusation |
+
+To add one, run `--art FILE NAME` and rebuild. If it has another shape, change its size in `IMAGES` first. Then add its hotspots in `scene-art.md`, by looking at it: placeholders have none.
 
 ```sh
-python3 web/build.py --art                        # cut the sheet into assets/scene-1..4-*.webp
-python3 web/build.py --art picture.png portrait-agnes   # make assets/portrait-agnes.webp from any picture
+python3 web/build.py --art picture.png scene-supply-room   # make assets/scene-supply-room.webp from any picture
+python3 web/build.py                                       # then put it in the game
+python3 web/build.py --art                                 # cut the comic sheet into assets/scene-1..4-*.webp
 ```
 
-It needs [Pillow](https://pypi.org/project/Pillow/) (`python3 -m pip install Pillow`). The pictures are committed, so playing or building the page doesn't. To replace a picture, run `--art FILE NAME` with a picture of the same shape, or, for a new size, update it in both `IMAGES` and `SCENES` first. If the sheet changes, update the seams in `SCENES` in `build.py` and run `--art` again. The art holds no clue text, so the images have empty alt text and all the story stays in the page's text. The Grafana Page build inlines the pictures as `data:` URLs, since a page's frame can't load files.
+It needs [Pillow](https://pypi.org/project/Pillow/) (`python3 -m pip install Pillow`). The pictures are committed, so playing or building the page doesn't. The art holds no clue text, so the images have empty alt text and all the story stays in the page's text; the flyer's printed copy is read out to screen readers. The Grafana Page build inlines the pictures as `data:` URLs, since a page's frame can't load files.
 
-**Spoilers:** what goes with each scene and portrait is in `game/SPOILERS-content/scene-art.md`: where and when we are, a caption, an optional line where the art doesn't match the story, and an optional web text for the card, which leaves out what the image shows. The terminal game keeps the cards as written. Each scene also has numbered hotspots, placed as a percentage of the image, that show a short note when hovered, focused or tapped, and stay open after a click or tap until Escape or a click elsewhere. The portraits have none: the statement below each one says what's on screen. The file's opening comment has the format. If a card with web text changes, `build.py` stops until that text is updated to match.
+The elevator scene is the comic prototype's, cut from its sheet, `comic-prototype/assets/scenes.png`, which isn't changed. The title art, the portraits and the break room and Clement at home scenes are AI-generated in the comic prototype's style, and were picked by the game's author. They replaced the prototype's versions of those scenes, which stay in `assets/` (`scene-1-broadcast`, `scene-2-break-room`, `scene-4-clement-home`) with the earlier broadcast scene (`scene-broadcast`), unused, so they can be put back.
+
+**Spoilers:** the panels are in `game/SPOILERS-content/scene-art.md`: for each story card, its panels' pictures, where and when we are, headline, sound and text, retold from the card. The terminal game keeps the cards as written. A panel can also have numbered hotspots, placed as a percentage of the picture, that show a short note when hovered, focused or tapped, and stay open after a click or tap until Escape or a click elsewhere. The file's opening comment has the format. If a card changes, `build.py` stops until its panels are updated to match.
 
 ## Edit the story
 
@@ -92,7 +112,7 @@ python3 web/build.py
 python3 -m unittest discover -s web
 ```
 
-It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that each scene has a caption and hotspots inside the image (portraits need only a caption) whose text names nothing the cards don't and quotes nothing from the reveal, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each picture is a small WebP file of the size `build.py` and `game.js` give it, that `build.py --page` builds a complete page file with the pictures inlined, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
+It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that every card the player sees is told in short panels whose hotspots sit inside the picture and whose text names nothing the cards don't, quotes nothing from the reveal and never says what someone isn't wearing, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each picture there is is a small WebP file of the size `build.py` gives it, that `build.py --page` builds a complete page file with the pictures inlined, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
 
 ## Files
 

@@ -21,11 +21,12 @@ since only a page Grafana made has the versions that Grafana's builder expects.
 --art cuts the four scene strips out of the comic prototype's art sheet,
 comic-prototype/assets/scenes.png (read only, never changed), into one WebP file per
 scene in web/assets/. With FILE and NAME, it makes one of the game's pictures (IMAGES below)
-from any picture instead, at the size the game uses. The game shows them as header art,
-and the title's key art. Each picture is its own file, so new art for one just replaces
-that file. It needs Pillow (python3 -m pip install Pillow); the pictures are committed, so
-nothing else needs it. Their captions, hotspots and the web game's text beside them are in
-game/SPOILERS-content/scene-art.md, bundled with the cards.
+from any picture instead, at the size the game uses. The web game tells each story card as
+full-image panels, and shows the title's key art. Each picture is its own file, so new art
+for one just replaces that file, and a picture with no file yet shows as a placeholder.
+It needs Pillow (python3 -m pip install Pillow); the pictures are committed, so nothing
+else needs it. The panels' text and hotspots are in game/SPOILERS-content/scene-art.md,
+bundled with the cards.
 
 SPOILERS: the bundle holds every card in game/SPOILERS-content/, including the
 reveal. The reveal is base64-encoded so a glance at the file doesn't spoil it,
@@ -58,21 +59,36 @@ SCENES = (
     ("scene-3-elevator", 707, 1071),
     ("scene-4-clement-home", 1071, 1448),
 )
-# The pictures the game shows, as name: (width, height). Wide scenes and portraits are 3:1,
-# the title's key art 16:9; game.js knows the sizes. The partner's sheet scenes that new art
-# replaced stay in web/assets/, unused, so they can be put back by naming them here.
+# Every picture the game shows, as name: (width, height). A picture whose file isn't in
+# web/assets/ yet shows as a placeholder panel the same shape, so new art drops in by name:
+# `--art FILE NAME`, then rebuild. Wide scenes and portraits are 3:1, the title's key art 16:9,
+# the flyer 2:3. The bundle tells game.js which ones are there. The partner's sheet scenes that
+# new art replaced stay in web/assets/, unused, so they can be put back by naming them here.
 IMAGES = {
-    "scene-broadcast": (1200, 400),
+    "title-splash": (1536, 864),
+    "flyer-kipsake": (800, 1200),
     "scene-break-room": (1200, 400),
     "scene-3-elevator": (1086, 364),
-    "scene-clement-home": (1200, 400),
     "portrait-agnes": (1200, 400),
     "portrait-bertram": (1200, 400),
     "portrait-clement": (1200, 400),
-    "title-splash": (1536, 864),
+    "scene-outside-world": (1200, 400),
+    "scene-elevator-evidence": (1200, 400),
+    "scene-break-room-camera-1": (1200, 400),
+    "scene-break-room-camera-2": (1200, 400),
+    "scene-supply-room": (1200, 400),
+    "scene-agnes-home": (1200, 400),
+    "scene-bertram-home": (1200, 400),
+    "scene-clement-home": (1200, 400),
+    "portrait-agnes-push": (1200, 400),
+    "portrait-bertram-push": (1200, 400),
+    "portrait-clement-push": (1200, 400),
+    "scene-reveal": (1200, 400),
 }
-# The title's key art goes with the title screen, not a card, so scene-art.md doesn't list it.
+# The title's key art goes with the title screen and the reveal's picture with the verdict, not
+# with a card. A panel may show them too.
 TITLE_ART = "title-splash"
+REVEAL_ART = "scene-reveal"
 # Lossy WebP: the sheet is painted, not drawn on a pixel grid, so lossless is 5 to 10 times
 # larger for no visible gain. The page scales the scenes with image-rendering: pixelated.
 WEBP_QUALITY = 80
@@ -113,6 +129,8 @@ def data(cards=None):
         ],
         "aliases": cards.aliases,
         "art": scene_art(cards),
+        "pictures": {name: list(size) for name, size in IMAGES.items()},
+        "toCome": [name for name in IMAGES if name not in pictures()],
         "reveal": base64.b64encode(reveal.encode("utf-8")).decode("ascii"),
     }
 
@@ -122,45 +140,62 @@ def fingerprint(text):
 
 
 def scene_art(cards=None, path=ART_PATH):
-    """game/SPOILERS-content/scene-art.md as {card title: its scene}: the image, its caption,
-    the web game's text for the card, and the hotspots. The file's comment has the format."""
+    """game/SPOILERS-content/scene-art.md as {card title: its panels}. Each panel is its picture,
+    optional where, headline, sound, dim and style, its text, and its hotspots. The file's
+    comment has the format."""
     cards = cards or content.load()
-    shown = [cards.advert, cards.cold_open, cards.outside_world] + list(cards.testimonies)
-    shown += [c for d in cards.decisions for c in d.options]
-    by_title = {c.title: c for c in shown}
-    names = [name for name in IMAGES if name != TITLE_ART]
+    by_title = {c.title: c for c in shown_cards(cards)}
     with open(path, encoding="utf-8") as f:
         section = content.parse_section(f.read(), path)
-    art, current = {}, None
+    art, panels, current = {}, None, None
     for c in section.cards:
         where = f"{os.path.relpath(path)}: {c.title!r}"
-        if c.title.startswith(("scene-", "portrait-")):
-            if c.title not in names:
-                raise content.ContentError(f"{where}: no such picture in IMAGES in web/build.py")
-            card = by_title.get(c.meta.get("card"))
-            if not card or card.title in art:
-                raise content.ContentError(f"{where}: 'card:' must name a story card no other scene has")
-            if not c.meta.get("where") or not c.meta.get("caption"):
-                raise content.ContentError(f"{where}: needs 'where:' and 'caption:'")
-            if c.body and c.meta.get("source") != fingerprint(card.body):
-                raise content.ContentError(
-                    f"{where}: the card {card.title!r} has changed since this text was written from it. "
-                    f"Update the text to match, then set 'source: {fingerprint(card.body)}'.")
-            current = {"scene": c.title, "where": c.meta["where"], "caption": c.meta["caption"],
-                       "story": c.meta.get("story"), "before": c.meta.get("before"),
-                       "body": c.body or None, "hotspots": []}
-            art[card.title] = current
+        if "image" in c.meta:
+            if "card" in c.meta:
+                card = by_title.get(c.meta["card"])
+                if not card or card.title in art:
+                    raise content.ContentError(f"{where}: 'card:' must name a story card no other panels tell")
+                if c.meta.get("source") != fingerprint(card.body):
+                    raise content.ContentError(
+                        f"{where}: the card {card.title!r} has changed since these panels were written from it. "
+                        f"Update them to match, then set 'source: {fingerprint(card.body)}'.")
+                panels = art[card.title] = []
+            elif panels is None:
+                raise content.ContentError(f"{where}: the first panel needs 'card:'")
+            image = c.meta["image"]
+            if image != "none" and image not in IMAGES:
+                raise content.ContentError(f"{where}: no picture {image!r} in IMAGES in web/build.py")
+            if c.meta.get("style") not in (None, "flyer", "role") or c.meta.get("dim") not in (None, "yes"):
+                raise content.ContentError(f"{where}: 'style:' is flyer or role, and 'dim:' is yes")
+            current = {"image": None if image == "none" else image, "body": c.body, "hotspots": []}
+            current.update({k: c.meta[k] for k in ("where", "headline", "sound", "style") if k in c.meta})
+            if "dim" in c.meta:
+                current["dim"] = True
+            panels.append(current)
             continue
         at = re.fullmatch(r"(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)", c.meta.get("at", ""))
-        if current is None or not at or not c.body:
-            raise content.ContentError(f"{where}: a hotspot needs a scene above it, 'at: x, y' and some text")
+        if current is None or not current["image"] or not at or not c.body:
+            raise content.ContentError(f"{where}: a hotspot needs a panel with a picture above it, "
+                                       "'at: x, y' and some text")
         x, y = (float(v) if "." in v else int(v) for v in at.groups())
         if not (0 <= x <= 100 and 0 <= y <= 100):
-            raise content.ContentError(f"{where}: 'at:' is a percentage of the image, 0 to 100")
+            raise content.ContentError(f"{where}: 'at:' is a percentage of the picture, 0 to 100")
         current["hotspots"].append({"label": c.title, "x": x, "y": y, "body": c.body})
-    if sorted(a["scene"] for a in art.values()) != sorted(names):
-        raise content.ContentError(f"{os.path.relpath(path)}: expected one card for each of {', '.join(names)}")
+    missing = [c.title for c in by_title.values() if c.title not in art]
+    if missing:
+        raise content.ContentError(f"{os.path.relpath(path)}: no panels for {', '.join(missing)}")
     return art
+
+
+def shown_cards(cards):
+    """Every story card the player can see, in the order they come, except the reveal."""
+    return ([cards.advert, cards.cold_open] + list(cards.testimonies) + [cards.outside_world]
+            + [c for d in cards.decisions for c in d.options])
+
+
+def pictures():
+    """The pictures whose files are in web/assets/. The rest of IMAGES are still to come."""
+    return [name for name in IMAGES if os.path.exists(scene_path(name))]
 
 
 def render(cards=None):
@@ -199,15 +234,17 @@ def make_image(src, name, out=ASSETS):
     except ImportError:
         sys.exit("--art needs Pillow: python3 -m pip install Pillow")
     if name not in IMAGES:
-        sys.exit(f"{name} isn't one of the game's pictures: {', '.join(IMAGES)}")
+        sys.exit(f"{name} isn't one of the game's pictures: {', '.join(IMAGES)}. "
+                 "Name a new one in IMAGES first.")
     size = IMAGES[name]
     with Image.open(src) as im:
         if abs(im.width / im.height - size[0] / size[1]) > 0.01:
             sys.exit(f"{os.path.relpath(src)} is {im.width}x{im.height}, not the shape of {name} "
-                     f"({size[0]}x{size[1]}): crop it first, or change its size in IMAGES and game.js.")
+                     f"({size[0]}x{size[1]}): crop it first, or change its size in IMAGES.")
         path = os.path.join(out, name + ".webp")
         im.convert("RGB").resize(size, Image.LANCZOS).save(path, "WEBP", quality=WEBP_QUALITY, method=6)
-    print(f"Wrote {os.path.relpath(path)} ({os.path.getsize(path) // 1024} KB).")
+    print(f"Wrote {os.path.relpath(path)} ({os.path.getsize(path) // 1024} KB). "
+          "Run python3 web/build.py to put it in the game.")
 
 
 # ---- Grafana Page ----------------------------------------------------------------
@@ -248,7 +285,7 @@ createRoot(document.getElementById('root')!).render(
 HOST_TS = f"""\
 // {GENERATED}
 // The hooks game.js looks for in a Grafana Page: saved progress in the viewer's Grafana
-// user storage, Grafana's theme, Ask Assistant and the header art. Only the question goes to Assistant.
+// user storage, Grafana's theme, Ask Assistant and the pictures. Only the question goes to Assistant.
 import {{ grafana, openAssistant }} from '@grafana/pages';
 import {{ MARKUP }} from './markup';
 import {{ SCENES }} from './scenes';
@@ -278,10 +315,27 @@ window.DJ_HOST = {{
     onMode = callback;
     if (mode) callback(mode);
   }},
-  askAssistant: (prompt: string) => openAssistant({{ prompt }}),
-  // The page's frame can't load files, so the header art comes inline.
+  askAssistant,
+  // The page's frame can't load files, so the pictures come inline.
   scenes: SCENES,
 }};
+
+// Opens Grafana Assistant with the question as a draft. Pages can't send it: openAssistant
+// always opens a draft for the viewer to send. The first open in a visit creates the viewer's
+// conversation, and the panel that opens with it can drop the draft while it loads, so the
+// question goes again once the panel is there. A second copy of a draft only replaces it.
+let opened = false;
+async function askAssistant(prompt: string) {{
+  await openAssistant({{ prompt }});
+  if (opened) {{
+    return;
+  }}
+  opened = true;
+  for (const wait of [700, 1800]) {{
+    await new Promise((resolve) => setTimeout(resolve, wait));
+    await openAssistant({{ prompt }}).catch(() => undefined);
+  }}
+}}
 """
 
 # Grafana's page frame styles body and fieldset after style.css loads; keep the game's.
@@ -325,9 +379,9 @@ def read_template(path):
 
 
 def scene_modules():
-    """src/scenes.ts and one module per picture, each a data: URL (the frame allows those)."""
+    """src/scenes.ts and one module per picture there is, each a data: URL (the frame allows those)."""
     files, imports, entries = {}, [], []
-    for i, name in enumerate(IMAGES):
+    for i, name in enumerate(pictures()):
         with open(scene_path(name), "rb") as f:
             url = "data:image/webp;base64," + base64.b64encode(f.read()).decode("ascii")
         files[f"src/scenes/{name}.ts"] = f"// {GENERATED}\nexport default '{url}';\n"

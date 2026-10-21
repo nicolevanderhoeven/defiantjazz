@@ -8,7 +8,7 @@ Each card is one clip: the spoken lines, plus a plain description of what's on s
 intro: First, your interviews. You spoke to all three suspects soon after the power came back. Here's what each of them told you.
 
 ## T-A · Agnes · 03:30
-[An interview at Kipsake. Agnes, a DSO clerk, sits on a chair against a plain wall. Her Kipsake badge card hangs from a lanyard around her neck. She wears a plain top and no scarf. You're off camera, asking the questions.]
+[An interview at Kipsake. Agnes, a DSO clerk, sits on a chair against a plain wall. Her Kipsake badge card hangs from a lanyard around her neck. She wears a plain top. You're off camera, asking the questions.]
 You: Agnes. Where were you when the lights went out?
 Agnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.
 You: And Mr. Hale?
