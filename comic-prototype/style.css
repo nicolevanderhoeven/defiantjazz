@@ -28,3 +28,8 @@
 .advert .ad-logo{display:flex}.ad-logo img{width:36px;height:36px}.ad-logo span{font:bold 30px Georgia,serif;letter-spacing:-1.5px}.ad-logo sup{font:9px monospace;vertical-align:top;margin-left:3px;letter-spacing:0}
 .advert .headline{top:6%}.advert h1{margin:10px 0}.advert #eyebrow{font-size:8px;letter-spacing:2px}
 @media(max-width:650px){.brand-emblem{width:27px;height:27px;margin-right:7px}.ad-logo{margin-bottom:9px}.ad-logo img{width:27px;height:27px}.ad-logo span{font-size:24px}.advert .headline{top:6%}.advert h1{font-size:31px;max-width:210px}.advert #subtitle{max-width:190px}}
+/* One-page recruitment ad: company lockup left, campaign headline right. */
+.advert .headline{top:6%;left:5%;right:5%;width:auto;max-width:none}
+.advert h1{position:absolute;top:0;right:0;max-width:36%;margin:0;text-align:right;font-size:clamp(26px,3.3vw,44px);line-height:1.06}
+.advert #subtitle{display:none}
+@media(max-width:650px){.advert h1{max-width:45%;font-size:25px}.advert #eyebrow{font-size:7px;letter-spacing:1px;display:block;max-width:42%}}

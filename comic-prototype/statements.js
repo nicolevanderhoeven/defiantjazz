@@ -36,11 +36,7 @@
   const ad = window.COMIC_SCENES[0];
   ad.image = 'assets/sleep-self-v4.png';
   ad.alt = 'A double-exposure sequence of one woman: asleep in bed, a transparent version walking in the middle foreground in front of the bed, then solid at her desk working through the night.';
-  ad.frames[1][3] = '“You remember your life. Your sleepwalker remembers their work. A perfect balance.” The image follows the same woman from bed to desk: a transparent impression of her getting up, then walking to work, then typing beneath the night windows. She is asleep through it all.';
   ad.objects[1] = ['desk', 84, 64, 'EXAMINE DESK', ['workers', 'worker', 'office', 'computer', 'sleepwalker', 'sleepwalkers'], 'The same woman works at a glowing computer beneath the night windows. Kipsake calls it productive sleep. She will remember none of the shift.'];
   ad.objects.push(['self', 48, 40, 'EXAMINE SELF', ['ghost', 'sleeping self', 'dream self', 'double'], 'One woman, three moments: asleep in bed, getting up, working at her desk. The transparent middle image suggests movement through time. Kipsake promises she can do it all without waking.']);
-  ad.frames[0][0] = 'YOUR REST. OUR PROGRESS.';
-  ad.frames[0][1] = 'Earn while you sleep.';
-  ad.frames[0][2] = 'Your days are yours. Let your nights work for you.';
   ad.suggest = ['EXAMINE SELF', 'EXAMINE DESK', 'TALK RECRUITER'];
 })();

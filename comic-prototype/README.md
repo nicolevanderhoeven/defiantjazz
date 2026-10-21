@@ -28,3 +28,5 @@ The opening uses `assets/sleep-self-v4.png`: the same woman sleeping, then a tra
 After the elevator chapter, The statements shows Agnes, Bertram, and Clement in three parallel panels. NEXT reveals the next exchange in each interview. The panels stack on narrow screens. Speech bubbles are selectable HTML text; TALK echoes the current exchange in the console. Dialogue is adapted from the canonical opening testimonies without loading the solution. `statements.js` contains this human-facing adaptation and the opening-art override; `assets/statements.png` supplies the portrait triptych. Other scenes also show a speech bubble when you TALK to someone.
 
 The transparent sleepwalking figure belongs in the middle foreground, in front of the bed: her body overlaps the duvet, which remains visible through her. Preserve the earlier image variants when revising the art.
+
+The recruitment chapter has one panel: Kipsake and “Your rest. Our progress.” at upper left, “Earn while you sleep” at upper right above the worker. NEXT goes directly to Cocoa Hour.

@@ -1,9 +1,7 @@
 /* Selected human-facing scenes only. No solution or AI evidence bundle. */
 window.COMIC_SCENES = [
  {name:'A better tomorrow',location:'PORT QUIET / KIPSAKE RECRUITMENT BROADCAST',art:0,frames:[
- ['THE FUTURE HAS A NIGHT SHIFT.','Your days are yours.','Let your nights work for you. A brighter life begins with a good night’s work.','A smiling voice fills the room. “Eight hours of possibility. Every single night.” This is a Kipsake recruitment broadcast.'],
- ['INTRODUCING PRODUCTIVE SLEEP','Dream of something bigger.','Your waking self enjoys the reward. Your sleepwalking self takes care of the rest.','“You remember your life. Your sleepwalker remembers their work. A perfect balance.” Behind the smiling family: rows of identical desks.'],
- ['KIPSAKE CARES FOR EVERY PART OF YOU.','Rest assured.','Your rest. Our progress.','The small print calls it voluntary. The rent notice on your table calls it necessary. Welcome to Port Quiet.']],
+ ['YOUR REST. OUR PROGRESS.','Earn while you sleep.','','A smiling voice fills the room. “Eight hours of possibility. Every single night.” This is a Kipsake recruitment broadcast. Your waking self remembers home. Your sleepwalker remembers work.']],
  objects:[['benefits',72,53,'EXAMINE BENEFITS',['advert','advertisement','poster'],'A day to yourself. A second income. No memory of the work. The advertisement lists these as three separate benefits.'],['workers',85,69,'EXAMINE WORKERS',['desks','sleepwalkers'],'Their eyes are closed. Their hands keep moving. Kipsake says a sleepwalker remembers only the workplace; the waking person remembers only home.']],talk:{recruiter:'“Your sleepwalker will find purpose here. You need never trouble yourself with the details.”'},suggest:['EXAMINE BENEFITS','EXAMINE WORKERS','TALK RECRUITER']},
  {name:'Cocoa Hour',location:'15:00 / SLEEP FLOOR / BREAK ROOM 2',art:1,frames:[
  ['QUARTERLY TARGET ACHIEVED','A moment of appreciation.','','Six Deep Sleep Operations clerks have met their quota. Their reward: hot cocoa. Mr. Hale, the waking supervisor, watches them enjoy it. There is no music.'],
