@@ -42,6 +42,34 @@ NOT_LOGGED_IN = (
     "then try again. To use a different AI, set DJ_AI_CMD (see game/README.md)."
 )
 
+# Codex's tool-bearing features, all turned off (see the blind AI test round).
+# Codex refuses to start on a feature name it doesn't know, so only the ones the
+# installed version lists are passed.
+CODEX_FEATURES_OFF = [
+    "shell_tool", "unified_exec", "apps", "browser_use", "browser_use_external",
+    "computer_use", "plugins", "multi_agent", "image_generation", "view_image",
+    "code_mode_host", "skill_search", "tool_suggest", "goals", "sleep_tool", "hooks",
+    "in_app_browser", "shell_snapshot",
+]
+
+CODEX_FLAGS = [
+    "exec", "--ephemeral", "--ignore-user-config", "--ignore-rules", "--skip-git-repo-check",
+    "-s", "read-only", "-c", "web_search=disabled",
+]
+
+# Gemini CLI's plan mode is read-only; it has no flag to turn its tools off.
+GEMINI_FLAGS = ["--approval-mode", "plan"]
+
+# The AIs the game finds on its own, in the order it looks for them.
+KNOWN_AIS = ["claude", "codex", "gemini"]
+
+NO_AI_FOUND = (
+    "No AI found: Claude Code (`claude`), Codex (`codex`) and Gemini CLI (`gemini`) "
+    "aren't on your PATH, so `ask` won't work. Install and sign in to one of them, or plug "
+    "in any other AI with --ai-cmd or DJ_AI_CMD: a command that reads a prompt on stdin "
+    "and prints its answer. game/README.md has examples for Codex, Gemini CLI and Ollama."
+)
+
 
 class AIError(Exception):
     pass
@@ -129,12 +157,12 @@ class CommandAI(_BaseAI):
     earlier questions and answers.
     """
 
-    def __init__(self, bundle, command, **kwargs):
+    def __init__(self, bundle, command, name=None, **kwargs):
         super().__init__(bundle, **kwargs)
-        self.argv = shlex.split(command)
+        self.argv = shlex.split(command) if isinstance(command, str) else list(command)
         if not self.argv:
             raise AIError("DJ_AI_CMD is empty.")
-        self.name = command
+        self.name = name or (command if isinstance(command, str) else shlex.join(command))
         self.history = []
 
     def check(self):
@@ -154,14 +182,79 @@ class CommandAI(_BaseAI):
         answer = (proc.stdout or "").strip()
         if proc.returncode != 0 or not answer:
             detail = (proc.stderr or proc.stdout or "").strip()
-            raise AIError(f"`{self.argv[0]}` exited with code {proc.returncode}: {detail[:500]}")
+            # The end of stderr says why; the start may be a progress spinner.
+            raise AIError(f"`{self.argv[0]}` exited with code {proc.returncode}: {detail[-500:]}")
         self.history.append((question, answer))
         self.started = True
         return answer
 
 
-def from_settings(bundle, command=None, model=None, timeout=900):
+class MissingAI:
+    """Stands in when no AI is installed, so the game can still be played."""
+
+    name = "no AI"
+    started = False
+
+    def check(self):
+        return NO_AI_FOUND
+
+    def ask(self, question):
+        raise AIError(NO_AI_FOUND)
+
+    def close(self):
+        pass
+
+
+def detect(which=None):
+    """The first AI in KNOWN_AIS that's installed, or None."""
+    which = which or shutil.which
+    for name in KNOWN_AIS:
+        if which(name):
+            return name
+    return None
+
+
+def codex_argv(model=None, runner=subprocess.run):
+    """Codex headless, read-only, with no web search and every tool feature it knows off."""
+    try:
+        listed = runner(["codex", "features", "list"], capture_output=True, text=True,
+                        timeout=60).stdout
+    except (OSError, subprocess.SubprocessError):
+        listed = ""
+    known = {line.split()[0] for line in listed.splitlines() if line.strip()}
+    argv = ["codex"] + CODEX_FLAGS
+    for feature in CODEX_FEATURES_OFF:
+        if feature in known:
+            argv += ["--disable", feature]
+    if model:
+        argv += ["-m", model]
+    return argv + ["-"]
+
+
+def gemini_argv(model=None):
+    argv = ["gemini"] + GEMINI_FLAGS
+    if model:
+        argv += ["-m", model]
+    return argv
+
+
+def from_settings(bundle, command=None, model=None, timeout=900, choice=None,
+                  which=None, runner=subprocess.run):
+    """Pick the AI: --ai-cmd, else --ai, else DJ_CLAUDE, else whichever is installed."""
     if command:
-        return CommandAI(bundle, command, timeout=timeout)
-    return ClaudeAI(bundle, command=os.environ.get("DJ_CLAUDE", "claude"), model=model,
-                    timeout=timeout)
+        return CommandAI(bundle, command, timeout=timeout, runner=runner)
+    if not choice and os.environ.get("DJ_CLAUDE"):
+        choice = "claude"
+    choice = choice or detect(which)
+    if choice == "claude":
+        return ClaudeAI(bundle, command=os.environ.get("DJ_CLAUDE") or "claude", model=model,
+                        timeout=timeout, runner=runner)
+    if choice == "codex":
+        return CommandAI(bundle, codex_argv(model, runner), timeout=timeout, runner=runner,
+                         name="Codex (headless, read-only, no tools)")
+    if choice == "gemini":
+        return CommandAI(bundle, gemini_argv(model), timeout=timeout, runner=runner,
+                         name="Gemini CLI (headless, plan mode)")
+    if choice:
+        raise AIError(f"Unknown AI {choice!r}: use one of {', '.join(KNOWN_AIS)}, or --ai-cmd.")
+    return MissingAI()

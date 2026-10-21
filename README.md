@@ -13,13 +13,34 @@ This repo contains the telemetry and the tools to load it into Grafana: Loki for
 
 ## Play the game
 
-A text adventure for running locally. You watch the testimonies and choose what to investigate, while an AI that sees only the telemetry answers your questions. You need Python 3 and, for the AI, [Claude Code](https://docs.claude.com/en/docs/claude-code) signed in.
+A text adventure for running locally. You watch the testimonies and choose what to investigate, while an AI that sees only the telemetry answers your questions. You need Python 3, plus any AI you like.
 
 ```sh
 python3 game/play.py
 ```
 
-Type `help` in the game for the commands. [`game/README.md`](game/README.md) covers swapping in another AI and has no spoilers.
+Type `help` in the game for the commands. [`game/README.md`](game/README.md) covers the AI options in full and has no spoilers.
+
+### Bring your own AI
+
+The game finds an AI on its own: [Claude Code](https://docs.claude.com/en/docs/claude-code), then [Codex](https://github.com/openai/codex), then [Gemini CLI](https://github.com/google-gemini/gemini-cli): it uses the first one that's installed (sign in to it first). It runs it headless, with no tools and no web access where the tool allows it, from an empty temporary folder. If it finds none, the game says how to plug one in, and you can still play without it.
+
+- **Pick one:** `--ai claude`, `--ai codex` or `--ai gemini` (or `DJ_AI`), with `--model` to choose its model.
+- **Any other AI:** `--ai-cmd` (or `DJ_AI_CMD`) takes any command that reads a prompt on stdin and prints its answer on stdout. For example:
+
+  ```sh
+  # Codex, read-only with no shell and no web search
+  python3 game/play.py --ai-cmd 'codex exec --ephemeral --skip-git-repo-check -s read-only -c web_search=disabled --disable shell_tool --disable unified_exec -'
+  # Gemini CLI in read-only plan mode (untested)
+  python3 game/play.py --ai-cmd 'gemini --approval-mode plan'
+  # A local model with Ollama: set its context length to 64k or more first (see game/README.md)
+  python3 game/play.py --ai-cmd 'ollama run --hidethinking --nowordwrap llama3.2:3b'
+  ```
+
+- **No AI:** `--no-ai`.
+
+> [!WARNING]
+> **Don't run your own agent inside this repo's folder.** An agent with file access can read the spoiler files. Give it only `game/ai-evidence/case-bundle.md`, or have it investigate through Grafana with the [Grafana MCP server](#grafana-mcp-server-on-the-local-stack).
 
 ### In the browser or a Grafana dashboard
 
