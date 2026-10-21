@@ -45,7 +45,7 @@ for: all
 **The human leap.** Someone said "Sorry, Waffles" in the dark, while every sleepwalker was their waking self. A waking self can't remember work. So whoever said it was lucid, and knew Bertram's nickname at work.
 
 - **Not Bertram:** he's the one being apologised to, and he answers like a stranger: "Ow, who's, hello? HELLO?"
-- **Not Agnes:** she isn't lucid. She wouldn't need to leave notes for her waking self if her two selves shared memories. At the elevator she's Peggy, shouting her waking name.
+- **Not Agnes:** she isn't lucid. She wouldn't need to leave notes for her waking self if her two selves shared memories. At the elevator she's Peggy, shouting her waking name. And Peggy never read the notes before that night: they were still tucked unopened in the phone panel when they were found. What the who's-who note says, Peggy didn't know.
 - **Clement:** he's the one who calls Bertram "Waffles". And his own interview gives him away: "Someone was screaming by the elevator." That screaming happened only in the dark, and a sleepwalker shouldn't remember the dark at all.
 
 **Clearing Agnes.** Her badge jolts at 03:03:56 as she pulls free. At 03:04:01 Hale picks up the elevator's emergency phone. Nobody does that while still holding on to someone. So the strangling was a new attack, after she'd gone.

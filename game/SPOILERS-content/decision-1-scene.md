@@ -18,7 +18,7 @@ aliases: elevator, car, lift, e
 [A text card stays on screen for the whole shot:]
 > 03:09 · Elevator car 1, as found.
 > 1 · Ligature. Recovered from Agnes's hands.
-> 2 · Phone panel, cover loose. Three folded notes.
+> 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.
 > 3 · Found in the victim's closed right hand. Not from his own clothing.
 > Mr. Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby. The corridor E and lobby compliance mics ran on emergency power.
 [Close-up of marker 3 in daylight, on a plain light surface: the twist of threads, every colour clear.]
