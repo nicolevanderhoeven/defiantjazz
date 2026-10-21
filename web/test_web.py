@@ -96,6 +96,17 @@ class PageTest(unittest.TestCase):
             self.assertIn(f'"{url}"]', game, f"{url} should be in LINKS")
         self.assertIn('target: "_blank", rel: "noopener noreferrer"', game)
 
+    def test_example_questions(self):
+        game = read("game.js")
+        block = game.split("var DATA = ", 1)[1].split("var LINKS", 1)[0]
+        hints = re.findall(r'\[\"([^"]+)\", DATA \+', block)
+        self.assertEqual(hints, ["Ask for a verdict", "Build a page", "Make a graph"])
+        self.assertIn('service_namespace " +\n    "\\"kipsake-sleep-floor\\"', block)
+        self.assertIn("Who killed Mr. Hale?", block.split("Build a page")[0])
+        # The loader can shift the data's times, so the examples name no clock time.
+        self.assertNotRegex(block, r"\b\d\d:\d\d\b")
+        self.assertIn("These are only examples: ask it anything.", game)
+
 
 class SandboxTest(unittest.TestCase):
     """A Grafana Page runs the game in a frame without forms, modals or localStorage."""

@@ -419,7 +419,12 @@ p { margin: 0 0 10px; }
   border: 1px solid var(--c-line); background: var(--c-panel);
 }
 .questions .q-mark { color: var(--c-peach); font-family: var(--mono); }
-.questions .q { flex: 1; min-width: 0; overflow-wrap: anywhere; color: #c7d5c9; font-size: 14px; }
+.questions .q-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.questions .q-hint {
+  justify-self: start; padding: 1px 6px; border: 1px solid var(--c-chip-line); background: var(--c-chip);
+  color: var(--c-mint); font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.questions .q { overflow-wrap: anywhere; color: #c7d5c9; font-size: 14px; }
 .questions .btn { flex: none; }
 @media (max-width: 480px) {
   .questions li { flex-wrap: wrap; }

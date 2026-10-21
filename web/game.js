@@ -29,14 +29,20 @@
   var THEME_KEY = "defiantjazz.theme";
   var LEADS = C.decisions.length;
 
-  // Examples only: the player asks whatever they like, in whichever AI they like.
+  // Examples only: the player asks whatever they like, in whichever AI they like. Each one names
+  // where the data is, so it works on its own, and shows off something Assistant can do.
   // The loader can move the data to just before the load, so these avoid clock times.
+  var DATA = "The Kipsake Sleep Floor telemetry is in this stack, under service_namespace " +
+    "\"kipsake-sleep-floor\" in Loki, Prometheus and Tempo. ";
   var QUESTIONS = [
-    "The Kipsake Sleep Floor telemetry is in this stack, under service_namespace " +
-      "\"kipsake-sleep-floor\" in Loki, Prometheus and Tempo. During a five-minute power " +
-      "outage on the night shift, Night Supervisor Mr. Hale was killed in the elevator. Who killed Mr. Hale?",
-    "When did the Sleep Floor lose power, and what happened in the minutes before?",
-    "What happened near the elevator while the power was out?",
+    ["Ask for a verdict", DATA + "During a five-minute power outage on the night shift, Night Supervisor " +
+      "Mr. Hale was killed in the elevator. Who killed Mr. Hale? Name one person, your confidence, and " +
+      "the records behind it."],
+    ["Build a page", DATA + "Create a page with an interactive map of the Kipsake Sleep Floor and a " +
+      "timeline slider across the power outage, showing where each badge was and what the microphones " +
+      "heard at each moment."],
+    ["Make a graph", DATA + "Graph Mr. Hale's heart rate against the badge movements of Agnes, Bertram " +
+      "and Clement during the power outage, on one chart."],
   ];
 
   var LINKS = [
@@ -687,12 +693,17 @@
     ]);
 
     var list = el("ol", { class: "questions" });
-    QUESTIONS.forEach(function (q, i) {
+    QUESTIONS.forEach(function (pair, i) {
+      var q = pair[1];
       var text = el("span", { class: "q", id: "q" + i }, q);
       var btn = HOST.askAssistant
         ? iconButton("spark", "Ask Assistant", function () { ask(q, text); }, "btn-console", { "aria-describedby": "q" + i })
         : iconButton("copy", "Copy", function () { copy(q, text); }, "btn-console", { "aria-describedby": "q" + i });
-      list.appendChild(el("li", null, [el("span", { class: "q-mark", "aria-hidden": "true" }, "❯"), text, btn]));
+      list.appendChild(el("li", null, [
+        el("span", { class: "q-mark", "aria-hidden": "true" }, "❯"),
+        el("div", { class: "q-body" }, [el("span", { class: "q-hint" }, pair[0]), text]),
+        btn,
+      ]));
     });
     var ai = el("section", { class: "console area-ai", "aria-labelledby": "h-ai" }, [
       el("div", { class: "console-bar" }, [el("span", { class: "dot" }), "Ask your AI"]),
@@ -701,7 +712,7 @@
         el("p", null, "Ask Grafana Assistant in this Grafana, or your own AI agent through the Grafana MCP " +
           "server or gcx. It hasn't seen the interviews, the leads you follow, or anything you find. " +
           "If you want it to know something, tell it."),
-        el("p", { class: "note" }, "Ask it anything. If you're not sure where to start:"),
+        el("p", { class: "note" }, "These are only examples: ask it anything. If you're not sure where to start, try one:"),
         list,
         HOST.askAssistant ? el("p", { class: "note" }, "Ask Assistant opens Grafana Assistant with the question " +
           "filled in, ready to send with Enter, and copies it where the page is allowed to. " +
