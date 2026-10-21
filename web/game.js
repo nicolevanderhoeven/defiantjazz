@@ -21,7 +21,7 @@
   var QUESTIONS = [
     "The Kipsake Sleep Floor telemetry is in this stack, under service_namespace " +
       "\"kipsake-sleep-floor\" in Loki, Prometheus and Tempo. During a five-minute power " +
-      "outage, Floor Supervisor Mr. Hale was killed in the elevator. Who killed Mr. Hale?",
+      "outage on the night shift, Night Supervisor Mr. Hale was killed in the elevator. Who killed Mr. Hale?",
     "When did the Sleep Floor lose power, and what happened in the minutes before?",
     "What happened near the elevator while the power was out?",
   ];
@@ -42,7 +42,7 @@
 
   function fresh() {
     return {
-      view: "title",   // title, cold, statement, hub, outside, lead, result, card, accuse, confirm, verdict
+      view: "title",   // title, advert, cold, statement, hub, outside, lead, result, card, accuse, confirm, verdict
       step: 0,         // statement number or verdict page
       chosen: [],      // option index picked for each lead, in order
       outsideShown: false,
@@ -189,10 +189,33 @@
   }
 
   function card(c, title, ruleLabel) {
+    if (c.meta && c.meta.style === "advert") return advert(c, ruleLabel);
     return el("article", { class: "story" }, [
       ruleLabel ? rule(ruleLabel) : null,
       heading(title || c.title),
       cardBody(c.body),
+    ]);
+  }
+
+  // The Kipsake advert: every line is its own paragraph (none of them are speaker lines).
+  function advert(c, ruleLabel) {
+    var body = el("div", { class: "card-body" });
+    c.body.split("\n").forEach(function (raw) {
+      var line = raw.trim();
+      if (!line) return;
+      if (line.charAt(0) === "[" && line.slice(-1) === "]") {
+        body.appendChild(inline(line.slice(1, -1), el("p", { class: "stage" })));
+      } else {
+        body.appendChild(inline(line, el("p")));
+      }
+    });
+    return el("article", null, [
+      ruleLabel ? rule(ruleLabel) : null,
+      el("div", { class: "advert" }, [
+        el("p", { class: "ad-label" }, "Advert"),
+        heading(c.title),
+        body,
+      ]),
     ]);
   }
 
@@ -209,7 +232,7 @@
   }
 
   function reviewItems() {
-    var items = [["Cold open", C.coldOpen]];
+    var items = [["The Kipsake advert", C.advert], ["Cold open", C.coldOpen]];
     C.testimonies.forEach(function (t) { items.push([t.title, t]); });
     if (state.outsideShown) items.push(["Outside World handout", C.outsideWorld]);
     state.chosen.forEach(function (_, n) {
@@ -281,7 +304,16 @@
       el("pre", { class: "banner", "aria-hidden": "true" }, C.banner),
       el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
       el("div", { class: "actions" }, [
-        button(resume ? "Continue" : "Start", function () { go(resume ? "hub" : "cold"); }, "btn-primary"),
+        button(resume ? "Continue" : "Start", function () { go(resume ? "hub" : "advert"); }, "btn-primary"),
+      ]),
+    ]);
+  };
+
+  views.advert = function () {
+    return el("section", { class: "story" }, [
+      card(C.advert, null, "Cold open"),
+      el("div", { class: "actions" }, [
+        button("Continue", function () { go("cold"); }, "btn-primary"),
       ]),
     ]);
   };
@@ -299,7 +331,7 @@
     var i = Math.min(Math.max(state.step | 0, 0), C.testimonies.length - 1);
     var last = i === C.testimonies.length - 1;
     return el("section", { class: "story" }, [
-      rule("Security interviews · " + (i + 1) + " of " + C.testimonies.length),
+      rule("Interviews · " + (i + 1) + " of " + C.testimonies.length),
       i === 0 ? el("p", { class: "story lede" }, C.testimonyIntro) : null,
       card(C.testimonies[i]),
       el("div", { class: "actions" }, [
@@ -318,9 +350,9 @@
       el("h3", { id: "h-inv" }, "Investigate"),
       el("p", null, leadsLine()),
       el("p", { class: "note" }, n < LEADS
-        ? "Ms. Okonjo follows up her leads in order: a crime scene, a home visit, one last interview. " +
+        ? "You follow up your leads in order: a crime scene, a home visit, one last interview. " +
           "Each time you pick one of three options and see only that one."
-        : "Ms. Okonjo has followed up all three leads. When you're ready, accuse the killer."),
+        : "You've followed up all three leads. When you're ready, accuse the killer."),
       n < LEADS ? el("div", { class: "actions" }, [
         button("Investigate lead " + (n + 1) + ": " + C.leadKinds[n], investigate, "btn-primary"),
       ]) : null,
@@ -337,12 +369,13 @@
       el("h3", { id: "h-ai" }, "Ask your AI"),
       el("p", null, "Your AI works beside the game, not inside it. Ask Grafana Assistant in this " +
         "Grafana, or your own AI agent through the Grafana MCP server or gcx. It has read Kipsake's " +
-        "records in this stack, but it has never spoken to anyone and hasn't seen anything you see here."),
+        "records in this stack, and nothing else. It hasn't seen the interviews, the leads you follow, " +
+        "or anything you find. If you want it to know something, tell it."),
       el("p", null, "Ask it anything. These are only examples, if you're not sure where to start:"),
       list,
       el("p", { class: "note" }, "The data's times are UTC. If it was loaded on an incident date, the " +
-        "story's 15:02 is 15:02 in Grafana set to UTC. If it was loaded to end just before the load, " +
-        "15:02 is a different clock time there. Either way, your AI can find the outage in the data."),
+        "story's 03:02 is 03:02 in Grafana set to UTC. If it was loaded to end just before the load, " +
+        "03:02 is a different clock time there. Either way, your AI can find the outage in the data."),
       el("p", { class: "note" }, ["Learn more: "].concat(LINKS.map(function (l, i) {
         return [i ? " · " : "", el("a", { href: l[1], target: "_blank", rel: "noopener noreferrer" }, l[0])];
       }).flat(), [" (opens in a new tab)"])),
@@ -351,7 +384,7 @@
     var items = reviewItems();
     var review = el("section", { class: "panel area-review", "aria-labelledby": "h-review" }, [
       el("h3", { id: "h-review" }, "Review"),
-      el("p", { class: "note" }, "Re-read the cold open, the statements and anything you've unlocked."),
+      el("p", { class: "note" }, "Re-read the advert, the cold open, the interviews and anything you've unlocked."),
       el("ul", { class: "review-list" }, items.map(function (item, i) {
         return el("li", null, el("button", {
           type: "button", class: "linklike", onclick: function () { go("card", { reviewing: i }); },
@@ -369,8 +402,8 @@
     return el("section", null, [
       rule("Your turn"),
       heading("The case"),
-      el("p", { class: "story" }, "Ask your AI anything. Ms. Okonjo has three leads she can follow up " +
-        "for you, one at a time, whenever you like. When you're ready, accuse the killer and say why."),
+      el("p", { class: "story" }, "Ask your AI anything. You have three leads to follow up, " +
+        "one at a time, whenever you like. When you're ready, accuse the killer and say why."),
       el("div", { class: "hub-grid" }, [inv, ai, accuse, review]),
     ]);
   };
@@ -467,7 +500,7 @@
   function leadsNote() {
     var left = leadsLeft();
     if (!left) return null;
-    return el("p", { class: "note" }, "Ms. Okonjo still has " + left + " lead" + (left > 1 ? "s" : "") +
+    return el("p", { class: "note" }, "You still have " + left + " lead" + (left > 1 ? "s" : "") +
       " to follow up. You can accuse now or keep investigating.");
   }
 

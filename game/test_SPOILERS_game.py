@@ -27,13 +27,13 @@ SENTINELS = [
     "Clement calls him 'Waffles'",
     "checked on Waffles",
     "Someone was screaming by the elevator",
-    "June Whitlow",
+    "survived by her brother, Clement",
     "Procedure Revision 114",
     "Port Quiet Gazette",
     "THE GOLDEN WAFFLE",
-    "C.A.W.",
+    "a single block capital",
     "fringed scarf",
-    "Clement Arthur Whitlow killed Mr. Hale",
+    "Clement killed Mr. Hale",
     "It took a human to know which question to ask",
 ]
 
@@ -65,7 +65,7 @@ class FakeClaude:
     def __call__(self, argv, input, cwd, **kwargs):
         self.calls.append({"argv": argv, "input": input, "cwd_files": os.listdir(cwd), "cwd": cwd})
         out = {"type": "result", "is_error": False, "session_id": "sess-123",
-               "result": f"**Answer {len(self.calls)}.** It was Agnes K.\n\n- Evidence: the cable."}
+               "result": f"**Answer {len(self.calls)}.** It was Agnes.\n\n- Evidence: the cable."}
         return subprocess.CompletedProcess(argv, 0, json.dumps(out), "")
 
 
@@ -97,7 +97,9 @@ class ContentTest(unittest.TestCase):
             self.assertTrue(decision.prompt)
             for card in decision.options:
                 self.assertTrue(card.body)
-        self.assertIn("June Whitlow", CONTENT.outside_world.body)
+        self.assertIn("June, 41.", CONTENT.outside_world.body)
+        self.assertEqual(CONTENT.advert.meta.get("style"), "advert")
+        self.assertIn("Earn while you sleep.", CONTENT.advert.body)
 
     def test_bundle_has_no_human_only_text(self):
         for phrase in SENTINELS:
@@ -106,13 +108,11 @@ class ContentTest(unittest.TestCase):
             self.assertNotIn(line, BUNDLE)
 
     def test_suspect_names(self):
-        self.assertEqual(CONTENT.resolve_suspect("Clement W."), "clement")
+        self.assertEqual(CONTENT.resolve_suspect("Clement"), "clement")
         self.assertEqual(CONTENT.resolve_suspect("peggy"), "agnes")
-        self.assertEqual(CONTENT.resolve_suspect("Mr. Lindqvist"), "bertram")
-        self.assertEqual(CONTENT.resolve_suspect("Bertram Lindqvist"), "bertram")
-        self.assertEqual(CONTENT.resolve_suspect("Peggy Kowalski"), "agnes")
-        self.assertEqual(CONTENT.resolve_suspect("Agnes Kowalski"), "agnes")
-        self.assertIsNone(CONTENT.resolve_suspect("Fern"))
+        self.assertEqual(CONTENT.resolve_suspect("Agnes."), "agnes")
+        self.assertEqual(CONTENT.resolve_suspect("Waffles"), "bertram")
+        self.assertIsNone(CONTENT.resolve_suspect("Mr. Hale"))
 
 
 class FullPathTest(unittest.TestCase):
@@ -120,15 +120,15 @@ class FullPathTest(unittest.TestCase):
         self.runner = FakeClaude()
         self.ai = ai.ClaudeAI(BUNDLE, runner=self.runner)
         answers = [
-            "", "", "", "",                     # cold open and three testimonies
+            "", "", "", "", "",                 # advert, cold open and three testimonies
             "ask Who killed Mr. Hale?",
             "investigate", "1",                 # Elevator car 1
             "ask What did the corridor-e mic hear?",
-            "investigate", "", "2",             # Outside World handout, then Mr. Lindqvist
+            "investigate", "", "2",             # Outside World handout, then Bertram at home
             "investigate", "clement",           # push Clement
             "review", "all",
             "investigate",                      # all used
-            "accuse clement w.", "y",
+            "accuse clement.", "y",
             REASONING, "", "Second paragraph.", ".",
             "", "",                             # the reveal's cards
         ]
@@ -137,7 +137,7 @@ class FullPathTest(unittest.TestCase):
 
     def test_walks_the_whole_game(self):
         self.assertEqual([c.meta["option"] for _, c in self.game.chosen],
-                         ["Elevator car 1", "Mr. Lindqvist", "Clement"])
+                         ["Elevator car 1", "Bertram at home", "Clement"])
         self.assertEqual(self.game.accused, "clement")
         self.assertIn("You're right.", self.output)
         self.assertIn("How it's solved", self.output)
@@ -149,12 +149,16 @@ class FullPathTest(unittest.TestCase):
         self.assertIn("I N C I D E N T", before_turn)
         self.assertIn("Your role", before_turn)
         self.assertIn("You can accuse before you've used them all.", " ".join(before_turn.split()))
-        self.assertIn("alongside Ms. Okonjo", before_turn)
+        flat = " ".join(before_turn.split())
+        self.assertIn("If you want it to know something, tell it.", flat)
         self.assertIn("hot cocoa", before_turn)
-        interviews = " ".join(before_turn.split("── Security interviews", 1)[1].split())
-        self.assertLess(interviews.index("First, the suspects' statements."),
-                        interviews.index("Ms. Okonjo: Ms. K."))
-        for label in ("Cold open", "Security interviews", "Your turn", "AI assistant",
+        self.assertLess(flat.index("KIPSAKE · ADVERT"), flat.index("Earn while you sleep."))
+        self.assertLess(flat.index("Sweet dreams, Dreamers."), flat.index("What happened that night"))
+        self.assertNotIn("power cut", flat)
+        interviews = " ".join(before_turn.split("── Interviews", 1)[1].split())
+        self.assertLess(interviews.index("First, your interviews."),
+                        interviews.index("You: Agnes. Where were you"))
+        for label in ("Cold open", "Interviews", "Your turn", "AI assistant",
                       "Lead 1 of 3", "Outside World handout", "Review", "The verdict"):
             self.assertIn(f"── {label} ─", self.output)
         for line in self.output.splitlines():
@@ -167,7 +171,7 @@ class FullPathTest(unittest.TestCase):
         flat = " ".join(after_turn.split())
         self.assertIn("You can ask anything.", flat)
         self.assertIn("ask Who killed Mr. Hale?", flat)
-        evidence = "ask What happened near the elevator between 15:02 and 15:07?"
+        evidence = "ask What happened near the elevator between 03:02 and 03:07?"
         self.assertEqual(flat.count(evidence), 1)
         self.assertLess(flat.index("Answer 1."), flat.index(evidence))
 
@@ -196,7 +200,7 @@ class FullPathTest(unittest.TestCase):
             self.assertNotIn(line, sent)
 
     def test_reveal_only_after_accusing(self):
-        before = self.output.split("You accused Clement W.")[0]
+        before = self.output.split("You accused Clement.")[0]
         for card in CONTENT.reveal.cards:
             self.assertNotIn(card.title, before)
         for phrase in ("Clement wants Hale alone", "The human leap", "You're right."):
@@ -205,24 +209,24 @@ class FullPathTest(unittest.TestCase):
 
 class OtherPathsTest(unittest.TestCase):
     def test_early_accusation_of_agnes(self):
-        game, output = play(["", "", "", "", "accuse peggy", "y", "She had the cable.", "", "", "", ""],
+        game, output = play(["", "", "", "", "", "accuse peggy", "y", "She had the cable.", "", "", "", ""],
                             None)
         self.assertEqual(game.accused, "agnes")
-        self.assertIn("Ms. Okonjo still has 3 leads to follow up", output)
+        self.assertIn("You still have 3 leads to follow up", output)
         self.assertIn("the mistake the case is built around", output)
         self.assertNotIn("Outside World handout", output)
 
     def test_accused_label_has_one_full_stop(self):
-        self.assertIn("You accused Clement W.", game_output := play(
-            ["", "", "", "", "accuse clement", "y", "x", ".", "", ""], None)[1])
-        self.assertNotIn("Clement W..", game_output)
+        self.assertIn("You accused Clement.", game_output := play(
+            ["", "", "", "", "", "accuse clement", "y", "x", ".", "", ""], None)[1])
+        self.assertNotIn("Clement..", game_output)
 
     def test_reasoning_keeps_paragraphs_until_terminator(self):
-        game, output = play(["", "", "", "", "accuse agnes", "y",
+        game, output = play(["", "", "", "", "", "accuse agnes", "y",
                              "First.", "", "Second.", "", "", "", ""], None)
         self.assertEqual(game.reasoning, "First.\n\nSecond.")
         self.assertIn("Second.", output)
-        game, _ = play(["", "", "", "", "accuse agnes", "y", "One.", "", "Two.", " . ", "", ""],
+        game, _ = play(["", "", "", "", "", "accuse agnes", "y", "One.", "", "Two.", " . ", "", ""],
                        None)
         self.assertEqual(game.reasoning, "One.\n\nTwo.")
 
@@ -252,7 +256,7 @@ class OtherPathsTest(unittest.TestCase):
                 self.assertNotIn("for the next one", "\n".join(output))
 
     def test_quit_and_unknown_command(self):
-        game, output = play(["", "", "", "", "dance", "ask", "", "quit", "y"], None)
+        game, output = play(["", "", "", "", "", "dance", "ask", "", "quit", "y"], None)
         self.assertIsNone(game.accused)
         self.assertIn("I don't know \"dance\"", output)
         self.assertNotIn("You're right.", output)
@@ -266,7 +270,7 @@ class OtherPathsTest(unittest.TestCase):
 
         the_ai = ai.CommandAI(BUNDLE, "my-ai --flag", runner=runner)
         self.addCleanup(the_ai.close)
-        play(["", "", "", "", "ask one?", "investigate", "2", "ask two?", "quit", "y"], the_ai)
+        play(["", "", "", "", "", "ask one?", "investigate", "2", "ask two?", "quit", "y"], the_ai)
         self.assertEqual(len(calls), 2)
         self.assertIn(BUNDLE, calls[1])
         self.assertIn("My first question: one?\n\nYour answer: answer 1\n\nMy next question: two?",
@@ -294,7 +298,7 @@ class ErrorTest(unittest.TestCase):
         self.addCleanup(the_ai.close)
         with self.assertRaisesRegex(ai.AIError, "logged in"):
             the_ai.ask("hello?")
-        game, output = play(["", "", "", "", "ask hello?", "quit", "y"], the_ai)
+        game, output = play(["", "", "", "", "", "ask hello?", "quit", "y"], the_ai)
         self.assertIn("Your AI assistant couldn't answer", output)
 
 

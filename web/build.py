@@ -45,6 +45,7 @@ def data(cards=None):
         "suspects": content.SUSPECTS,
         "leadKinds": engine.LEAD_KIND,
         "leadShort": engine.DECISION_SHORT,
+        "advert": _card(cards.advert),
         "coldOpen": _card(cards.cold_open),
         "testimonyIntro": cards.testimony_intro,
         "testimonies": [_card(c) for c in cards.testimonies],

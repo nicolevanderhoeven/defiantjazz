@@ -2,7 +2,7 @@
 
 An observability murder mystery set on the Sleep Floor at Kipsake.
 
-During the Cocoa Hour, a quiet quota reward in Break Room 2, the floor loses power for five minutes. When the power comes back, Floor Supervisor Mr. Reginald Hale is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
+Kipsake rents your sleep: at night its Dreamers sleep in pods while their sleepwalking selves work the floor. During the Cocoa Hour, a middle-of-the-night quota reward in Break Room 2, the floor loses power for five minutes. When the power comes back, the night supervisor, Mr. Reginald Hale, is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
 
 This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice. It also has the game itself, in a terminal version for demos and playtests and a web version to embed in a Grafana dashboard.
 
@@ -33,7 +33,7 @@ The game finds an AI on its own: [Claude Code](https://docs.claude.com/en/docs/c
   python3 game/play.py --ai-cmd 'codex exec --ephemeral --skip-git-repo-check -s read-only -c web_search=disabled --disable shell_tool --disable unified_exec -'
   # Gemini CLI in read-only plan mode (untested)
   python3 game/play.py --ai-cmd 'gemini --approval-mode plan'
-  # A local model with Ollama: set its context length to 64k or more first (see game/README.md)
+  # A local model with Ollama: set its context length to 32k or more first (see game/README.md)
   python3 game/play.py --ai-cmd 'ollama run --hidethinking --nowordwrap llama3.2:3b'
   ```
 
@@ -66,19 +66,19 @@ Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embe
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |
 | `telemetry/system.log` | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |
-| `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts, 15:02 to 15:10 (buffered during the outage, live after it) |
+| `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
 | `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar |
 | `loader/` | `load.py` sends everything over OTLP; `test_load.py` checks its time shift |
 | `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana (with Grafana Assistant) and the Grafana MCP server |
 
-That's about 127,000 lines across roughly 120 employees and 14 weeks. Reading it end to end isn't practical, so query it.
+That's about 4,300 lines across the four people on the Sleep Floor's night shift and 14 weeks of nights. Query it rather than reading it end to end.
 
 ## How the data maps to Grafana
 
 - **Loki:** every log line, unchanged except for timestamp shifting (see below). Each source (`door`, `chat`, `ring`, `power`, `ambient-mic`, `security`, `personnel`, `hush-room`, …) is its own `service_name`, all under `service_namespace="kipsake-sleep-floor"`. Lines are logfmt, so `| logfmt` works.
   - Records are a database pull, not a stream, so they are ingested as one export at the end of the incident. Their own dates are kept in each line.
 - **Prometheus / Mimir:** every row of `metrics.csv` as a gauge, for example `badge_accel_variance`, `sleep_band_heart_rate_bpm`, `circuit_power_watts` and `quota_file_progress`. Samples recorded on a device during the outage and uploaded late carry `buffered="true"`.
-- **Tempo:** one trace per badge per day (`service.name="kipsake-badge-tracking"`), with a span for each door-reader or elevator-reader event. The days are the data's own, so a shift across midnight doesn't split a journey.
+- **Tempo:** one trace per badge per night shift (`service.name="kipsake-badge-tracking"`), with a span for each door-reader or elevator-reader event. A night shift crosses midnight, so journeys are grouped by the data's own shift, and neither midnight nor a time shift splits one.
 
 ## Loading into Grafana Cloud
 
@@ -93,7 +93,7 @@ That's about 127,000 lines across roughly 120 employees and 14 weeks. Reading it
    python3 loader/load.py --target cloud
    ```
 
-**Time shifting.** Grafana Cloud rejects metric samples more than about 2 hours behind the newest sample, and log entries older than 7 days. So by default the loader shifts every timestamp so the incident happened just before "now". Timestamps inside log lines move by the same amount, so the data stays consistent. This moves the times of day too: the story's 15:02 lands at whatever time you loaded it. The loader prints the mode and the shift it used.
+**Time shifting.** Grafana Cloud rejects metric samples more than about 2 hours behind the newest sample, and log entries older than 7 days. So by default the loader shifts every timestamp so the incident happened just before "now". Timestamps inside log lines move by the same amount, so the data stays consistent. This moves the times of day too: the story's 03:02 lands at whatever time you loaded it. The loader prints the mode and the shift it used.
 
 Because of those limits, Grafana Cloud gets:
 - the last 7 days of logs and traces, which includes all of the incident day and every record
@@ -123,13 +123,13 @@ docker compose exec grafana grafana cli admin reset-admin-password '<new passwor
 
 Recreating the containers (for example after editing `docker-compose.yml`) clears Loki, Prometheus and Tempo, so run the loader again afterwards. Grafana's own data, including the Assistant connection, lives in the `grafana-data` volume and survives.
 
-**Dates.** The raw files are dated around one canonical incident day, Thursday 2026-10-08. The local stack accepts the full history, so it can keep the story's times of day:
+**Dates.** The raw files are dated around one canonical incident night: the blackout is at 03:02 on Thursday 2026-10-08. The local stack accepts the full history, so it can keep the story's times of day:
 
 ```sh
 python3 loader/load.py --target local --incident-date latest
 ```
 
-`--incident-date` moves every date by whole weeks so the incident falls on the Thursday you name (`YYYY-MM-DD`), or with `latest` on the most recent Thursday whose data has all happened. Times of day and weekdays stay the story's own, so the blackout is at 15:02 UTC on a Thursday. You can also set it with `DJ_INCIDENT_DATE`. A date that isn't a Thursday is refused, unless you add `--any-weekday`. Set Grafana's time zone to UTC (the example dashboard already is) so the times on screen match the story's. Add `--no-shift` to keep the original 2026 dates instead.
+`--incident-date` moves every date by whole weeks so the incident falls on the Thursday you name (`YYYY-MM-DD`), or with `latest` on the most recent Thursday whose data has all happened. Times of day and weekdays stay the story's own, so the blackout is at 03:02 UTC on a Thursday. You can also set it with `DJ_INCIDENT_DATE`. A date that isn't a Thursday is refused, unless you add `--any-weekday`. Set Grafana's time zone to UTC (the example dashboard already is) so the times on screen match the story's. Add `--no-shift` to keep the original 2026 dates instead.
 
 Every signal carries the load's incident date as the resource attribute `case_run` (a label on the local stack's metrics). If you load the data into the same stack more than once, filter on `case_run` to see one load.
 
@@ -174,7 +174,7 @@ In the local Tempo, TraceQL searches limited to a time range may not find the hi
 --incident-date DATE     move by whole weeks so the incident falls on this Thursday, or 'latest' (env DJ_INCIDENT_DATE)
 --any-weekday            allow an --incident-date that isn't a Thursday
 --no-shift               keep original timestamps (local only)
---incident-end ISO       pin the time that 2026-10-08T15:50:00Z maps to (default: now)
+--incident-end ISO       pin the time that 2026-10-08T03:50:00Z maps to (default: now)
 --dry-run                build and validate every payload without sending
 ```
 

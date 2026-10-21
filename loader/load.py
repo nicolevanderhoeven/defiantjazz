@@ -10,9 +10,9 @@ Usage:
     python load.py --target local --incident-date latest   # the incident falls on the latest Thursday
     python load.py --target local --dry-run  # build and validate every payload without sending
 
-The raw files are dated around one canonical incident day, Thursday
-2026-10-08. The loader moves every timestamp by one offset, chosen by one of
-three modes:
+The raw files are dated around one canonical incident night: the Sleep Floor
+works nights, and the blackout is at 03:02 on Thursday 2026-10-08. The loader
+moves every timestamp by one offset, chosen by one of three modes:
 
 - recent (default): the incident happened just before "now". Grafana Cloud
   rejects metrics more than ~2 hours old and logs more than ~7 days old, so use
@@ -52,13 +52,13 @@ from opentelemetry.proto.trace.v1.trace_pb2 import ResourceSpans, ScopeSpans, Sp
 
 # The moment the original data treats as "now": Floor Security has finished
 # the scene and the interviews are under way.
-REFERENCE = datetime(2026, 10, 8, 15, 50, 0, tzinfo=timezone.utc)
+REFERENCE = datetime(2026, 10, 8, 3, 50, 0, tzinfo=timezone.utc)
 # When the lights go out; the printed shift reports where this lands.
-INCIDENT_AT = datetime(2026, 10, 8, 15, 2, 0, tzinfo=timezone.utc)
+INCIDENT_AT = datetime(2026, 10, 8, 3, 2, 0, tzinfo=timezone.utc)
 # Records (personnel, detention, Hush Room, ...) are a database pull, not a
 # stream; they are ingested as one export at this time, with their original
 # dates kept in the line body.
-RECORDS_EXPORT_AT = datetime(2026, 10, 8, 15, 40, 0, tzinfo=timezone.utc)
+RECORDS_EXPORT_AT = datetime(2026, 10, 8, 3, 40, 0, tzinfo=timezone.utc)
 NAMESPACE = "kipsake-sleep-floor"
 # The incident date of this load, as a resource attribute on every signal.
 CASE_RUN = INCIDENT_AT.date().isoformat()
@@ -139,8 +139,15 @@ class Shifter:
         return (noon + self.delta).date().isoformat()
 
 
+def journey_day(ts):
+    """The night shift an (unshifted) event belongs to, named by the morning it ends.
+
+    A shift runs from the evening to the next morning, so one journey crosses midnight."""
+    return (ts + timedelta(hours=12)).date()
+
+
 def journey_trace_id(badge, day):
-    """Trace ID of a badge's journey on a given (unshifted) day; shared by logs and traces."""
+    """Trace ID of a badge's journey on a given night shift (see journey_day); shared by logs and traces."""
     # include the namespace and case run so a second copy loaded into the same stack gets its own traces
     return hashlib.sha256(f"{NAMESPACE}:{CASE_RUN}:{badge}:{day}".encode()).digest()[:16]
 
@@ -168,7 +175,7 @@ def read_logs(data_dir, shift):
                 source = f.get("source", "unknown")
             trace_id = None
             if name == "door-and-badge-events.log" and f.get("badge"):
-                trace_id = journey_trace_id(f["badge"], ts.date())  # links the line to its badge-journey trace
+                trace_id = journey_trace_id(f["badge"], journey_day(ts))  # links the line to its badge-journey trace
             out.append((shift.dt(ts), source, f.get("level"), shift.text(line), trace_id))
     out.sort(key=lambda r: r[0])
     return out
@@ -192,10 +199,10 @@ def read_metrics(data_dir, shift):
 
 
 def read_spans(data_dir, shift):
-    """Build badge-journey traces: one trace per badge per day, one span per reader event.
+    """Build badge-journey traces: one trace per badge per night shift, one span per reader event.
 
-    Journeys are grouped by the unshifted day, so a shift that moves the workday
-    across midnight doesn't split one day's journey into two traces."""
+    Journeys are grouped by the unshifted night shift, so a journey that crosses
+    midnight, before or after the time shift, stays one trace."""
     journeys = defaultdict(list)
     for raw in (data_dir / "door-and-badge-events.log").read_text().splitlines():
         f = fields(raw)
@@ -203,7 +210,7 @@ def read_spans(data_dir, shift):
         if not badge:
             continue  # reader_offline / reader_online announcements
         ts = parse_ts(raw.split()[0])
-        journeys[(badge, ts.date())].append((shift.dt(ts), f))
+        journeys[(badge, journey_day(ts))].append((shift.dt(ts), f))
     spans = []
     for (badge, day), events in journeys.items():
         events.sort(key=lambda e: e[0])
@@ -274,8 +281,8 @@ def incident_day(value, now, end, any_weekday=False):
     except ValueError:
         raise SystemExit(f"--incident-date: expected YYYY-MM-DD or 'latest', got {value!r}")
     if day.weekday() != THURSDAY and not any_weekday:
-        raise SystemExit(f"--incident-date: {day} is a {day:%A}; the incident is on a Thursday, so the "
-                         "weekdays and 'the day before' stay true. Pass --any-weekday to use it anyway.")
+        raise SystemExit(f"--incident-date: {day} is a {day:%A}; the incident is at 03:02 on a Thursday, "
+                         "so the weekdays and 'the night before' stay true. Pass --any-weekday to use it anyway.")
     return day
 
 
@@ -392,7 +399,7 @@ def main():
                       help="move the data by whole weeks so the incident falls on this Thursday "
                            "(env DJ_INCIDENT_DATE); 'latest' = the most recent Thursday whose data has all happened")
     mode.add_argument("--no-shift", action="store_true", help="keep the original 2026-07..2026-10-08 timestamps")
-    mode.add_argument("--incident-end", help="ISO time (UTC) that 2026-10-08T15:50:00 maps to; default: now")
+    mode.add_argument("--incident-end", help="ISO time (UTC) that 2026-10-08T03:50:00 maps to; default: now")
     ap.add_argument("--any-weekday", action="store_true",
                     help="allow an --incident-date that isn't a Thursday (moves work onto weekends)")
     ap.add_argument("--dry-run", action="store_true", help="build and validate payloads without sending")
@@ -407,7 +414,7 @@ def main():
     set_case_run(day)
     shift = Shifter(delta)
     print(f"Mode: {mode_text}")
-    print(f"Time shift: {delta}  (incident 2026-10-08T15:02:00Z -> "
+    print(f"Time shift: {delta}  (incident 2026-10-08T03:02:00Z -> "
           f"{(INCIDENT_AT + delta).isoformat()}), case_run={CASE_RUN}")
 
     if args.target == "cloud":

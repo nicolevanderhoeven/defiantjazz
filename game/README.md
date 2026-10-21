@@ -13,17 +13,17 @@ python3 game/play.py
 
 Python 3.9 or later, standard library only. For the AI, use any one you like (see [Choosing the AI](#choosing-the-ai)). With nothing set, the game uses the first of Claude Code, Codex and Gemini CLI that's installed. If none is, it tells you how to plug one in, and you can still play.
 
-The game opens with the cold open and three security interviews. After that you choose what to do:
+The game opens with a Kipsake advert, the cold open and your three interviews. After that you choose what to do:
 
 | Command | What it does |
 |---|---|
-| `ask <question>` | Ask your AI assistant anything. It has read Kipsake's records (the telemetry), but it has never spoken to anyone and hasn't seen anything you've seen. |
-| `investigate` | Have Ms. Okonjo follow up her next lead. There are three, one at a time, each with three choices, and each choice unlocks one clip. |
-| `review` | Re-read the cold open, the interviews, and anything you've unlocked. |
+| `ask <question>` | Ask your AI assistant anything. It has read Kipsake's records (the telemetry), and nothing else: it hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it. |
+| `investigate` | Follow up your next lead. There are three, one at a time, each with three choices, and each choice unlocks one clip. |
+| `review` | Re-read the advert, the cold open, the interviews, and anything you've unlocked. |
 | `accuse <name>` | When you're ready, name the killer and say why. You can do this at any time, and it ends the game. |
 | `help`, `quit` | |
 
-The first `ask` sends the AI the whole case file (about 250 KB), so it can take up to a minute. Later questions are faster. Ctrl-C cancels a question.
+The first `ask` sends the AI the whole case file (about 80 KB), so it can take up to a minute. Later questions are faster. Ctrl-C cancels a question.
 
 ## Options
 
@@ -89,7 +89,7 @@ DJ_AI_CMD='gemini --approval-mode plan -m pro' python3 game/play.py
 DJ_AI_CMD='ollama run --hidethinking --nowordwrap llama3.2:3b' python3 game/play.py
 ```
 
-**Ollama needs a long context.** The bundle is about 41,000 tokens, and Ollama's default context is much shorter, so it silently drops most of the case files. Set the context length to 64k or more, in the Ollama app's settings or with `OLLAMA_CONTEXT_LENGTH=65536 ollama serve`. On a laptop, the first answer can take many minutes.
+**Ollama needs a long context.** The bundle is about 14,000 tokens, and Ollama's default context is much shorter, so it silently drops most of the case files. Set the context length to 32k or more, in the Ollama app's settings or with `OLLAMA_CONTEXT_LENGTH=32768 ollama serve`. On a laptop, the first answer can take many minutes.
 
 ### Using your own agent
 
@@ -107,7 +107,7 @@ DJ_AI_CMD='ollama run --hidethinking --nowordwrap llama3.2:3b' python3 game/play
 | `test_SPOILERS_game.py` | **Spoilers:** the self-check, below |
 | `test_ai.py` | How the game picks the AI and builds each command line. No spoilers |
 | `ai-evidence/case-bundle.md` | What the AI sees |
-| `SPOILERS-content/` | **Spoilers:** the cold open, interviews, the three decisions, the Outside World handout, `suspect-names.json` and `SPOILERS-reveal.md` |
+| `SPOILERS-content/` | **Spoilers:** the advert and cold open, interviews, the three decisions, the Outside World handout, `suspect-names.json` and `SPOILERS-reveal.md` |
 
 The cards are Markdown, one file per part of the game. `content.py` describes the format.
 

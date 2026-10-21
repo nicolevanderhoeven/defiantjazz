@@ -5,7 +5,7 @@ The terminal game as a static web page, made to sit in a Grafana dashboard panel
 > [!WARNING]
 > **`SPOILERS-content.js` contains spoilers.** It's every story card from `game/SPOILERS-content/`, including the solution. The solution is encoded so a glance doesn't give it away, but don't read the file before you play. Everything else in this folder is spoiler-free.
 
-The flow is the same as `python3 game/play.py`: the cold open, the suspects' statements, then the case, where you investigate Ms. Okonjo's three leads (one option each), review what you've unlocked, and accuse the killer. The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the Grafana MCP server or `gcx`, about the telemetry loaded in the stack. The page offers example questions with copy buttons.
+The flow is the same as `python3 game/play.py`: the Kipsake advert and the cold open, your interviews with the suspects, then the case, where you follow up your three leads (one option each), review what you've unlocked, and accuse the killer. The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the Grafana MCP server or `gcx`, about the telemetry loaded in the stack. The page offers example questions with copy buttons.
 
 The page makes no network requests of its own: no CDNs, fonts or analytics. Progress is saved in the browser's `localStorage`, so reloading the dashboard keeps your place, and **Restart** clears it. Without storage the game still plays, it just forgets on reload.
 
@@ -28,7 +28,7 @@ The game panel uses the community [Video panel](https://grafana.com/grafana/plug
 3. Import [`dashboard-example.json`](dashboard-example.json) (**Dashboards > New > Import**), then pick your Loki data source in the **Loki** drop-down at the top of the dashboard.
 4. Edit the **Play The Defiant Jazz Incident** panel and set **Iframe URL** to where you hosted `web/`, replacing the placeholder `https://example.com/defiantjazz/web/?theme=dark`, and save the dashboard. On the local stack, run the `http.server` command above and use `http://localhost:8080/?theme=dark`.
 
-The game panel is 24 columns wide and 18 rows tall, with two telemetry panels below it: Sleep Floor log volume by source, and the raw logs. By default the loader shifts the data so the incident ends just before you loaded it. With `--incident-date`, the incident falls on that Thursday instead, with the story's times of day. Set the dashboard's time range to cover the incident. The dashboard shows UTC, the data's own timezone, so with `--incident-date` the story's 15:02 is 15:02 on screen.
+The game panel is 24 columns wide and 18 rows tall, with two telemetry panels below it: Sleep Floor log volume by source, and the raw logs. By default the loader shifts the data so the incident ends just before you loaded it. With `--incident-date`, the incident falls on that Thursday instead, with the story's times of day. Set the dashboard's time range to cover the incident. The dashboard shows UTC, the data's own timezone, so with `--incident-date` the story's 03:02 is 03:02 on screen.
 
 ### Options
 

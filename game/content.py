@@ -14,6 +14,9 @@ Card format (Markdown, one file per section of the game):
 Body lines are shown as written. "[...]" lines are descriptions of what's on
 screen, "> ..." lines are text shown on screen, and "Name: ..." lines are
 spoken.
+
+cold-open.md holds two cards: the Kipsake advert (with "style: advert", shown
+first, one paragraph per line) and the cold open itself.
 """
 
 import json
@@ -26,9 +29,9 @@ CONTENT_DIR = os.path.join(HERE, "SPOILERS-content")
 BUNDLE_PATH = os.path.join(HERE, "ai-evidence", "case-bundle.md")
 
 SUSPECTS = {
-    "agnes": "Agnes K.",
-    "bertram": "Bertram L.",
-    "clement": "Clement W.",
+    "agnes": "Agnes",
+    "bertram": "Bertram",
+    "clement": "Clement",
 }
 
 _META = re.compile(r"^([a-z][a-z_]*):\s*(.*)$")
@@ -62,6 +65,7 @@ class Decision:
 
 @dataclass
 class Content:
+    advert: Card
     cold_open: Card
     testimonies: list
     testimony_intro: str
@@ -148,12 +152,18 @@ def load(content_dir=CONTENT_DIR):
         _decision(_read(name, content_dir), name)
         for name in ("decision-1-scene.md", "decision-2-outside-world.md", "decision-3-push.md")
     ]
+    cold = _read("cold-open.md", content_dir).cards
+    adverts = [c for c in cold if c.meta.get("style") == "advert"]
+    others = [c for c in cold if c.meta.get("style") != "advert"]
+    if len(adverts) != 1 or len(others) != 1:
+        raise ContentError("cold-open.md: expected one 'style: advert' card and one cold open card")
     reveal = _read("SPOILERS-reveal.md", content_dir)
     for key in list(SUSPECTS) + ["other", "all"]:
         if not any(c.meta.get("for") == key for c in reveal.cards):
             raise ContentError(f"SPOILERS-reveal.md: no card with 'for: {key}'")
     return Content(
-        cold_open=_read("cold-open.md", content_dir).cards[0],
+        advert=adverts[0],
+        cold_open=others[0],
         testimonies=testimonies,
         testimony_intro=testimony_section.meta["intro"],
         outside_world=_read("outside-world.md", content_dir).cards[0],

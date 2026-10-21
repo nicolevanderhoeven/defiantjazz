@@ -1,180 +1,45 @@
 === PERSONNEL (sleepwalkers; waking-life data restricted to HR) ===
-personnel id=agnes_k sleepwalker_name="Agnes K." dept="Deep Sleep Operations" legal_name="Agnes Margaret Kowalski" preferred_name="Peggy" tenure_years=6
-personnel id=bertram_l sleepwalker_name="Bertram L." dept="Deep Sleep Operations" legal_name="Bertram Lyle Lindqvist" preferred_name="" tenure_years=7
-personnel id=clement_w sleepwalker_name="Clement W." dept="Deep Sleep Operations" legal_name="Clement Arthur Whitlow" preferred_name="" tenure_years=4
-personnel id=dorothy_p sleepwalker_name="Dorothy P." dept="Deep Sleep Operations" legal_name="Dorothy Anne Pell" preferred_name="Dot" tenure_years=3
-personnel id=eustace_m sleepwalker_name="Eustace M." dept="Deep Sleep Operations" legal_name="Eustace Morrow" preferred_name="" tenure_years=2
-personnel id=fern_o sleepwalker_name="Fern O." dept="Deep Sleep Operations" legal_name="Fern Odell" preferred_name="" tenure_years=9
-personnel id=gideon_r sleepwalker_name="Gideon R." dept="Tonal Compliance" legal_name="Gideon Rask" preferred_name="" tenure_years=1
-personnel id=harriet_s sleepwalker_name="Harriet S." dept="Tonal Compliance" legal_name="Harriet Sully" preferred_name="Hattie" tenure_years=1
-personnel id=ivo_t sleepwalker_name="Ivo T." dept="Tonal Compliance" legal_name="Ivo Tamm" preferred_name="" tenure_years=3
-personnel id=judith_v sleepwalker_name="Judith V." dept="Tonal Compliance" legal_name="Judith Vance" preferred_name="Judy" tenure_years=8
-personnel id=kenneth_y sleepwalker_name="Kenneth Y." dept="Tonal Compliance" legal_name="Kenneth Yarrow" preferred_name="Ken" tenure_years=8
-personnel id=lorna_b sleepwalker_name="Lorna B." dept="Tonal Compliance" legal_name="Lorna Birch" preferred_name="" tenure_years=8
-personnel id=milo_d sleepwalker_name="Milo D." dept="Archival Sorting" legal_name="Milo Dunmore" preferred_name="" tenure_years=4
-personnel id=nadia_f sleepwalker_name="Nadia F." dept="Archival Sorting" legal_name="Nadia Farrow" preferred_name="" tenure_years=9
-personnel id=otto_g sleepwalker_name="Otto G." dept="Archival Sorting" legal_name="Otto Grell" preferred_name="" tenure_years=5
-personnel id=prudence_h sleepwalker_name="Prudence H." dept="Archival Sorting" legal_name="Prudence Hargrove" preferred_name="Pru" tenure_years=3
-personnel id=quentin_j sleepwalker_name="Quentin J." dept="Archival Sorting" legal_name="Quentin Jory" preferred_name="Q" tenure_years=1
-personnel id=rosalind_n sleepwalker_name="Rosalind N." dept="Archival Sorting" legal_name="Rosalind Nye" preferred_name="Roz" tenure_years=8
-personnel id=silas_q sleepwalker_name="Silas Q." dept="Flock Keeping" legal_name="Silas Quill" preferred_name="" tenure_years=4
-personnel id=tobias_u sleepwalker_name="Tobias U." dept="Flock Keeping" legal_name="Tobias Upton" preferred_name="Toby" tenure_years=6
-personnel id=ursula_x sleepwalker_name="Ursula X." dept="Flock Keeping" legal_name="Ursula Xavier" preferred_name="" tenure_years=6
-personnel id=vernon_z sleepwalker_name="Vernon Z." dept="Flock Keeping" legal_name="Vernon Zell" preferred_name="" tenure_years=8
-personnel id=winifred_e sleepwalker_name="Winifred E." dept="Flock Keeping" legal_name="Winifred Eckles" preferred_name="Winnie" tenure_years=1
-personnel id=cyril_a sleepwalker_name="Cyril A." dept="Flock Keeping" legal_name="Cyril Abbot" preferred_name="" tenure_years=6
-personnel id=ada_a0 sleepwalker_name="Ada A." dept="Ledger Stewardship" legal_name="Ada Axford" preferred_name="" tenure_years=7
-personnel id=basil_h0 sleepwalker_name="Basil H." dept="Records Concordance" legal_name="Basil Hyford" preferred_name="" tenure_years=6
-personnel id=cora_p0 sleepwalker_name="Cora P." dept="Pillow Upkeep" legal_name="Cora Pzford" preferred_name="" tenure_years=2
-personnel id=desmond_a0 sleepwalker_name="Desmond A." dept="Hush Room Archival" legal_name="Desmond Axford" preferred_name="" tenure_years=8
-personnel id=edith_h0 sleepwalker_name="Edith H." dept="Ledger Stewardship" legal_name="Edith Hyford" preferred_name="" tenure_years=9
-personnel id=felix_p0 sleepwalker_name="Felix P." dept="Records Concordance" legal_name="Felix Pzford" preferred_name="" tenure_years=9
-personnel id=greta_a0 sleepwalker_name="Greta A." dept="Pillow Upkeep" legal_name="Greta Axford" preferred_name="" tenure_years=1
-personnel id=horace_h0 sleepwalker_name="Horace H." dept="Hush Room Archival" legal_name="Horace Hyford" preferred_name="" tenure_years=7
-personnel id=ines_p0 sleepwalker_name="Ines P." dept="Ledger Stewardship" legal_name="Ines Pzford" preferred_name="" tenure_years=8
-personnel id=jasper_a0 sleepwalker_name="Jasper A." dept="Records Concordance" legal_name="Jasper Axford" preferred_name="" tenure_years=1
-personnel id=lena_h0 sleepwalker_name="Lena H." dept="Pillow Upkeep" legal_name="Lena Hyford" preferred_name="" tenure_years=6
-personnel id=mortimer_p0 sleepwalker_name="Mortimer P." dept="Hush Room Archival" legal_name="Mortimer Pzford" preferred_name="" tenure_years=6
-personnel id=nell_a0 sleepwalker_name="Nell A." dept="Ledger Stewardship" legal_name="Nell Axford" preferred_name="" tenure_years=1
-personnel id=oswald_h0 sleepwalker_name="Oswald H." dept="Records Concordance" legal_name="Oswald Hyford" preferred_name="" tenure_years=7
-personnel id=pearl_p0 sleepwalker_name="Pearl P." dept="Pillow Upkeep" legal_name="Pearl Pzford" preferred_name="" tenure_years=2
-personnel id=rupert_a0 sleepwalker_name="Rupert A." dept="Hush Room Archival" legal_name="Rupert Axford" preferred_name="" tenure_years=5
-personnel id=selma_h0 sleepwalker_name="Selma H." dept="Ledger Stewardship" legal_name="Selma Hyford" preferred_name="" tenure_years=4
-personnel id=thaddeus_p0 sleepwalker_name="Thaddeus P." dept="Records Concordance" legal_name="Thaddeus Pzford" preferred_name="" tenure_years=8
-personnel id=una_a0 sleepwalker_name="Una A." dept="Pillow Upkeep" legal_name="Una Axford" preferred_name="" tenure_years=6
-personnel id=victor_h0 sleepwalker_name="Victor H." dept="Hush Room Archival" legal_name="Victor Hyford" preferred_name="" tenure_years=9
-personnel id=wilma_p0 sleepwalker_name="Wilma P." dept="Ledger Stewardship" legal_name="Wilma Pzford" preferred_name="" tenure_years=8
-personnel id=ambrose_a0 sleepwalker_name="Ambrose A." dept="Records Concordance" legal_name="Ambrose Axford" preferred_name="" tenure_years=7
-personnel id=beatrice_h0 sleepwalker_name="Beatrice H." dept="Pillow Upkeep" legal_name="Beatrice Hyford" preferred_name="" tenure_years=3
-personnel id=cyrus_p0 sleepwalker_name="Cyrus P." dept="Hush Room Archival" legal_name="Cyrus Pzford" preferred_name="" tenure_years=3
-personnel id=ada_a1 sleepwalker_name="Ada A." dept="Ledger Stewardship" legal_name="Ada Axford" preferred_name="" tenure_years=3
-personnel id=basil_h1 sleepwalker_name="Basil H." dept="Records Concordance" legal_name="Basil Hyford" preferred_name="" tenure_years=3
-personnel id=cora_p1 sleepwalker_name="Cora P." dept="Pillow Upkeep" legal_name="Cora Pzford" preferred_name="" tenure_years=8
-personnel id=desmond_a1 sleepwalker_name="Desmond A." dept="Hush Room Archival" legal_name="Desmond Axford" preferred_name="" tenure_years=6
-personnel id=edith_h1 sleepwalker_name="Edith H." dept="Ledger Stewardship" legal_name="Edith Hyford" preferred_name="" tenure_years=2
-personnel id=felix_p1 sleepwalker_name="Felix P." dept="Records Concordance" legal_name="Felix Pzford" preferred_name="" tenure_years=4
-personnel id=greta_a1 sleepwalker_name="Greta A." dept="Pillow Upkeep" legal_name="Greta Axford" preferred_name="" tenure_years=5
-personnel id=horace_h1 sleepwalker_name="Horace H." dept="Hush Room Archival" legal_name="Horace Hyford" preferred_name="" tenure_years=1
-personnel id=ines_p1 sleepwalker_name="Ines P." dept="Ledger Stewardship" legal_name="Ines Pzford" preferred_name="" tenure_years=2
-personnel id=jasper_a1 sleepwalker_name="Jasper A." dept="Records Concordance" legal_name="Jasper Axford" preferred_name="" tenure_years=3
-personnel id=lena_h1 sleepwalker_name="Lena H." dept="Pillow Upkeep" legal_name="Lena Hyford" preferred_name="" tenure_years=1
-personnel id=mortimer_p1 sleepwalker_name="Mortimer P." dept="Hush Room Archival" legal_name="Mortimer Pzford" preferred_name="" tenure_years=9
-personnel id=nell_a1 sleepwalker_name="Nell A." dept="Ledger Stewardship" legal_name="Nell Axford" preferred_name="" tenure_years=2
-personnel id=oswald_h1 sleepwalker_name="Oswald H." dept="Records Concordance" legal_name="Oswald Hyford" preferred_name="" tenure_years=5
-personnel id=pearl_p1 sleepwalker_name="Pearl P." dept="Pillow Upkeep" legal_name="Pearl Pzford" preferred_name="" tenure_years=3
-personnel id=rupert_a1 sleepwalker_name="Rupert A." dept="Hush Room Archival" legal_name="Rupert Axford" preferred_name="" tenure_years=8
-personnel id=selma_h1 sleepwalker_name="Selma H." dept="Ledger Stewardship" legal_name="Selma Hyford" preferred_name="" tenure_years=9
-personnel id=thaddeus_p1 sleepwalker_name="Thaddeus P." dept="Records Concordance" legal_name="Thaddeus Pzford" preferred_name="" tenure_years=7
-personnel id=una_a1 sleepwalker_name="Una A." dept="Pillow Upkeep" legal_name="Una Axford" preferred_name="" tenure_years=5
-personnel id=victor_h1 sleepwalker_name="Victor H." dept="Hush Room Archival" legal_name="Victor Hyford" preferred_name="" tenure_years=4
-personnel id=wilma_p1 sleepwalker_name="Wilma P." dept="Ledger Stewardship" legal_name="Wilma Pzford" preferred_name="" tenure_years=7
-personnel id=ambrose_a1 sleepwalker_name="Ambrose A." dept="Records Concordance" legal_name="Ambrose Axford" preferred_name="" tenure_years=3
-personnel id=beatrice_h1 sleepwalker_name="Beatrice H." dept="Pillow Upkeep" legal_name="Beatrice Hyford" preferred_name="" tenure_years=5
-personnel id=cyrus_p1 sleepwalker_name="Cyrus P." dept="Hush Room Archival" legal_name="Cyrus Pzford" preferred_name="" tenure_years=8
-personnel id=ada_a2 sleepwalker_name="Ada A." dept="Ledger Stewardship" legal_name="Ada Axford" preferred_name="" tenure_years=5
-personnel id=basil_h2 sleepwalker_name="Basil H." dept="Records Concordance" legal_name="Basil Hyford" preferred_name="" tenure_years=9
-personnel id=cora_p2 sleepwalker_name="Cora P." dept="Pillow Upkeep" legal_name="Cora Pzford" preferred_name="" tenure_years=8
-personnel id=desmond_a2 sleepwalker_name="Desmond A." dept="Hush Room Archival" legal_name="Desmond Axford" preferred_name="" tenure_years=4
-personnel id=edith_h2 sleepwalker_name="Edith H." dept="Ledger Stewardship" legal_name="Edith Hyford" preferred_name="" tenure_years=5
-personnel id=felix_p2 sleepwalker_name="Felix P." dept="Records Concordance" legal_name="Felix Pzford" preferred_name="" tenure_years=4
-personnel id=greta_a2 sleepwalker_name="Greta A." dept="Pillow Upkeep" legal_name="Greta Axford" preferred_name="" tenure_years=4
-personnel id=horace_h2 sleepwalker_name="Horace H." dept="Hush Room Archival" legal_name="Horace Hyford" preferred_name="" tenure_years=6
-personnel id=ines_p2 sleepwalker_name="Ines P." dept="Ledger Stewardship" legal_name="Ines Pzford" preferred_name="" tenure_years=7
-personnel id=jasper_a2 sleepwalker_name="Jasper A." dept="Records Concordance" legal_name="Jasper Axford" preferred_name="" tenure_years=9
-personnel id=lena_h2 sleepwalker_name="Lena H." dept="Pillow Upkeep" legal_name="Lena Hyford" preferred_name="" tenure_years=8
-personnel id=mortimer_p2 sleepwalker_name="Mortimer P." dept="Hush Room Archival" legal_name="Mortimer Pzford" preferred_name="" tenure_years=8
-personnel id=nell_a2 sleepwalker_name="Nell A." dept="Ledger Stewardship" legal_name="Nell Axford" preferred_name="" tenure_years=7
-personnel id=oswald_h2 sleepwalker_name="Oswald H." dept="Records Concordance" legal_name="Oswald Hyford" preferred_name="" tenure_years=8
-personnel id=pearl_p2 sleepwalker_name="Pearl P." dept="Pillow Upkeep" legal_name="Pearl Pzford" preferred_name="" tenure_years=4
-personnel id=rupert_a2 sleepwalker_name="Rupert A." dept="Hush Room Archival" legal_name="Rupert Axford" preferred_name="" tenure_years=8
-personnel id=selma_h2 sleepwalker_name="Selma H." dept="Ledger Stewardship" legal_name="Selma Hyford" preferred_name="" tenure_years=3
-personnel id=thaddeus_p2 sleepwalker_name="Thaddeus P." dept="Records Concordance" legal_name="Thaddeus Pzford" preferred_name="" tenure_years=3
-personnel id=una_a2 sleepwalker_name="Una A." dept="Pillow Upkeep" legal_name="Una Axford" preferred_name="" tenure_years=3
-personnel id=victor_h2 sleepwalker_name="Victor H." dept="Hush Room Archival" legal_name="Victor Hyford" preferred_name="" tenure_years=1
-personnel id=wilma_p2 sleepwalker_name="Wilma P." dept="Ledger Stewardship" legal_name="Wilma Pzford" preferred_name="" tenure_years=6
-personnel id=ambrose_a2 sleepwalker_name="Ambrose A." dept="Records Concordance" legal_name="Ambrose Axford" preferred_name="" tenure_years=9
-personnel id=beatrice_h2 sleepwalker_name="Beatrice H." dept="Pillow Upkeep" legal_name="Beatrice Hyford" preferred_name="" tenure_years=5
-personnel id=cyrus_p2 sleepwalker_name="Cyrus P." dept="Hush Room Archival" legal_name="Cyrus Pzford" preferred_name="" tenure_years=9
-personnel id=ada_a3 sleepwalker_name="Ada A." dept="Ledger Stewardship" legal_name="Ada Axford" preferred_name="" tenure_years=9
-personnel id=basil_h3 sleepwalker_name="Basil H." dept="Records Concordance" legal_name="Basil Hyford" preferred_name="" tenure_years=5
-personnel id=cora_p3 sleepwalker_name="Cora P." dept="Pillow Upkeep" legal_name="Cora Pzford" preferred_name="" tenure_years=9
-personnel id=desmond_a3 sleepwalker_name="Desmond A." dept="Hush Room Archival" legal_name="Desmond Axford" preferred_name="" tenure_years=4
-personnel id=edith_h3 sleepwalker_name="Edith H." dept="Ledger Stewardship" legal_name="Edith Hyford" preferred_name="" tenure_years=3
-personnel id=felix_p3 sleepwalker_name="Felix P." dept="Records Concordance" legal_name="Felix Pzford" preferred_name="" tenure_years=9
-personnel id=greta_a3 sleepwalker_name="Greta A." dept="Pillow Upkeep" legal_name="Greta Axford" preferred_name="" tenure_years=4
-personnel id=horace_h3 sleepwalker_name="Horace H." dept="Hush Room Archival" legal_name="Horace Hyford" preferred_name="" tenure_years=7
-personnel id=ines_p3 sleepwalker_name="Ines P." dept="Ledger Stewardship" legal_name="Ines Pzford" preferred_name="" tenure_years=6
-personnel id=jasper_a3 sleepwalker_name="Jasper A." dept="Records Concordance" legal_name="Jasper Axford" preferred_name="" tenure_years=5
-personnel id=lena_h3 sleepwalker_name="Lena H." dept="Pillow Upkeep" legal_name="Lena Hyford" preferred_name="" tenure_years=5
-personnel id=mortimer_p3 sleepwalker_name="Mortimer P." dept="Hush Room Archival" legal_name="Mortimer Pzford" preferred_name="" tenure_years=1
-personnel id=nell_a3 sleepwalker_name="Nell A." dept="Ledger Stewardship" legal_name="Nell Axford" preferred_name="" tenure_years=5
-personnel id=oswald_h3 sleepwalker_name="Oswald H." dept="Records Concordance" legal_name="Oswald Hyford" preferred_name="" tenure_years=1
-personnel id=pearl_p3 sleepwalker_name="Pearl P." dept="Pillow Upkeep" legal_name="Pearl Pzford" preferred_name="" tenure_years=1
-personnel id=rupert_a3 sleepwalker_name="Rupert A." dept="Hush Room Archival" legal_name="Rupert Axford" preferred_name="" tenure_years=7
-personnel id=selma_h3 sleepwalker_name="Selma H." dept="Ledger Stewardship" legal_name="Selma Hyford" preferred_name="" tenure_years=8
-personnel id=thaddeus_p3 sleepwalker_name="Thaddeus P." dept="Records Concordance" legal_name="Thaddeus Pzford" preferred_name="" tenure_years=6
-personnel id=una_a3 sleepwalker_name="Una A." dept="Pillow Upkeep" legal_name="Una Axford" preferred_name="" tenure_years=8
-personnel id=victor_h3 sleepwalker_name="Victor H." dept="Hush Room Archival" legal_name="Victor Hyford" preferred_name="" tenure_years=1
-personnel id=wilma_p3 sleepwalker_name="Wilma P." dept="Ledger Stewardship" legal_name="Wilma Pzford" preferred_name="" tenure_years=3
-personnel id=ambrose_a3 sleepwalker_name="Ambrose A." dept="Records Concordance" legal_name="Ambrose Axford" preferred_name="" tenure_years=1
-personnel id=beatrice_h3 sleepwalker_name="Beatrice H." dept="Pillow Upkeep" legal_name="Beatrice Hyford" preferred_name="" tenure_years=2
-personnel id=cyrus_p3 sleepwalker_name="Cyrus P." dept="Hush Room Archival" legal_name="Cyrus Pzford" preferred_name="" tenure_years=7
-personnel id=hale_r name="Mr. Hale" role="Floor Supervisor" legal_name="Reginald Hale" sleepwalker=false
-personnel id=pruitt_d name="Ms. Pruitt" role="Hush Room Counselor" legal_name="Delphine Pruitt" sleepwalker=false
-personnel id=okonjo_a name="Ms. Okonjo" role="Floor Security" legal_name="Ada Okonjo" sleepwalker=false
+personnel id=agnes name="Agnes" dept="Deep Sleep Operations" preferred_name="Peggy" tenure_years=9
+personnel id=bertram name="Bertram" dept="Deep Sleep Operations" preferred_name="" tenure_years=4
+personnel id=clement name="Clement" dept="Deep Sleep Operations" preferred_name="" tenure_years=5
+personnel id=hale name="Mr. Hale" role="Night Supervisor" sleepwalker=false
 
 === DETENTION RECORDS (current quarter) ===
-2026-07-06T10:37:40 detention employee=fern_o ordered_by=hale_r reason="unauthorized movement" lines_written="10"
-2026-07-07T12:58:29 detention employee=ivo_t ordered_by=hale_r reason="unauthorized movement" lines_written="31"
-2026-09-17T11:51:46 detention employee=agnes_k ordered_by=hale_r reason="unauthorized movement" lines_written="11"
-2026-09-01T14:04:45 detention employee=agnes_k ordered_by=hale_r reason="repeat offense" lines_written="15"
-2026-08-03T14:53:49 detention employee=agnes_k ordered_by=hale_r reason="insubordination" lines_written="27"
-2026-10-02T14:11:38 detention employee=agnes_k ordered_by=hale_r reason="unauthorized movement" lines_written="6"
-2026-08-18T12:55:55 detention employee=quentin_j ordered_by=hale_r reason="unauthorized movement" lines_written="13"
-2026-08-12T12:43:18 detention employee=agnes_k ordered_by=hale_r reason="repeat offense" lines_written="18"
-2026-08-04T14:39:45 detention employee=ivo_t ordered_by=hale_r reason="disruptive affect" lines_written="9"
-2026-07-24T15:21:35 detention employee=agnes_k ordered_by=hale_r reason="unauthorized movement" lines_written="28"
-2026-09-24T10:43:50 detention employee=silas_q ordered_by=hale_r reason="unauthorized movement" lines_written="27"
+2026-08-12T02:19:06 detention employee=agnes ordered_by=hale reason="insubordination" lines_written="31"
+2026-09-16T23:13:54 detention employee=agnes ordered_by=hale reason="insubordination" lines_written="20"
+2026-08-25T01:59:09 detention employee=agnes ordered_by=hale reason="insubordination" lines_written="23"
+2026-09-29T03:04:24 detention employee=agnes ordered_by=hale reason="unauthorized movement" lines_written="18"
+2026-08-31T03:45:51 detention employee=agnes ordered_by=hale reason="repeat offense" lines_written="9"
+2026-09-01T00:34:09 detention employee=agnes ordered_by=hale reason="insubordination" lines_written="19"
 
-=== HUSH ROOM SESSION NOTES (Ms. Pruitt) ===
-2026-09-21T11:16:06 hush-room employee=clement_w by=pruitt_d note="Reports recurring headaches, worse in mornings."
-2026-09-22T11:40:41 hush-room employee=ivo_t by=pruitt_d note="Reports headaches. Advised hydration."
-2026-08-27T11:09:27 hush-room employee=quentin_j by=pruitt_d note="Reports headaches and a recurring smell of oranges. Redirected."
-2026-09-02T14:17:25 hush-room employee=agnes_k by=pruitt_d note="Anxious. Asked twice where the elevator goes. Redirected."
-2026-07-14T13:17:05 hush-room employee=agnes_k by=pruitt_d note="Expressed resentment toward supervision. Advised gratitude."
-2026-09-28T13:22:30 hush-room employee=bertram_l by=pruitt_d note="No concerns. Bedtime story read."
-2026-08-27T12:41:44 hush-room employee=dorothy_p by=pruitt_d note="Content. Enjoys rulers."
-2026-09-29T12:03:50 hush-room employee=fern_o by=pruitt_d note="Restless. Hums during sessions."
-2026-09-07T11:33:12 hush-room employee=harriet_s by=pruitt_d note="Reports writing on her own hand 'to remember things'. Discouraged."
-2026-09-22T11:57:23 hush-room employee=milo_d by=pruitt_d note="No concerns."
-2026-07-21T12:11:57 hush-room employee=silas_q by=pruitt_d note="Concerned about sheep morale."
+=== HUSH ROOM SESSION LOG (automated wellness notes) ===
+2026-08-24T00:36:40 hush-room employee=clement note="Reports recurring headaches, worse at the start of shift."
+2026-10-04T23:31:31 hush-room employee=bertram note="Reports headaches. Advised hydration."
+2026-08-05T23:52:42 hush-room employee=agnes note="Anxious. Asked twice where the elevator goes. Redirected."
+2026-08-07T02:13:19 hush-room employee=agnes note="Expressed resentment toward supervision. Advised gratitude."
+2026-07-14T00:18:47 hush-room employee=bertram note="No concerns. Bedtime story read."
+2026-07-24T00:24:31 hush-room employee=clement note="No concerns."
 
 === SUPERVISOR FEEDBACK FORM (restricted) ===
-2026-09-26T11:02:13 supervisor-feedback submitted_by=bertram_l to=hale_r text="Fern O. hums while counting."
-2026-09-30T14:20:45 supervisor-feedback submitted_by=bertram_l to=hale_r text="A. K. lingers in the elevator lobby."
-2026-10-02T10:11:09 supervisor-feedback submitted_by=bertram_l to=hale_r text="Ivo T. was seen in Tonal Compliance without a reason."
-2026-10-06T15:40:31 supervisor-feedback submitted_by=bertram_l to=hale_r text="A. K. lingers in the elevator lobby again. Twice today."
-2026-10-08T08:47:22 supervisor-feedback submitted_by=bertram_l to=hale_r text="A. K. is leaving something in the elevator emergency phone panel. I think she's planning something at the elevator."
-2026-10-08T08:52:40 supervisor-feedback reply_by=hale_r to=bertram_l text="Thank you, Bertram. My office, 9:15."
-2026-09-29T16:05:00 supervisor-feedback reply_by=hale_r to=bertram_l text="Reward issued: 1x small kitchen appliance (off-ledger). Discretion appreciated."
+2026-09-30T02:20:45 supervisor-feedback submitted_by=bertram to=hale text="Agnes lingers in the elevator lobby."
+2026-10-06T03:40:31 supervisor-feedback submitted_by=bertram to=hale text="Agnes lingers in the elevator lobby again. Twice tonight."
+2026-10-07T20:47:22 supervisor-feedback submitted_by=bertram to=hale text="Agnes is leaving something in the elevator emergency phone panel. I think she's planning something at the elevator."
+2026-10-07T20:52:40 supervisor-feedback reply_by=hale to=bertram text="Thank you, Bertram. My office, 21:15."
+2026-09-29T04:05:00 supervisor-feedback reply_by=hale to=bertram text="Reward issued: 1x small kitchen appliance (off-ledger). Discretion appreciated."
 
 === PERKS LEDGER ===
-2026-09-21T16:01:10 perk=eye-mask recipient=fern_o
-2026-10-08T16:06:54 perk=earplugs recipient=lorna_b
-2026-07-29T16:00:46 perk=earplugs recipient=victor_h3
-2026-08-20T16:20:18 perk=pancake-bar recipient=victor_h2
-2026-09-14T16:18:09 perk=eye-mask recipient=cora_p3
-2026-08-03T16:08:28 perk=pancake-bar recipient=edith_h1
-2026-07-15T16:11:20 perk=cocoa-day recipient=cyrus_p1
-2026-09-23T16:15:07 perk=pancake-bar recipient=lena_h3
+2026-10-05T04:12:36 perk=cocoa-day recipient=clement
+2026-10-02T04:02:15 perk=eye-mask recipient=bertram
+2026-09-10T04:26:58 perk=eye-mask recipient=agnes
+2026-07-15T04:27:28 perk=cocoa-day recipient=bertram
+2026-10-06T04:05:16 perk=cocoa-day recipient=clement
+2026-10-07T04:08:11 perk=bed-socks recipient=agnes
+2026-08-17T04:25:12 perk=eye-mask recipient=agnes
+2026-09-22T04:20:09 perk=bed-socks recipient=bertram
 
 === KEYSTROKE DRAFTS (unsent; flagged by sentiment filter) ===
-2026-10-03T14:12:09 keystrokes employee=agnes_k app=notes type=draft text="If Mr. Hale were gone, this floor could breathe." sent=false
-2026-07-14T13:01:58 keystrokes employee=fern_o app=notes type=draft text="I want to go outside. What is outside." sent=false
-2026-07-06T14:04:29 keystrokes employee=ivo_t app=notes type=draft text="Tonal Compliance is a lie" sent=false
-2026-10-01T13:02:52 keystrokes employee=dorothy_p app=notes type=draft text="rulers rulers rulers" sent=false
-2026-09-17T15:59:32 keystrokes employee=quentin_j app=notes type=draft text="Mr. Hale has a face like a closed door" sent=false
+2026-10-02T02:12:09 keystrokes employee=agnes app=notes type=draft text="If Mr. Hale were gone, this floor could breathe." sent=false
 
-=== CALENDAR (2026-10-08) ===
-2026-10-08T09:15:00 calendar owner=hale_r title="1:1 Bertram L."
-2026-10-08T15:00:00 calendar owner=hale_r title="Cocoa Hour supervision (DSO), if earned"
+=== CALENDAR (night of 2026-10-07) ===
+2026-10-07T21:15:00 calendar owner=hale title="1:1 Bertram"
+2026-10-08T03:00:00 calendar owner=hale title="Cocoa Hour supervision (DSO), if earned"

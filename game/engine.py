@@ -1,4 +1,4 @@
-"""The text adventure: cold open, testimonies, then a guided command loop."""
+"""The text adventure: the Kipsake advert, cold open, testimonies, then a guided command loop."""
 
 import re
 import shutil
@@ -13,13 +13,15 @@ LEAD_KIND = ["a crime scene", "a home visit", "one last interview"]
 HELP = """\
 Commands:
   ask <question>    Ask your AI assistant anything. It has read Kipsake's
-                    records, but it has never spoken to anyone and hasn't seen
-                    anything you've seen.
-  investigate       Have Ms. Okonjo follow up the next of her three leads, in
-                    order: a crime scene, a home visit, one last interview.
-                    Each time, you pick one of three options and see only that
-                    one. Use them whenever you like, between questions.
-  review [n|all]    Re-read the cold open, interviews and clips you've unlocked.
+                    records, and nothing else: it hasn't seen the interviews,
+                    the leads you follow, or anything you find. If you want it
+                    to know something, tell it.
+  investigate       Follow up the next of your three leads, in order: a crime
+                    scene, a home visit, one last interview. Each time, you
+                    pick one of three options and see only that one. Use them
+                    whenever you like, between questions.
+  review [n|all]    Re-read the advert, cold open, interviews and clips you've
+                    unlocked.
   accuse <name>     When you're ready, name the killer and say why. You can do
                     this any time, even before all three leads. It ends the game.
   help              Show this list.
@@ -155,6 +157,37 @@ class Game:
         self.paragraphs(card.body)
         self.say()
 
+    def advert(self, card):
+        """A card boxed like a TV advert: each line its own paragraph, centred."""
+        inner = self.width - 4
+        label = f" {card.title.upper()} · ADVERT "
+
+        def edge(text):
+            return self._style(text, "2")
+
+        blank = edge("│") + " " * (inner + 2) + edge("│")
+        self.say()
+        self.say(edge("╭─" + label + "─" * max(inner - len(label), 0) + "─╮"))
+        self.say(blank)
+        for raw in card.body.splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            stage = line.startswith("[") and line.endswith("]")
+            for piece in textwrap.wrap(line, inner, break_on_hyphens=False):
+                pad = inner - len(re.sub(r"\*\*|\*", "", piece))
+                text = self._inline([piece], base="2;3" if stage else "")[0]
+                self.say(edge("│") + " " * (1 + pad // 2) + text + " " * (pad - pad // 2 + 1) + edge("│"))
+            self.say(blank)
+        self.say(edge("╰" + "─" * (inner + 2) + "╯"))
+        self.say()
+
+    def show(self, card, heading=None):
+        if card.meta.get("style") == "advert":
+            self.advert(card)
+        else:
+            self.card(card, heading)
+
     def rule(self, label=""):
         """A dim line that marks the start of a new block of output."""
         text = f"── {label} " if label else ""
@@ -183,10 +216,12 @@ class Game:
             self.say(self._style("THE DEFIANT JAZZ INCIDENT", "1"))
         self.say()
         self.rule("Cold open")
+        self.advert(self.content.advert)
+        self.pause()
         self.card(self.content.cold_open)
         self.pause()
         self.say()
-        self.rule("Security interviews")
+        self.rule("Interviews")
         self.paragraphs(self.content.testimony_intro)
         for i, testimony in enumerate(self.content.testimonies):
             if i:
@@ -198,10 +233,10 @@ class Game:
         self.rule("Your turn")
         self.paragraphs(
             "Your AI assistant has read Kipsake's records: badges and doors, chat, metrics, "
-            "system logs, microphone transcripts and other records. It has never spoken to anyone. "
-            "Ask it anything. Ms. Okonjo has three leads she can follow up for you, one at a "
-            "time, whenever you're ready: type investigate. When you're ready, accuse the killer "
-            "and say why.")
+            "system logs, microphone transcripts and other records. It hasn't seen the interviews, "
+            "the leads you follow, or anything you find. If you want it to know something, tell "
+            "it. You have three leads to follow up, one at a time, whenever you're ready: type "
+            "investigate. When you're ready, accuse the killer and say why.")
         self.say()
         self.paragraphs("You can ask anything. If you're not sure where to start, you could ask it "
                         "who it thinks did it: ask Who killed Mr. Hale?")
@@ -243,7 +278,7 @@ class Game:
             }.get(command)
             if handler is None:
                 self.say(f"I don't know \"{command}\". To ask your AI assistant, start with `ask`, "
-                         "for example: ask What happened at 15:02?")
+                         "for example: ask What happened at 03:02?")
                 continue
             handler(arg)
 
@@ -288,8 +323,8 @@ class Game:
         if len(self.asked) == 1:
             self.say()
             self.paragraphs("Ask whatever you like next. For example, to look at the evidence, "
-                            "you could ask: ask What happened near the elevator between 15:02 "
-                            "and 15:07?")
+                            "you could ask: ask What happened near the elevator between 03:02 "
+                            "and 03:07?")
 
     def _choose(self, decision, arg):
         options = decision.options
@@ -321,7 +356,7 @@ class Game:
     def do_investigate(self, arg=""):
         n = len(self.chosen)
         if n >= 3:
-            self.say("Ms. Okonjo has followed up all three leads. "
+            self.say("You've followed up all three leads. "
                      "When you're ready: accuse <name>.")
             return
         if n == 1 and not self.outside_shown:
@@ -355,7 +390,7 @@ class Game:
                      "then accuse <name>.")
 
     def review_items(self):
-        items = [("Cold open", self.content.cold_open)]
+        items = [("The Kipsake advert", self.content.advert), ("Cold open", self.content.cold_open)]
         items += [(t.title, t) for t in self.content.testimonies]
         if self.outside_shown:
             items.append(("Outside World handout", self.content.outside_world))
@@ -378,11 +413,11 @@ class Game:
                 return
         if arg.lower() == "all":
             for label, card in items:
-                self.card(card, heading=label)
+                self.show(card, heading=label)
             return
         if arg.isdigit() and 1 <= int(arg) <= len(items):
             label, card = items[int(arg) - 1]
-            self.card(card, heading=label)
+            self.show(card, heading=label)
         elif arg.isdigit() and int(arg) == len(items) + 1 and self.asked:
             for q, a in self.asked:
                 self.say()
@@ -406,7 +441,7 @@ class Game:
             key = "other"
         left = 3 - len(self.chosen)
         if left:
-            self.paragraphs(f"Ms. Okonjo still has {left} lead{'s' if left > 1 else ''} to "
+            self.paragraphs(f"You still have {left} lead{'s' if left > 1 else ''} to "
                             "follow up. You can accuse now or keep investigating.")
         if not self.read(f"Accuse {label}? This ends the game. (y/n) ").lower().startswith("y"):
             return

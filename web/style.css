@@ -14,6 +14,9 @@
   --danger: #c4162a;
   --focus: #3871dc;
   --screen-bg: #eef0f3;
+  --ad-bg: #fff6e8;
+  --ad-border: rgba(138, 75, 0, 0.32);
+  --ad-accent: #8a4b00;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   color-scheme: light;
 }
@@ -33,6 +36,9 @@
     --danger: #e0485b;
     --focus: #6e9fff;
     --screen-bg: #0d0e12;
+    --ad-bg: #221b12;
+    --ad-border: rgba(242, 180, 92, 0.35);
+    --ad-accent: #f2b45c;
     color-scheme: dark;
   }
 }
@@ -51,6 +57,9 @@
   --danger: #e0485b;
   --focus: #6e9fff;
   --screen-bg: #0d0e12;
+  --ad-bg: #221b12;
+  --ad-border: rgba(242, 180, 92, 0.35);
+  --ad-accent: #f2b45c;
   color-scheme: dark;
 }
 
@@ -156,6 +165,24 @@ p { margin: 0 0 10px; }
 }
 .card-body .screen div { white-space: pre-wrap; overflow-wrap: anywhere; }
 .card-body s { text-decoration-thickness: 2px; }
+
+/* The Kipsake advert that opens the cold open */
+.advert {
+  max-width: 60ch; margin: 0 0 8px; padding: 22px 24px 18px;
+  border: 1px solid var(--ad-border); border-radius: 14px;
+  background: var(--ad-bg);
+  text-align: center;
+}
+.advert .ad-label {
+  margin: 0 0 6px;
+  color: var(--muted); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.advert h2 { color: var(--ad-accent); font-size: 24px; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 14px; }
+.advert .card-body p { font-size: 16px; margin-bottom: 8px; }
+.advert .card-body .stage { font-size: 14px; }
+.advert .card-body strong { color: var(--ad-accent); }
+@media (max-width: 640px) { .advert { padding: 18px 16px 14px; } }
 
 .reasoning {
   margin: 0 0 16px; padding: 8px 12px;

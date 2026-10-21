@@ -31,7 +31,7 @@ def bundle_data():
 
 
 def all_cards():
-    cards = [CONTENT.cold_open, CONTENT.outside_world] + list(CONTENT.testimonies)
+    cards = [CONTENT.advert, CONTENT.cold_open, CONTENT.outside_world] + list(CONTENT.testimonies)
     for decision in CONTENT.decisions:
         cards += decision.options
     return cards
@@ -44,7 +44,7 @@ class BundleTest(unittest.TestCase):
 
     def test_bundle_has_every_card(self):
         data = bundle_data()
-        bundled = [data["coldOpen"], data["outsideWorld"]] + data["testimonies"]
+        bundled = [data["advert"], data["coldOpen"], data["outsideWorld"]] + data["testimonies"]
         for decision in data["decisions"]:
             bundled += decision["options"]
         as_tuples = {(c["title"], c["body"]) for c in bundled}

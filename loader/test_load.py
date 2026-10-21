@@ -44,8 +44,8 @@ class WholeWeekShift(unittest.TestCase):
     def test_text_shift_moves_iso_and_bare_dates(self):
         shift = load.Shifter(WEEKS_2)
         self.assertEqual(shift.text("=== CALENDAR (2026-10-08) ==="), "=== CALENDAR (2026-10-22) ===")
-        self.assertEqual(shift.text("2026-10-07T11:42:16 ingested_at=2026-10-08T15:07:41"),
-                         "2026-10-21T11:42:16 ingested_at=2026-10-22T15:07:41")
+        self.assertEqual(shift.text("2026-10-06T23:42:16 ingested_at=2026-10-08T03:07:41"),
+                         "2026-10-20T23:42:16 ingested_at=2026-10-22T03:07:41")
         self.assertEqual(shift.text("2026-09-24T09:00:00"), "2026-10-08T09:00:00")  # across a month end
 
     def test_logs_keep_count_order_and_times_of_day(self):
@@ -56,7 +56,8 @@ class WholeWeekShift(unittest.TestCase):
             self.assertEqual(ts_b, ts_a + WEEKS_2)
             self.assertEqual((src_b, trace_b), (src_a, trace_a))
             self.assertEqual(load.DATE_OR_ISO.sub("D", body_a), load.DATE_OR_ISO.sub("D", body_b))
-        self.assertEqual({ts.weekday() for ts, *_ in moved}, {0, 1, 2, 3, 4})  # still Monday to Friday
+        # still the nights from Sunday evening to Friday morning
+        self.assertEqual({ts.weekday() for ts, *_ in moved}, {6, 0, 1, 2, 3, 4})
 
     def test_metrics_keep_count_and_order(self):
         plain = load.read_metrics(DATA, load.Shifter(timedelta(0)))
@@ -65,17 +66,26 @@ class WholeWeekShift(unittest.TestCase):
 
 
 class Traces(unittest.TestCase):
-    def test_midnight_crossing_shift_keeps_one_trace_per_badge_day(self):
+    def test_one_trace_per_badge_per_night_shift(self):
         plain = load.read_spans(DATA, load.Shifter(timedelta(0)))
-        # the recent mode at 03:04 UTC maps 15:50 to 03:02 and moves the workday across midnight
-        overnight = load.read_spans(DATA, load.Shifter(timedelta(hours=-12, minutes=-48)))
-        roots = lambda spans: sum(1 for s in spans if s.name == "badge-journey")  # noqa: E731
-        self.assertEqual(roots(overnight), roots(plain))
-        self.assertEqual(len({s.trace_id for s in overnight}), len({s.trace_id for s in plain}))
+        roots = lambda spans: [s for s in spans if s.name == "badge-journey"]  # noqa: E731
+        # a night shift crosses midnight, but each badge's night is one journey
+        nights = {(dict((a.key, a.value.string_value) for a in s.attributes)["badge"], s.trace_id)
+                  for s in roots(plain)}
+        self.assertEqual(len(nights), len(roots(plain)))
+        incident = [s for s in roots(plain) if s.start_time_unix_nano < load.nanos(load.INCIDENT_AT)
+                    < s.end_time_unix_nano]
+        self.assertTrue(incident)
+        for s in incident:  # the incident night's journeys start the evening before
+            self.assertLess(s.start_time_unix_nano, load.nanos(datetime(2026, 10, 8, tzinfo=timezone.utc)))
+        # the recent mode at 15:04 UTC maps 03:50 to 15:02 and moves the night shift into the day
+        daytime = load.read_spans(DATA, load.Shifter(timedelta(hours=11, minutes=12)))
+        self.assertEqual(len(roots(daytime)), len(roots(plain)))
+        self.assertEqual(len({s.trace_id for s in daytime}), len({s.trace_id for s in plain}))
 
 
 class IncidentDate(unittest.TestCase):
-    END = datetime(2026, 10, 8, 17, 0, tzinfo=timezone.utc)
+    END = datetime(2026, 10, 8, 5, 0, tzinfo=timezone.utc)
 
     def test_thursday_only_unless_any_weekday(self):
         self.assertEqual(load.incident_day("2026-10-22", None, self.END), date(2026, 10, 22))
@@ -89,8 +99,8 @@ class IncidentDate(unittest.TestCase):
         def latest(now):
             return load.incident_day("latest", datetime.fromisoformat(now).replace(tzinfo=timezone.utc), self.END)
         self.assertEqual(latest("2026-10-21T10:00:00"), date(2026, 10, 15))  # Wednesday
-        self.assertEqual(latest("2026-10-22T16:59:00"), date(2026, 10, 15))  # Thursday, data still running
-        self.assertEqual(latest("2026-10-22T17:00:00"), date(2026, 10, 22))
+        self.assertEqual(latest("2026-10-22T04:59:00"), date(2026, 10, 15))  # Thursday, data still running
+        self.assertEqual(latest("2026-10-22T05:00:00"), date(2026, 10, 22))
         self.assertEqual(latest("2027-02-01T00:00:00").weekday(), load.THURSDAY)
 
     def test_modes(self):
@@ -101,7 +111,7 @@ class IncidentDate(unittest.TestCase):
         self.assertIn("skipped", out.getvalue())
         self.assertEqual((delta, day), (WEEKS_2, date(2026, 10, 22)))
         self.assertEqual(load.choose_shift(args(no_shift=True), now, DATA)[:2], (timedelta(0), date(2026, 10, 8)))
-        delta, day, _ = load.choose_shift(args(), now, DATA)  # recent: 15:50 -> 08:58
+        delta, day, _ = load.choose_shift(args(), now, DATA)  # recent: 03:50 -> 08:58
         self.assertEqual((delta, day), (now - timedelta(minutes=2) - load.REFERENCE, date(2026, 10, 21)))
         os.environ["DJ_INCIDENT_DATE"] = "latest"
         try:
