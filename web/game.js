@@ -455,7 +455,8 @@
   }
 
   // Steps through a card's panels. opts: label (over the panel), intro (a line above it),
-  // done (the buttons on the last panel), always (buttons on every panel).
+  // done (the buttons on the last panel), always (buttons on every panel), back (the buttons
+  // that go back past the first panel). Going back is on the left, going on is on the right.
   var keyNav = null;
   function player(c, opts) {
     var frames = framesOf(c);
@@ -466,7 +467,7 @@
       var n = i + step;
       if (n >= 0 && n < frames.length) to(n);
     };
-    var nav = i > 0 ? [iconButton("prev", "Previous panel", function () { to(i - 1); }, "btn-quiet-console")] : [];
+    var nav = i > 0 ? [iconButton("prev", "Previous panel", function () { to(i - 1); }, "btn-quiet-console")] : opts.back || [];
     var next = last ? opts.done || [] : [button([el("span", null, "Next panel"), icon("next")], function () { to(i + 1); }, "btn-primary btn-next")];
     return el("section", { class: "player" }, [
       el("div", { class: "chapterbar" }, [
@@ -475,10 +476,15 @@
       ]),
       opts.intro && i === 0 ? el("p", { class: "lede player-intro" }, opts.intro) : null,
       panel(frames[i]),
-      el("div", { class: "framebar" }, [
-        el("div", { class: "framebar-nav" }, nav),
-        el("div", { class: "framebar-actions" }, (opts.always || []).concat(next)),
-      ]),
+      framebar(nav, (opts.always || []).concat(next)),
+    ]);
+  }
+
+  // A row of buttons: going back on the left, going on on the right.
+  function framebar(back, on) {
+    return el("div", { class: "framebar" }, [
+      el("div", { class: "framebar-nav" }, back),
+      el("div", { class: "framebar-actions" }, on),
     ]);
   }
 
@@ -653,8 +659,8 @@
         button([el("span", null, last ? "On to the case" : "Next interview"), icon("next")], function () {
           if (last) go("hub"); else go("statement", { step: i + 1 });
         }, "btn-primary btn-next"),
-        i > 0 ? button("Previous interview", function () { go("statement", { step: i - 1 }); }, "btn-quiet-console") : null,
       ],
+      back: i > 0 ? [button("Previous interview", function () { go("statement", { step: i - 1 }); }, "btn-quiet-console")] : [],
     });
   };
 
@@ -813,10 +819,8 @@
           el("p", { class: "legend", id: "lead-legend" }, "Choose one. You'll see only the one you pick."),
           group,
           error,
-          el("div", { class: "actions" }, [
-            follow,
-            button("Decide later", function () { go("hub"); announce("No rush. Investigate when you're ready."); }, "btn-quiet-console"),
-          ]),
+          framebar([button("Decide later", function () { go("hub"); announce("No rush. Investigate when you're ready."); }, "btn-quiet-console")],
+            [follow]),
         ]),
       ]),
     ]);
@@ -833,9 +837,9 @@
         el("p", { class: "lede framebar-note" }, more
           ? "Ask your AI about anything here, or investigate again (lead " + (n + 2) + ": " + C.leadShort[n + 1] + ")."
           : "That was the last lead. Ask your AI anything else, then accuse."),
-        button([el("span", null, "Back to the case"), icon("next")], function () { go("hub"); }, "btn-primary btn-next"),
         more ? button("Investigate lead " + (n + 2), investigate, "btn-quiet-console")
           : button("Accuse…", function () { go("accuse"); }, "btn-quiet-console"),
+        button([el("span", null, "Back to the case"), icon("next")], function () { go("hub"); }, "btn-primary btn-next"),
       ],
     });
   };
@@ -848,8 +852,8 @@
       done: [
         i < items.length - 1 ? button([el("span", null, "Next: " + items[i + 1][0]), icon("next")],
           function () { go("card", { reviewing: i + 1 }); }, "btn-primary btn-next") : null,
-        i > 0 ? button("Previous card", function () { go("card", { reviewing: i - 1 }); }, "btn-quiet-console") : null,
       ],
+      back: i > 0 ? [button("Previous card", function () { go("card", { reviewing: i - 1 }); }, "btn-quiet-console")] : [],
       always: [button("Back to the case", function () { go("hub"); }, i < items.length - 1 ? "btn-quiet-console" : "btn-primary")],
     });
   };
@@ -920,10 +924,8 @@
       el("label", { class: "block", for: "reasoning" }, "Why? Explain your reasoning."),
       reasoning,
       error,
-      el("div", { class: "actions" }, [
-        iconButton("accuse", "Accuse", submit, "btn-alert"),
-        button("Back to the case", function () { go("hub"); }, "btn-quiet-console"),
-      ]),
+      framebar([button("Back to the case", function () { go("hub"); }, "btn-quiet-console")],
+        [iconButton("accuse", "Accuse", submit, "btn-alert")]),
     ]);
     return el("section", { class: "player" }, [
       el("div", { class: "chapterbar" }, [el("span", null, "Accuse"), el("span", null, "Incident File SF-1008")]),
@@ -951,11 +953,10 @@
             el("p", null, "The next screen names the killer and explains the whole solution. " +
               "If anyone else is playing along, make sure they're ready too."),
           ]),
-          el("div", { class: "actions" }, [
+          framebar([button("Not yet, go back", function () { go("accuse"); }, "btn-quiet-console")], [
             iconButton("accuse", "Accuse " + a.label + " and see the verdict", function () {
               go("verdict", { accused: a, reasoning: (state.draft.reasoning || "").trim(), step: 0 });
             }, "btn-alert"),
-            button("Not yet, go back", function () { go("accuse"); }, "btn-quiet-console"),
           ]),
         ]),
       ]),
@@ -983,13 +984,11 @@
       parts.push(card(pages[i]));
     }
     if (last) parts.push(el("p", { class: "lede" }, "Thanks for playing."));
-    parts.push(el("div", { class: "framebar" }, [
-      el("div", { class: "framebar-nav" }, i > 0
-        ? [iconButton("prev", "Previous", function () { go("verdict", { step: i - 1 }); }, "btn-quiet-console")] : []),
-      el("div", { class: "framebar-actions" }, [last
+    parts.push(framebar(i > 0
+      ? [iconButton("prev", "Previous", function () { go("verdict", { step: i - 1 }); }, "btn-quiet-console")] : [],
+      [last
         ? button("Play again", askRestart, "btn-primary")
-        : button([el("span", null, "Continue"), icon("next")], function () { go("verdict", { step: i + 1 }); }, "btn-primary btn-next")]),
-    ]));
+        : button([el("span", null, "Continue"), icon("next")], function () { go("verdict", { step: i + 1 }); }, "btn-primary btn-next")]));
     return el("section", { class: "player verdict" }, parts);
   };
 

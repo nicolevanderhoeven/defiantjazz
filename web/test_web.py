@@ -190,8 +190,9 @@ class SceneArtTest(unittest.TestCase):
         self.assertEqual(bundle_data()["art"], art)
         for title, panels in art.items():
             self.assertTrue(panels, title)
-        # Each interview opens on that suspect's portrait.
+        # Each interview is one panel, on that suspect's portrait.
         for t in CONTENT.testimonies:
+            self.assertEqual(len(art[t.title]), 1, t.title)
             self.assertTrue(art[t.title][0]["image"].startswith("portrait-"), t.title)
         # The flyer is the advert, on its own picture, with nothing to hover.
         flyer = art[CONTENT.advert.title]

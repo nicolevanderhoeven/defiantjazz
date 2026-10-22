@@ -43,7 +43,7 @@ image: flyer-kipsake
 
 ## The incident
 card: The Defiant Jazz Incident
-source: 08093bd7
+source: 1742786e
 image: scene-3-elevator
 where: Kipsake · Sleep Floor
 headline: The power went out for five minutes.
@@ -65,7 +65,7 @@ image: scene-break-room
 where: Break Room 2 · Sleep Floor · 03:00
 headline: The Cocoa Hour.
 02:58. Agnes, Bertram and Clement, the three clerks of Deep Sleep Operations, are sleepwalkers on the Sleep Floor's night shift. They met their quota for the quarter.
-Their reward was a middle-of-the-night break to sit together and drink hot cocoa, with no music. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.
+Their reward was a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.
 
 ## The emergency speaker
 at: 36, 8
@@ -81,7 +81,7 @@ Bertram, another DSO clerk. Mr. Hale met him earlier tonight.
 
 ## Mr. Hale
 at: 57, 47
-Mr. Reginald Hale, the night supervisor. He stays awake all shift.
+Mr. Reginald Hale, the night supervisor, and the victim. He stays awake all shift.
 
 ## Clement
 at: 77, 67
@@ -89,7 +89,7 @@ Clement, the third DSO clerk. Later, he'll call it a wonderful night, until it w
 
 ## Cocoa
 at: 94, 37
-The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together, with no music.
+The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together.
 
 ## The power cut
 image: scene-break-room
@@ -117,7 +117,7 @@ You're the investigator. There are three suspects: **Agnes**, **Bertram** and **
 - **investigate**: follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like.
 - **accuse**: when you're ready, name the killer and say why. You can accuse before you've used every lead.
 
-## Agnes, 1
+## Agnes
 card: T-A · Agnes · 03:30
 source: c3d5d270
 image: portrait-agnes
@@ -126,19 +126,9 @@ headline: Agnes
 A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.
 You: Agnes. Where were you when the lights went out?
 Agnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.
-
-## Agnes, 2
-image: portrait-agnes
-where: An interview at Kipsake · 03:30
-headline: Agnes
 You: And Mr. Hale?
 Agnes: I think I was trying to get it off him?
 [She rubs her palms together, knuckles out. She avoids eye contact.]
-
-## Agnes, 3
-image: portrait-agnes
-where: An interview at Kipsake · 03:30
-headline: Agnes
 [While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]
 Agnes: Will someone be taking apart the elevator? The phone panel, I mean?
 
@@ -146,7 +136,7 @@ Agnes: Will someone be taking apart the elevator? The phone panel, I mean?
 at: 49, 73
 Her Kipsake badge card, on a lanyard around her neck. Tucked behind it in the holder: the folded piece of paper she slipped there while you took notes.
 
-## Bertram, 1
+## Bertram
 card: T-B · Bertram · 03:40
 source: cdeb83b0
 image: portrait-bertram
@@ -156,19 +146,6 @@ Another DSO clerk, on the same chair, wearing his lanyard.
 You: Bertram. Mr. Hale met you earlier tonight?
 Bertram: He said he'd step out during the Cocoa Hour. Something to pick up.
 [He looks down and to the left.]
-
-## The ice pack
-at: 44, 38
-He holds an ice pack to his right shoulder.
-
-## His hand
-at: 46, 85
-A smudge of flour on the back of his free hand.
-
-## Bertram, 2
-image: portrait-bertram
-where: An interview at Kipsake · 03:40
-headline: Bertram
 You: And when the lights went?
 Bertram: I was having cocoa.
 [He avoids eye contact.]
@@ -182,7 +159,7 @@ He holds an ice pack to his right shoulder.
 at: 46, 85
 A smudge of flour on the back of his free hand.
 
-## Clement, 1
+## Clement
 card: T-C · Clement · 03:20
 source: b6e5e197
 image: portrait-clement
@@ -192,19 +169,6 @@ The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his
 You: Clement. Where were you when the lights went out?
 Clement: A wonderful night, until it wasn't.
 Clement: The lights blinked, and I was by the speaker. Same as everyone, I expect.
-
-## The scarf
-at: 55, 62
-A fringed scarf, looped once so both ends hang down his chest. The threads of its fringe are many different colours.
-
-## His hands
-at: 49, 86
-Folded in his lap. His hands are clean.
-
-## Clement, 2
-image: portrait-clement
-where: An interview at Kipsake · 03:20
-headline: Clement
 Clement: Someone was screaming by the elevator.
 [He pauses for two beats, then straightens his lanyard.]
 Clement: Terrible about Mr. Hale.
@@ -329,7 +293,7 @@ He opens his hand toward the camera: a tuft of threads in several different colo
 at: 40, 37
 He touches his right shoulder.
 
-## Clement at home, 1
+## Clement at home
 card: Clement at home
 source: 4f4f4ff4
 image: scene-clement-home
@@ -338,6 +302,9 @@ headline: Clement
 You: Clement? You sleepwalk for Kipsake.
 Clement: I don't remember work. That's rather the point.
 [On the table, out of his cardboard folder, three things. Select each one on the picture to look closer.]
+You: We read about June.
+Clement: Then you know everything I do.
+[He gathers them back into the folder and holds it against his chest.]
 
 ## Clement
 at: 61, 39
@@ -360,14 +327,6 @@ A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs 
 ## The photo
 at: 65, 85
 A photo of a woman standing by a lighthouse.
-
-## Clement at home, 2
-image: scene-clement-home
-where: Port Quiet · Clement's flat · 06:40
-headline: Clement
-You: We read about June.
-Clement: Then you know everything I do.
-[He gathers them back into the folder and holds it against his chest.]
 
 ## Agnes pushed
 card: Agnes

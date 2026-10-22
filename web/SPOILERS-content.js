@@ -26,7 +26,7 @@ window.DJ_CONTENT = {
  },
  "coldOpen": {
   "title": "The Defiant Jazz Incident",
-  "body": "*The power went out for five minutes. When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.*\n\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n\n**What happened that night**\n\n- **02:58.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. They met their quota for the quarter. Their reward was a Cocoa Hour: a middle-of-the-night break to sit together and drink hot cocoa, with no music. It started at 03:00 in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.\n- **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.\n- **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.\n\nThere are three suspects: **Agnes**, **Bertram** and **Clement**.\n\n**Your role**\n\nYou're the investigator. Kipsake wants a name before dawn, when the shift wakes up. Your job is to name who killed Mr. Hale and explain why.\n\n- **ask**: Your AI has read Kipsake's records, and nothing else. It hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it.\n- **investigate**: you can follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.\n- **accuse**: when you're ready, name the killer and say why.",
+  "body": "*The power went out for five minutes. When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.*\n\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n\n**What happened that night**\n\n- **02:58.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. They met their quota for the quarter. Their reward was a Cocoa Hour: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00 in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.\n- **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.\n- **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.\n\nThere are three suspects: **Agnes**, **Bertram** and **Clement**.\n\n**Your role**\n\nYou're the investigator. Kipsake wants a name before dawn, when the shift wakes up. Your job is to name who killed Mr. Hale and explain why.\n\n- **ask**: Your AI has read Kipsake's records, and nothing else. It hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it.\n- **investigate**: you can follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.\n- **accuse**: when you're ready, name the killer and say why.",
   "meta": {}
  },
  "testimonyIntro": "First, your interviews. You spoke to all three suspects soon after the power came back. Here's what each of them told you.",
@@ -194,7 +194,7 @@ window.DJ_CONTENT = {
    },
    {
     "image": "scene-break-room",
-    "body": "02:58. Agnes, Bertram and Clement, the three clerks of Deep Sleep Operations, are sleepwalkers on the Sleep Floor's night shift. They met their quota for the quarter.\nTheir reward was a middle-of-the-night break to sit together and drink hot cocoa, with no music. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.",
+    "body": "02:58. Agnes, Bertram and Clement, the three clerks of Deep Sleep Operations, are sleepwalkers on the Sleep Floor's night shift. They met their quota for the quarter.\nTheir reward was a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.",
     "hotspots": [
      {
       "label": "The emergency speaker",
@@ -218,7 +218,7 @@ window.DJ_CONTENT = {
       "label": "Mr. Hale",
       "x": 57,
       "y": 47,
-      "body": "Mr. Reginald Hale, the night supervisor. He stays awake all shift."
+      "body": "Mr. Reginald Hale, the night supervisor, and the victim. He stays awake all shift."
      },
      {
       "label": "Clement",
@@ -230,7 +230,7 @@ window.DJ_CONTENT = {
       "label": "Cocoa",
       "x": 94,
       "y": 37,
-      "body": "The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together, with no music."
+      "body": "The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together."
      }
     ],
     "where": "Break Room 2 · Sleep Floor · 03:00",
@@ -264,21 +264,7 @@ window.DJ_CONTENT = {
   "T-A · Agnes · 03:30": [
    {
     "image": "portrait-agnes",
-    "body": "A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.",
-    "hotspots": [],
-    "where": "An interview at Kipsake · 03:30",
-    "headline": "Agnes"
-   },
-   {
-    "image": "portrait-agnes",
-    "body": "You: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She rubs her palms together, knuckles out. She avoids eye contact.]",
-    "hotspots": [],
-    "where": "An interview at Kipsake · 03:30",
-    "headline": "Agnes"
-   },
-   {
-    "image": "portrait-agnes",
-    "body": "[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: Will someone be taking apart the elevator? The phone panel, I mean?",
+    "body": "A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She rubs her palms together, knuckles out. She avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: Will someone be taking apart the elevator? The phone panel, I mean?",
     "hotspots": [
      {
       "label": "The badge card",
@@ -294,27 +280,7 @@ window.DJ_CONTENT = {
   "T-B · Bertram · 03:40": [
    {
     "image": "portrait-bertram",
-    "body": "Another DSO clerk, on the same chair, wearing his lanyard.\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]",
-    "hotspots": [
-     {
-      "label": "The ice pack",
-      "x": 44,
-      "y": 38,
-      "body": "He holds an ice pack to his right shoulder."
-     },
-     {
-      "label": "His hand",
-      "x": 46,
-      "y": 85,
-      "body": "A smudge of flour on the back of his free hand."
-     }
-    ],
-    "where": "An interview at Kipsake · 03:40",
-    "headline": "Bertram"
-   },
-   {
-    "image": "portrait-bertram",
-    "body": "You: And when the lights went?\nBertram: I was having cocoa.\n[He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder.",
+    "body": "Another DSO clerk, on the same chair, wearing his lanyard.\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder.",
     "hotspots": [
      {
       "label": "The ice pack",
@@ -336,27 +302,7 @@ window.DJ_CONTENT = {
   "T-C · Clement · 03:20": [
    {
     "image": "portrait-clement",
-    "body": "The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was by the speaker. Same as everyone, I expect.",
-    "hotspots": [
-     {
-      "label": "The scarf",
-      "x": 55,
-      "y": 62,
-      "body": "A fringed scarf, looped once so both ends hang down his chest. The threads of its fringe are many different colours."
-     },
-     {
-      "label": "His hands",
-      "x": 49,
-      "y": 86,
-      "body": "Folded in his lap. His hands are clean."
-     }
-    ],
-    "where": "An interview at Kipsake · 03:20",
-    "headline": "Clement"
-   },
-   {
-    "image": "portrait-clement",
-    "body": "Clement: Someone was screaming by the elevator.\n[He pauses for two beats, then straightens his lanyard.]\nClement: Terrible about Mr. Hale.",
+    "body": "The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was by the speaker. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\n[He pauses for two beats, then straightens his lanyard.]\nClement: Terrible about Mr. Hale.",
     "hotspots": [
      {
       "label": "The scarf",
@@ -497,7 +443,7 @@ window.DJ_CONTENT = {
   "Clement at home": [
    {
     "image": "scene-clement-home",
-    "body": "You: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[On the table, out of his cardboard folder, three things. Select each one on the picture to look closer.]",
+    "body": "You: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[On the table, out of his cardboard folder, three things. Select each one on the picture to look closer.]\nYou: We read about June.\nClement: Then you know everything I do.\n[He gathers them back into the folder and holds it against his chest.]",
     "hotspots": [
      {
       "label": "Clement",
@@ -524,13 +470,6 @@ window.DJ_CONTENT = {
       "body": "A photo of a woman standing by a lighthouse."
      }
     ],
-    "where": "Port Quiet · Clement's flat · 06:40",
-    "headline": "Clement"
-   },
-   {
-    "image": "scene-clement-home",
-    "body": "You: We read about June.\nClement: Then you know everything I do.\n[He gathers them back into the folder and holds it against his chest.]",
-    "hotspots": [],
     "where": "Port Quiet · Clement's flat · 06:40",
     "headline": "Clement"
    }
