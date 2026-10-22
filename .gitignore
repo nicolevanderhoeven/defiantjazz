@@ -5,3 +5,7 @@ __pycache__/
 .venv/
 .DS_Store
 web/dist/
+
+# The licensed music track and what web/build.py makes from it (web/README.md, "Music")
+web/assets/private/
+web/with-music.html

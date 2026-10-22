@@ -11,6 +11,8 @@ Each "## ..." card with "image:" is one panel. The panels of a story card follow
   headline: optional, a few words over the picture
   sound:    optional, what we hear, in a caption on the picture
   dim:      optional, "yes" shows the picture darker (the power cut)
+  music:    optional, "yes" plays the jazz while the panel shows, when the build has the track
+            (web/README.md says how); otherwise nothing plays
   style:    optional, "role" (the list shows as three tiles)
 The panel's text goes under the picture, short: plain lines are captions, "[...]" lines say what's on
 screen, "Name: ..." lines are spoken, and "> ..." lines are paper or a screen, shown close up.
@@ -94,6 +96,7 @@ The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night
 ## The power cut
 image: scene-break-room
 dim: yes
+music: yes
 where: Sleep Floor · 03:02
 headline: The power went out.
 sound: ♪ Jazz on the emergency speakers

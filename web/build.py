@@ -28,6 +28,9 @@ It needs Pillow (python3 -m pip install Pillow); the pictures are committed, so 
 else needs it. The panels' text and hotspots are in game/SPOILERS-content/scene-art.md,
 bundled with the cards.
 
+With a copy of the jazz track that isn't committed (see Music below and web/README.md), the
+build also writes web/with-music.html, the game with music, and --page puts the music in the page.
+
 SPOILERS: the bundle holds every card in game/SPOILERS-content/, including the
 reveal. The reveal is base64-encoded so a glance at the file doesn't spoil it,
 and the page only decodes it after the player accuses and confirms.
@@ -43,6 +46,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -167,12 +171,12 @@ def scene_art(cards=None, path=ART_PATH):
             image = c.meta["image"]
             if image != "none" and image not in IMAGES:
                 raise content.ContentError(f"{where}: no picture {image!r} in IMAGES in web/build.py")
-            if c.meta.get("style") not in (None, "role") or c.meta.get("dim") not in (None, "yes"):
-                raise content.ContentError(f"{where}: 'style:' is role, and 'dim:' is yes")
+            if c.meta.get("style") not in (None, "role") or any(
+                    c.meta.get(k) not in (None, "yes") for k in ("dim", "music")):
+                raise content.ContentError(f"{where}: 'style:' is role, and 'dim:' and 'music:' are yes")
             current = {"image": None if image == "none" else image, "body": c.body, "hotspots": []}
             current.update({k: c.meta[k] for k in ("where", "headline", "sound", "style") if k in c.meta})
-            if "dim" in c.meta:
-                current["dim"] = True
+            current.update({k: True for k in ("dim", "music") if k in c.meta})
             panels.append(current)
             continue
         at = re.fullmatch(r"(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)", c.meta.get("at", ""))
@@ -253,6 +257,69 @@ def make_image(src, name, out=ASSETS):
           "Run python3 web/build.py to put it in the game.")
 
 
+# ---- Music -----------------------------------------------------------------------
+
+# The jazz on the emergency speakers is a licensed track, so it's never committed: only a
+# build with its own copy plays it. Put the MP3 at PRIVATE/hot-pursuits.mp3, or name it with
+# DJ_MUSIC_FILE. The build cuts a short clip from it with ffmpeg (into PRIVATE too, also not
+# committed). Without the track, or without ffmpeg, the game plays silent and has no music
+# toggle. The track's opening is quiet, so the clip starts where the band is playing.
+PRIVATE = os.path.join(ASSETS, "private")
+LOCAL_PAGE = os.path.join(HERE, "with-music.html")
+MUSIC_START, MUSIC_LENGTH, MUSIC_BITRATE = 16, 45, "96k"
+# Each piece of the clip is a module of its own in a Grafana Page, under its 128 KB file limit.
+MUSIC_PART = 96 * 1024
+
+
+def music_source():
+    return os.environ.get("DJ_MUSIC_FILE") or os.path.join(PRIVATE, "hot-pursuits.mp3")
+
+
+def music_clip():
+    """The path of the clip to play, cut from the track if it's newer, or None without one."""
+    src = music_source()
+    if not os.path.isfile(src):
+        return None
+    clip = os.path.join(PRIVATE, f"hot-pursuits-clip-{MUSIC_START}s-{MUSIC_LENGTH}s.mp3")
+    if os.path.exists(clip) and os.path.getmtime(clip) >= os.path.getmtime(src):
+        return clip
+    os.makedirs(PRIVATE, exist_ok=True)
+    fade = f"afade=t=in:d=1,afade=t=out:st={MUSIC_LENGTH - 3}:d=3"
+    try:
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(MUSIC_START), "-t", str(MUSIC_LENGTH),
+                        "-i", src, "-af", fade, "-map_metadata", "-1", "-vn", "-c:a", "libmp3lame",
+                        "-b:a", MUSIC_BITRATE, clip], check=True)
+    except (OSError, subprocess.CalledProcessError) as e:
+        print(f"Can't cut the music clip from {src} ({e}): building without music. "
+              "It needs ffmpeg.", file=sys.stderr)
+        return None
+    return clip
+
+
+def write_local_music():
+    """With the track, write with-music.html: index.html that also loads the clip. Without
+    it, remove the files a build with it left. None of them are committed."""
+    clip = music_clip()
+    script = os.path.join(PRIVATE, "music.js")
+    if not clip:
+        for path in (LOCAL_PAGE, script):
+            if os.path.exists(path):
+                os.remove(path)
+        return
+    with open(clip, "rb") as f:
+        url = "data:audio/mpeg;base64," + base64.b64encode(f.read()).decode("ascii")
+    with open(script, "w", encoding="utf-8") as f:
+        f.write(f"// Not committed: written by web/build.py from your copy of the track.\n"
+                f"window.DJ_MUSIC = '{url}';\n")
+    with open(os.path.join(HERE, "index.html"), encoding="utf-8") as f:
+        page = f.read()
+    tag = '<script src="SPOILERS-content.js"></script>'
+    page = page.replace(tag, f'<script src="{os.path.relpath(script, HERE)}"></script>\n{tag}', 1)
+    with open(LOCAL_PAGE, "w", encoding="utf-8") as f:
+        f.write(page)
+    print(f"Wrote {os.path.relpath(LOCAL_PAGE)}: the game with music, from {os.path.relpath(clip)}.")
+
+
 # ---- Grafana Page ----------------------------------------------------------------
 
 # What a page takes from its template. Everything else in the template (its src/, its
@@ -291,9 +358,11 @@ createRoot(document.getElementById('root')!).render(
 HOST_TS = f"""\
 // {GENERATED}
 // The hooks game.js looks for in a Grafana Page: saved progress in the viewer's Grafana
-// user storage, Grafana's theme, Ask Assistant and the pictures. Only the question goes to Assistant.
+// user storage, Grafana's theme, Ask Assistant, the pictures and the music, when the build has it.
+// Only the question goes to Assistant.
 import {{ grafana, openAssistant }} from '@grafana/pages';
 import {{ MARKUP }} from './markup';
+import {{ MUSIC }} from './music';
 import {{ SCENES }} from './scenes';
 
 declare global {{
@@ -322,8 +391,9 @@ window.DJ_HOST = {{
     if (mode) callback(mode);
   }},
   askAssistant,
-  // The page's frame can't load files, so the pictures come inline.
+  // The page's frame can't load files, so the pictures and the music come inline.
   scenes: SCENES,
+  music: MUSIC,
 }};
 
 // Opens Grafana Assistant with the question as a draft. Pages can't send it: openAssistant
@@ -401,6 +471,23 @@ def scene_modules():
     return files
 
 
+def music_modules():
+    """src/music.ts: the clip as a data: URL, in pieces of a module each, or nothing without one."""
+    clip = music_clip()
+    if not clip:
+        return {"src/music.ts": f"// {GENERATED}\n// Built without the track: no music.\n"
+                                "export const MUSIC: string | undefined = undefined;\n"}
+    with open(clip, "rb") as f:
+        data = base64.b64encode(f.read()).decode("ascii")
+    parts = [data[i:i + MUSIC_PART] for i in range(0, len(data), MUSIC_PART)]
+    files = {f"src/music/part{i}.ts": f"// {GENERATED}\nexport default '{part}';\n" for i, part in enumerate(parts)}
+    imports = "".join(f"import part{i} from './music/part{i}';\n" for i in range(len(parts)))
+    joined = " + ".join(f"part{i}" for i in range(len(parts)))
+    files["src/music.ts"] = (f"// {GENERATED}\n// Not to be shared: the track is licensed, and the repository never has it.\n"
+                             + imports + f"\nexport const MUSIC: string | undefined = 'data:audio/mpeg;base64,' + {joined};\n")
+    return files
+
+
 def page_files(template, cards=None):
     files = {k: v for k, v in template.items() if k in TEMPLATE_FILES or k.startswith(TEMPLATE_DIRS)}
 
@@ -421,6 +508,7 @@ def page_files(template, cards=None):
         "src/SPOILERS-content.d.ts": SCRIPT_DTS,
     })
     files.update(scene_modules())
+    files.update(music_modules())
     return dict(sorted(files.items()))
 
 
@@ -485,6 +573,8 @@ def main(argv=None):
     with open(out, "w", encoding="utf-8") as f:
         f.write(text)
     print(f"Wrote {os.path.relpath(out)}.")
+    if not args.page:
+        write_local_music()
 
 
 if __name__ == "__main__":

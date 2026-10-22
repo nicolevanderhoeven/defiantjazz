@@ -81,6 +81,16 @@ The elevator scene is the comic prototype's, cut from its sheet, `comic-prototyp
 
 **Spoilers:** the panels are in `game/SPOILERS-content/scene-art.md`: for each story card, its panels' pictures, where and when we are, headline, sound and text, retold from the card. The terminal game keeps the cards as written. A panel can also have numbered hotspots, placed as a percentage of the picture, that show a short note when hovered, focused or tapped, and stay open after a click or tap until Escape or a click elsewhere. The file's opening comment has the format. If a card changes, `build.py` stops until its panels are updated to match.
 
+## Music
+
+When the power goes out in the cold open, the emergency speakers play jazz. The track, "Hot Pursuits" by Jules Gaia, is licensed, so it isn't in this repository and the game is silent without it. To hear it, use your own licensed copy of the track:
+
+1. Save the MP3 as `web/assets/private/hot-pursuits.mp3`, or name it with `DJ_MUSIC_FILE=/path/to/track.mp3`. That folder isn't committed.
+2. Run `python3 web/build.py`. It cuts a 45-second clip from 0:16 with [ffmpeg](https://ffmpeg.org/) into the same folder, and writes `web/with-music.html`, the game with music. That isn't committed either.
+3. Open <http://localhost:8080/with-music.html> with the `http.server` command above. `index.html` stays silent.
+
+`build.py --page` puts the clip in the page file too. The music plays from the click on **Next panel** onto the power cut, and fades out on the next panel. **Mute music** turns it off, and the browser remembers that. Without the track, or without ffmpeg, there's no music and no button. Don't share a page file built with the track: anyone who can open the page can export it.
+
 ## Edit the story
 
 The cards live in `game/SPOILERS-content/`, shared with the terminal game. After editing any of them, rebuild the bundle:
@@ -97,7 +107,7 @@ python3 web/build.py
 python3 -m unittest discover -s web
 ```
 
-It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that every card the player sees is told in short panels whose hotspots sit inside the picture and whose text names nothing the cards don't, quotes nothing from the reveal and never says what someone isn't wearing, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each picture there is is a small WebP file of the size `build.py` gives it, that `build.py --page` builds a complete page file with the pictures inlined, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
+It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds every card, that every card the player sees is told in short panels whose hotspots sit inside the picture and whose text names nothing the cards don't, quotes nothing from the reveal and never says what someone isn't wearing, that the solution isn't readable in it, that the page loads nothing from the network, that the game avoids what a Grafana Page's sandbox blocks (form submits and dialog forms), that each picture there is is a small WebP file of the size `build.py` gives it, that `build.py --page` builds a complete page file with the pictures inlined, that the music is in a build only with a copy of the track that isn't committed, and that the example dashboard has the game panel. It doesn't quote any card, so it's spoiler-free.
 
 ## Files
 
@@ -112,4 +122,5 @@ It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds 
 | `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/`, with `--page` the Grafana Page file, and with `--art` the pictures |
 | `dist/SPOILERS-defiantjazz.page.json` | **Spoilers:** the Grafana Page file, written by `build.py --page`, not committed |
 | `test_web.py` | The self-check |
+| `assets/private/`, `with-music.html` | Your copy of the music and the game with it, made by `build.py`, not committed |
 | `dashboard-example.json` | An example dashboard with the game panel and two telemetry panels |

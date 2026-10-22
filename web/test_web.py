@@ -111,6 +111,12 @@ class PageTest(unittest.TestCase):
 class SandboxTest(unittest.TestCase):
     """A Grafana Page runs the game in a frame without forms, modals or localStorage."""
 
+    def test_music_plays_without_media_elements(self):
+        # The Page's frame blocks <audio> and <video> whatever the source, so the music is Web Audio.
+        game = read("game.js")
+        self.assertNotRegex(game, r"new Audio\b|el\(\"(?:audio|video)\"|createElement\(\"audio")
+        self.assertIn("decodeAudioData", game)
+
     def test_no_form_submission(self):
         game, page = read("game.js"), read("index.html")
         self.assertNotIn('"submit"', game)
@@ -455,6 +461,96 @@ class PageTemplateTest(unittest.TestCase):
                 build.main(["--page", "--check"])
         with self.assertRaises(SystemExit), redirect_stderr(StringIO()):
             build.main(["--template", template])            # --template needs --page
+
+
+class MusicTest(unittest.TestCase):
+    """The jazz is a licensed track: only a build with its own, uncommitted copy plays it."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        for name, value in (("PRIVATE", os.path.join(self.tmp.name, "private")),
+                            ("LOCAL_PAGE", os.path.join(self.tmp.name, "with-music.html"))):
+            patcher = mock.patch.object(build, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        env = mock.patch.dict(os.environ)
+        env.start()
+        self.addCleanup(env.stop)
+        os.environ.pop("DJ_MUSIC_FILE", None)
+        self.clip = b"ID3" + bytes(range(256)) * 1200
+
+    def add_track(self):
+        os.makedirs(build.PRIVATE)
+        with open(os.path.join(build.PRIVATE, "hot-pursuits.mp3"), "wb") as f:
+            f.write(b"the whole track")
+
+    def fake_ffmpeg(self, args, check):
+        with open(args[-1], "wb") as f:
+            f.write(self.clip)
+
+    def test_silent_without_the_track(self):
+        self.assertIsNone(build.music_clip())
+        files = build.page_files(fake_template(), CONTENT)
+        self.assertIn("MUSIC: string | undefined = undefined", files["src/music.ts"])
+        self.assertFalse([name for name in files if name.startswith("src/music/")])
+        self.assertNotIn("audio/", json.dumps(files))
+        build.write_local_music()
+        self.assertFalse(os.path.exists(build.LOCAL_PAGE))
+
+    def test_the_build_has_music_only_with_the_track(self):
+        self.add_track()
+        quiet = redirect_stdout(StringIO())
+        with mock.patch.object(build.subprocess, "run", self.fake_ffmpeg), quiet:
+            files = build.page_files(fake_template(), CONTENT)
+            build.write_local_music()
+        parts = sorted((name for name in files if name.startswith("src/music/")),
+                       key=lambda name: int(re.search(r"\d+", name).group()))
+        self.assertGreater(len(parts), 1)
+        for name in parts:
+            self.assertLess(len(files[name].encode("utf-8")), 120 * 1024,
+                            f"{name}: Grafana writes a page's files at most 128 KB at a time")
+        data = "".join(files[name].split("'")[1] for name in parts)
+        self.assertEqual(base64.b64decode(data), self.clip)
+        self.assertIn("'data:audio/mpeg;base64,' + part0", files["src/music.ts"])
+        self.assertIn("music: MUSIC", files["src/host.ts"])
+        with open(build.LOCAL_PAGE, encoding="utf-8") as f:
+            page = f.read()
+        script = os.path.relpath(os.path.join(build.PRIVATE, "music.js"), HERE)
+        self.assertLess(page.index(f'src="{script}"'), page.index('src="SPOILERS-content.js"'))
+        with open(os.path.join(build.PRIVATE, "music.js"), encoding="utf-8") as f:
+            self.assertIn("data:audio/mpeg;base64," + base64.b64encode(self.clip).decode("ascii"), f.read())
+        # Without the track again, the files it made go.
+        os.remove(os.path.join(build.PRIVATE, "hot-pursuits.mp3"))
+        build.write_local_music()
+        self.assertFalse(os.path.exists(build.LOCAL_PAGE))
+        self.assertFalse(os.path.exists(os.path.join(build.PRIVATE, "music.js")))
+
+    def test_dj_music_file_names_the_track(self):
+        track = os.path.join(self.tmp.name, "elsewhere.mp3")
+        with open(track, "wb") as f:
+            f.write(b"the whole track")
+        os.environ["DJ_MUSIC_FILE"] = track
+        with mock.patch.object(build.subprocess, "run", self.fake_ffmpeg):
+            self.assertTrue(build.music_clip().startswith(build.PRIVATE))
+
+    def test_without_ffmpeg_it_builds_silent(self):
+        self.add_track()
+        with mock.patch.object(build.subprocess, "run", side_effect=FileNotFoundError("ffmpeg")), \
+                redirect_stderr(StringIO()):
+            self.assertIsNone(build.music_clip())
+
+    def test_the_repository_never_has_the_track(self):
+        ignored = read(os.path.join("..", ".gitignore")).splitlines()
+        self.assertIn("web/assets/private/", ignored)
+        self.assertIn("web/with-music.html", ignored)
+        self.assertNotIn("audio/", read("SPOILERS-content.js"))
+        self.assertNotIn("private", read("index.html"))
+        # One panel of the cold open plays it.
+        art = bundle_data()["art"]
+        playing = [f for frames in art.values() for f in frames if f.get("music")]
+        self.assertEqual(len(playing), 1)
+        self.assertIn(playing[0], art[CONTENT.cold_open.title])
 
 
 class DashboardTest(unittest.TestCase):

@@ -243,7 +243,8 @@ window.DJ_CONTENT = {
     "where": "Sleep Floor · 03:02",
     "headline": "The power went out.",
     "sound": "♪ Jazz on the emergency speakers",
-    "dim": true
+    "dim": true,
+    "music": true
    },
    {
     "image": "title-splash",

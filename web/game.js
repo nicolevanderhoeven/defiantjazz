@@ -19,6 +19,9 @@
  *   onTheme(callback)          calls callback("dark" | "light") whenever the host's theme changes
  *   askAssistant(prompt)       opens Grafana Assistant with the prompt; returns a promise
  *   scenes                     the pictures as { name: URL }, for a frame that can't load files
+ *   music                      the jazz as a data: URL, when the build has the track
+ * A static page gets the music from window.DJ_MUSIC instead: with-music.html, which web/build.py
+ * writes only from a copy of the track that isn't committed. Without it, nothing plays.
  */
 (function () {
   "use strict";
@@ -27,6 +30,7 @@
   var HOST = window.DJ_HOST || {};
   var STORE_KEY = "defiantjazz.web.v1";
   var THEME_KEY = "defiantjazz.theme";
+  var MUSIC_KEY = "defiantjazz.music";
   var LEADS = C.decisions.length;
 
   // Examples only: the player asks whatever they like, in whichever AI they like. Each one points
@@ -62,6 +66,7 @@
   var leadsEl = document.getElementById("leads");
   var restartBtn = document.getElementById("restart");
   var themeBtn = document.getElementById("theme-toggle");
+  var musicBtn = document.getElementById("music-toggle");
   var statusEl = document.getElementById("status");
   var dialog = document.getElementById("restart-dialog");
 
@@ -446,7 +451,7 @@
     var text = null;
     if (frame.body) text = frame.style === "role" ? roleBody(frame.body) : panelText(frame, pictured);
     var quiet = text && text.classList.contains("sr-only");
-    return el("figure", { class: "panel" + (frame.style ? " panel-" + frame.style : "") }, [
+    return el("figure", { class: "panel" + (frame.style ? " panel-" + frame.style : ""), "data-music": frame.music || null }, [
       // "Your role" has no picture: its headline sits over its tiles.
       el("div", { class: "panel-art" + (head ? " has-head" : "") }, [head, frame.style === "role" ? null : pic]),
       text ? el("figcaption", { class: quiet ? null : "panel-text" }, text) : null,
@@ -998,6 +1003,7 @@
     keyNav = null;
     var view = views[state.view] ? state.view : "title";
     main.replaceChildren(views[view]());
+    music.follow(!!main.querySelector(".panel[data-music]"));
     var started = view !== "title" || state.chosen.length > 0;
     restartBtn.hidden = !started;
     var showLeads = ["hub", "lead", "result", "card", "outside", "accuse", "confirm"].indexOf(view) >= 0;
@@ -1041,6 +1047,90 @@
     var mq = window.matchMedia("(prefers-color-scheme: dark)");
     if (mq.addEventListener) mq.addEventListener("change", paintThemeButton);
   }
+
+  // ---- music ------------------------------------------------------------------
+  // The jazz on the emergency speakers plays while a panel with "music: yes" shows. It starts
+  // from the player's click on Next, since browsers only start sound after a click, and fades out
+  // on the panel after. The toggle mutes it, and the browser (or the host's store) remembers that.
+  // Without the track there's no toggle and nothing plays. It plays through Web Audio from the
+  // data: URL: a Grafana Page's frame blocks <audio>, whatever the source.
+  var music = (function () {
+    var data = HOST.music || window.DJ_MUSIC;
+    var Context = window.AudioContext || window.webkitAudioContext;
+    if (!data || !Context) return { follow: noop };
+    var VOLUME = 0.45;
+    var ctx = null, clip = null, voice = null, offset = 0;
+    var muted = false, wanted = false;
+
+    // Decoded on the first panel with music: an AudioContext only starts in a click.
+    function setup() {
+      if (ctx) return;
+      ctx = new Context();
+      var text = atob(data.slice(data.indexOf(",") + 1)), bytes = new Uint8Array(text.length);
+      for (var i = 0; i < text.length; i++) bytes[i] = text.charCodeAt(i);
+      ctx.decodeAudioData(bytes.buffer, function (decoded) { clip = decoded; sync(); },
+        function () { musicBtn.hidden = true; });
+    }
+    function ramp(gain, to, seconds) {
+      var now = ctx.currentTime;
+      gain.cancelScheduledValues(now);
+      gain.setValueAtTime(gain.value, now);
+      gain.linearRampToValueAtTime(to, now + seconds);
+    }
+    function start() {
+      var source = ctx.createBufferSource(), level = ctx.createGain();
+      source.buffer = clip;
+      source.loop = true;
+      source.connect(level);
+      level.connect(ctx.destination);
+      level.gain.value = 0;
+      ramp(level.gain, VOLUME, 0.6);
+      source.start(0, offset % clip.duration);
+      voice = { source: source, level: level, from: ctx.currentTime - offset };
+      // Without a click first (a reload onto the panel), it stays quiet.
+      ctx.resume().catch(noop);
+    }
+    // Muted, it carries on from here later; leaving the panel, from the top.
+    function stop(rewind) {
+      offset = rewind ? 0 : ctx.currentTime - voice.from;
+      ramp(voice.level.gain, 0, 1.2);
+      voice.source.stop(ctx.currentTime + 1.2);
+      voice = null;
+      // Silent, it lets go of the speakers.
+      setTimeout(function () { if (!voice) ctx.suspend().catch(noop); }, 1400);
+    }
+    function sync() {
+      if (!clip) return;
+      var on = wanted && !muted;
+      if (on && !voice) start();
+      else if (!on && voice) stop(!wanted);
+    }
+    function paint() {
+      musicBtn.textContent = muted ? "Unmute music" : "Mute music";
+    }
+
+    musicBtn.hidden = false;
+    paint();
+    musicBtn.addEventListener("click", function () {
+      muted = !muted;
+      paint();
+      new Promise(function (resolve) { resolve(storage.setItem(MUSIC_KEY, muted ? "off" : "on")); }).catch(noop);
+      sync();
+    });
+    readStored(MUSIC_KEY).then(function (text) {
+      muted = text === "off";
+      paint();
+      sync();
+    });
+
+    return {
+      follow: function (on) {
+        wanted = on;
+        if (on) setup();
+        sync();
+      },
+    };
+  })();
 
   function restart() {
     state = fresh();
