@@ -16,6 +16,7 @@ Your sleepwalking self works the night shift for you.
 In the morning, you wake up rested, paid, and remembering nothing at all.
 And don't worry: our lullaby keeps you sound asleep all night long.
 **Kipsake. Earn while you sleep.**
+Happy holidays from Kipsake.
 Sweet dreams, Dreamers.
 
 ## The Defiant Jazz Incident
@@ -29,7 +30,7 @@ Sweet dreams, Dreamers.
 
 **What happened that night**
 
-- **02:58.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. They met their quota for the quarter. Their reward was a Cocoa Hour: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00 in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.
+- **02:58.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. They met their quota for the quarter. Their reward was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00 in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.
 - **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.
 - **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.
 

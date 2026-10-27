@@ -30,7 +30,7 @@ aliases: bertram, b
 [Bertram's waking self sits on the same chair. No lanyard. The camera is handheld: you're the investigator.]
 You: Bertram? You were on that floor last night.
 Bertram: Someone trod on me in the dark. I grabbed at them.
-[He opens his hand toward the camera: a tuft of threads in several different colours, twisted together into one piece. Then he touches his right shoulder.]
+[He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece. Then he touches his right shoulder.]
 Bertram: They said sorry. Called me "Waffles". Who's Waffles?
 [He looks puzzled.]
 
@@ -40,7 +40,7 @@ note: Clement's waking self
 aliases: clement, c
 
 > 06:40 · Port Quiet · Clement's flat
-[Clement's waking self sits on the same chair. No lanyard, but he's wearing the fringed scarf. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the investigator.]
+[Clement's waking self sits on the same chair. No lanyard, but he's wearing the Christmas sweater. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the investigator.]
 You: Clement? You sleepwalk for Kipsake.
 Clement: I don't remember work. That's rather the point.
 [Close-up: the open folder, lying flat, with three things inside.]

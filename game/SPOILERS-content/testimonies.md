@@ -28,7 +28,7 @@ Bertram: I was having cocoa.
 Bertram: Then I was in the corridor. Sore shoulder.
 
 ## T-C · Clement · 03:20
-[An interview at Kipsake. The third DSO clerk, Clement, sits on the same chair, wearing his lanyard, hands folded in his lap. He wears a fringed scarf, looped once so both ends hang down his chest. The threads of its fringe are many different colours. His hands are clean.]
+[An interview at Kipsake. The third DSO clerk, Clement, sits on the same chair, wearing his lanyard, hands folded in his lap. He wears a navy Christmas sweater knitted with stripes and squares in blue, red, orange, green and white. His hands are clean.]
 You: Clement. Where were you when the lights went out?
 Clement: A wonderful night, until it wasn't.
 Clement: The lights blinked, and I was by the speaker. Same as everyone, I expect.

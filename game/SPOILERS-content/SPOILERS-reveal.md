@@ -54,7 +54,7 @@ for: all
 
 - **The nickname:** Agnes's who's-who note, Bertram's "Clement. 'Chill out, Waffles.' He's the only one who calls me that", and Clement's own "checked on Waffles".
 - **The slip:** "Someone was screaming by the elevator", and "Peggy" crossed out on his written statement: a name that was only shouted in the dark.
-- **The scarf:** the many-coloured threads in Hale's closed hand and in Bertram's hand at home match the fringe on Clement's scarf. He didn't stay by the speaker.
+- **The sweater:** the yarn threads in Hale's closed hand and in Bertram's hand at home match the colours of Clement's Christmas sweater. He didn't stay by the speaker.
 - **The napkin:** the napkin from the chair by the speaker is marked "C". Clement is the only C on the floor.
 - **The folder:** Clement's photo of the evacuation plan, with his route to the elevator drawn in pen, and "R. Hale" circled on the Procedure Revision 114 clipping.
 - **The motive:** June's obituary, and Hale's approval of Procedure Revision 114.

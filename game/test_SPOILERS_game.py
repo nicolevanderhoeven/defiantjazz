@@ -32,12 +32,12 @@ SENTINELS = [
     "Port Quiet Gazette",
     "THE GOLDEN WAFFLE",
     "a single block capital",
-    "fringed scarf",
+    "navy Christmas sweater",
     "Clement killed Mr. Hale",
     "It took a human to know which question to ask",
 ]
 
-REASONING = "My secret theory: the scarf threads give it away."
+REASONING = "My secret theory: the sweater threads give it away."
 
 
 def human_only_lines():

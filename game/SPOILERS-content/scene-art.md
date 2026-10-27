@@ -33,11 +33,12 @@ them when the picture lands, by looking at it.
 
 ## The flyer
 card: Kipsake
-source: f9ff1a98
+source: d466dca6
 image: flyer-kipsake
 (drawn) > KIPSAKE
 (drawn) > WE RENT YOUR SLEEP
 (drawn) > Earn while you sleep.
+(drawn) > Happy holidays from Kipsake.
 (drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.
 (drawn) > Wake rested, paid, and remembering nothing.
 (drawn) > Our lullaby keeps you asleep.
@@ -45,7 +46,7 @@ image: flyer-kipsake
 
 ## The incident
 card: The Defiant Jazz Incident
-source: 1a0412f3
+source: ea9f1351
 image: scene-3-elevator
 where: Kipsake · Sleep Floor
 headline: We need your help to solve a murder.
@@ -67,7 +68,7 @@ image: scene-break-room
 where: Break Room 2 · Sleep Floor · 03:00
 headline: The Cocoa Hour.
 02:58. Agnes, Bertram and Clement, the three clerks of Deep Sleep Operations, are sleepwalkers on the Sleep Floor's night shift. They met their quota for the quarter.
-Their reward was a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.
+Their reward was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.
 
 ## The emergency speaker
 at: 36, 8
@@ -91,7 +92,7 @@ Clement, the third DSO clerk. Later, he'll call it a wonderful night, until it w
 
 ## Cocoa
 at: 94, 37
-The reward for meeting the quarter's quota: hot cocoa, and a middle-of-the-night break to sit together.
+The reward for meeting the quarter's quota: hot cocoa and a holiday break to sit together.
 
 ## The power cut
 image: scene-break-room
@@ -164,7 +165,7 @@ A smudge of flour on the back of his free hand.
 
 ## Clement
 card: T-C · Clement · 03:20
-source: b6e5e197
+source: e4417310
 image: portrait-clement
 where: An interview at Kipsake · 03:20
 headline: Clement
@@ -176,9 +177,9 @@ Clement: Someone was screaming by the elevator.
 [He pauses for two beats, then straightens his lanyard.]
 Clement: Terrible about Mr. Hale.
 
-## The scarf
+## The sweater
 at: 55, 62
-A fringed scarf, looped once so both ends hang down his chest. The threads of its fringe are many different colours.
+A navy Christmas sweater, knitted with stripes and squares in blue, red, orange, green and white.
 
 ## His hands
 at: 49, 86
@@ -196,7 +197,7 @@ These documents come from outside Kipsake. They aren't in Kipsake's telemetry, s
 
 ## The evidence
 card: Elevator car 1
-source: 072db044
+source: 1fbafcfc
 image: scene-elevator-evidence
 [Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]
 (drawn) > 03:09 · Elevator car 1
@@ -216,15 +217,15 @@ Three folded notes, from the elevator's phone panel. Unopened.
 
 ## Marker 3
 at: 22, 73
-A small evidence bag holding a loose twist of five or six threads, in several different colours.
+A small evidence bag holding a loose twist of five or six yarn threads, in navy, blue, red, orange, green and white.
 
 ## In daylight
 at: 77, 80
-Close-up of marker 3 in daylight, on a plain light surface: the twist of threads, every colour clear.
+Close-up of marker 3 in daylight, on a plain light surface: the twist of yarn threads, every colour clear.
 
 ## Two frames
 card: Break Room 2
-source: b0b1e7a8
+source: 2da2ea84
 image: scene-break-room-camera
 [Two frames from the Break Room 2 security camera. This is Floor Security's own footage, so it isn't in the telemetry the AI has. Grainy, filmed from high up, close on the room's emergency speaker and the chair beside it. The camera slowly zooms in on the cable and the napkin.]
 (drawn) > BREAK ROOM 2 · SECURITY CAMERA
@@ -242,7 +243,7 @@ Same angle, same zoom. The cable and the napkin are gone from the chair.
 
 ## Clement
 at: 87, 72
-Clement sits on the floor beside the chair, in his fringed scarf, wearing his lanyard with the badge facing out. Nobody else is in the shot.
+Clement sits on the floor beside the chair, in his Christmas sweater, wearing his lanyard with the badge facing out. Nobody else is in the shot.
 
 ## The waffle
 card: Supply Room B
@@ -279,7 +280,7 @@ A folded cloth napkin. On one corner, in laundry marker, a single block capital:
 
 ## Bertram at home
 card: Bertram at home
-source: 61ef3767
+source: 5d5c0888
 image: scene-bertram-home
 Bertram's waking self sits on the same chair. No lanyard.
 You: Bertram? You were on that floor last night.
@@ -290,7 +291,7 @@ You: Bertram? You were on that floor last night.
 
 ## His hand
 at: 39, 76
-He opens his hand toward the camera: a tuft of threads in several different colours, twisted together into one piece.
+He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece.
 
 ## His shoulder
 at: 40, 37
@@ -298,7 +299,7 @@ He touches his right shoulder.
 
 ## Clement at home
 card: Clement at home
-source: 4f4f4ff4
+source: 92ccf641
 image: scene-clement-home
 where: Port Quiet · Clement's flat · 06:40
 headline: Clement
@@ -311,7 +312,7 @@ Clement: Then you know everything I do.
 
 ## Clement
 at: 61, 39
-Clement's waking self, at home. No lanyard, but he's wearing the fringed scarf.
+Clement's waking self, at home. No lanyard, but he's wearing the Christmas sweater.
 
 ## The clipping
 at: 43, 87
@@ -366,9 +367,9 @@ image: portrait-bertram-push
 
 ## Clement pushed
 card: Clement
-source: d528783f
+source: 1bb6e8d0
 image: portrait-clement-push
-[Clement, wearing his lanyard and scarf, with a clipboard and a Kipsake "Incident Statement" form.]
+[Clement, wearing his lanyard and Christmas sweater, with a clipboard and a Kipsake "Incident Statement" form.]
 (drawn) > 04:30 · Kipsake · Clement
 You: For the record, Clement. In your own hand. What did you do after the lights came back?
 [He writes without speaking, in block capitals, line by line:]

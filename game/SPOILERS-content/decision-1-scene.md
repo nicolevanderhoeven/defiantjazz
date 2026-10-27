@@ -14,14 +14,14 @@ aliases: elevator, car, lift, e
 [Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]
 [Marker 1: a grey cable in an evidence bag.]
 [Marker 2: three folded notes.]
-[Marker 3: a small evidence bag holding a loose twist of five or six threads, in several different colours.]
+[Marker 3: a small evidence bag holding a loose twist of five or six yarn threads, in navy, blue, red, orange, green and white.]
 [A text card stays on screen for the whole shot:]
 > 03:09 · Elevator car 1, as found.
 > 1 · Ligature. Recovered from Agnes's hands.
 > 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.
 > 3 · Found in the victim's closed right hand. Not from his own clothing.
 > Mr. Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby. The corridor E and lobby compliance mics ran on emergency power.
-[Close-up of marker 3 in daylight, on a plain light surface: the twist of threads, every colour clear.]
+[Close-up of marker 3 in daylight, on a plain light surface: the twist of yarn threads, every colour clear.]
 
 ## Break Room 2
 option: Break Room 2
@@ -34,7 +34,7 @@ aliases: break room, breakroom, br, speaker
 > 03:02:00 · Cameras offline.
 [The screen is black. Jazz starts playing on the emergency speaker.]
 > 03:07:03
-[Same angle, same zoom. The cable and the napkin are gone from the chair. Clement sits on the floor beside the chair, in his fringed scarf, wearing his lanyard with the badge facing out. Nobody else is in the shot.]
+[Same angle, same zoom. The cable and the napkin are gone from the chair. Clement sits on the floor beside the chair, in his Christmas sweater, wearing his lanyard with the badge facing out. Nobody else is in the shot.]
 
 ## Supply Room B
 option: Supply Room B

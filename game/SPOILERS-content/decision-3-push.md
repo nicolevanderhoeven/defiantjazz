@@ -40,7 +40,7 @@ note: ask him to write down what he did after the lights came back
 aliases: clement, c
 
 > 04:30 · Kipsake · Interview
-[Clement sits on the chair, wearing his lanyard and scarf. On his lap is a clipboard with a Kipsake "Incident Statement" form.]
+[Clement sits on the chair, wearing his lanyard and Christmas sweater. On his lap is a clipboard with a Kipsake "Incident Statement" form.]
 You: For the record, Clement. In your own hand. What did you do after the lights came back?
 [He writes without speaking. What he writes on the form, in block capitals, line by line:]
 > 03:07 Lights returned. I was seated by the speaker.

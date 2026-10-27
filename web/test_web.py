@@ -299,9 +299,9 @@ class SceneTextTest(unittest.TestCase):
         # Saying what someone isn't wearing points at what matters.
         for title, p in self.panels():
             for text in self.texts(p):
-                self.assertNotRegex(text.lower(), r"\bno (scarf|pattern)", title)
+                self.assertNotRegex(text.lower(), r"\bno (scarf|sweater|pattern)", title)
         for card in all_cards():
-            self.assertNotRegex(card.body.lower(), r"\bno (scarf|pattern)", card.title)
+            self.assertNotRegex(card.body.lower(), r"\bno (scarf|sweater|pattern)", card.title)
 
     def test_nothing_from_the_reveal(self):
         # Any four words in a row that the reveal has must also be in a card the player sees.
