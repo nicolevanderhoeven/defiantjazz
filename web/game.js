@@ -57,7 +57,7 @@
   // size as name: [width, height]; a panel whose picture is still to come (C.toCome) shows a
   // placeholder the same shape. Alt text is empty: the story stays in the HTML, and words drawn
   // in a picture are in its panel's transcript.
-  var TITLE_ART = "title-splash";
+  var TITLE_ART = "title-screen";
   var REVEAL_ART = "scene-reveal";
   var PORTRAITS = { agnes: "portrait-agnes", bertram: "portrait-bertram", clement: "portrait-clement" };
   var LEAD_ICONS = ["search", "home", "chat"];
@@ -623,12 +623,11 @@
 
   views.title = function () {
     var resume = state.chosen.length > 0;
-    // The title sits on the key art's quiet left half, or under it on a narrow screen.
+    // The key art carries the title on its screen, so the lede and Start go under it.
     return el("section", { class: "title-view" }, el("div", { class: "title-art" }, [
       picture(TITLE_ART),
       el("div", { class: "title-text" }, [
         el("h1", { class: "sr-only" }, "The Defiant Jazz Incident"),
-        el("pre", { class: "banner", "aria-hidden": "true" }, C.banner),
         el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
         el("div", { class: "actions" }, [
           button([el("span", null, resume ? "Continue" : "Start"), icon("next")],

@@ -7,7 +7,7 @@ KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 
 ## Summary
 
-At 02:58 the Deep Sleep Operations (DSO) department reached its quarterly quota and was awarded a Cocoa Hour, a quiet quota reward with cocoa from the urn, in the middle of the night shift. It began at 03:00 in Break Room 2 and was attended by all three DSO clerks and Mr. Hale.
+The Cocoa Hour is the Sleep Floor's end-of-year holiday party, a quiet party with cocoa from the urn, in the middle of the night shift. It began at 03:00 in Break Room 2 and was attended by all three Deep Sleep Operations (DSO) clerks and Mr. Hale.
 
 At approximately 03:02 the Sleep Floor lost main power. Power was restored at 03:07. At 03:07 Mr. Hale was found dead in the elevator car, which was held at the Sleep Floor. The doors were open.
 
@@ -33,7 +33,7 @@ These are raw exports, too large to read end to end. Query them by searching (fo
 | door-and-badge-events.log | Door readers, badge journeys and trace spans, the 14 weeks up to the incident |
 | chat.log | Floor chat |
 | metrics.csv | Time series: ts,metric,labels,value,ingested_at |
-| system.log | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |
+| system.log | Sleep rings, power, outlets, floor events, emergency speakers, elevator, cameras, security, medical |
 | ambient-mic.log | Ambient-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
 | records.log | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar |
 

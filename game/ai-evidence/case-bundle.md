@@ -7,7 +7,7 @@ KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 
 ## Summary
 
-At 02:58 the Deep Sleep Operations (DSO) department reached its quarterly quota and was awarded a Cocoa Hour, a quiet quota reward with cocoa from the urn, in the middle of the night shift. It began at 03:00 in Break Room 2 and was attended by all three DSO clerks and Mr. Hale.
+The Cocoa Hour is the Sleep Floor's end-of-year holiday party, a quiet party with cocoa from the urn, in the middle of the night shift. It began at 03:00 in Break Room 2 and was attended by all three Deep Sleep Operations (DSO) clerks and Mr. Hale.
 
 At approximately 03:02 the Sleep Floor lost main power. Power was restored at 03:07. At 03:07 Mr. Hale was found dead in the elevator car, which was held at the Sleep Floor. The doors were open.
 
@@ -31,7 +31,7 @@ Floor Security has named three persons of interest, all from DSO:
 | 02-badge-and-door-events.md | Door readers and badge journeys, the two weeks up to the incident |
 | 03-chat.md | Floor chat, the two weeks up to the incident |
 | 04-metrics.md | Selected time series (CSV) |
-| 05-system-logs.md | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |
+| 05-system-logs.md | Sleep rings, power, outlets, floor events, emergency speakers, elevator, cameras, security, medical |
 | 06-ambient-mic-transcripts.md | Ambient-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
 | 07-records.md | Personnel, detention, Hush Room notes, supervisor feedback, perks, keystroke drafts, calendar |
 
@@ -329,7 +329,7 @@ Floor chat messages. Direct messages show `to=<badge>`; channel messages show `t
 2026-10-07T02:52:32 source=chat from=bertram to=#deep-sleep-operations msg="anyone have a spare eye mask"
 2026-10-07T03:39:30 source=chat from=bertram to=#deep-sleep-operations msg="is it cocoa day or is that next week"
 2026-10-07T04:03:28 source=chat from=clement to=#deep-sleep-operations msg="4 minutes to break"
-2026-10-07T21:40:17 source=chat from=bertram to=#deep-sleep-operations msg="fyi Mr. H says he'll be stepping out during the Cocoa Hour, if we ever get one lol. something at the elevator"
+2026-10-07T21:40:17 source=chat from=bertram to=#deep-sleep-operations msg="fyi Mr. H says he'll be stepping out during the Cocoa Hour tonight. something at the elevator"
 2026-10-07T21:40:18 source=chat from=bertram to=#deep-sleep-operations msg="Clement, did you finish 6?"
 2026-10-07T21:40:52 source=chat from=agnes to=#deep-sleep-operations msg="the elevator? why the elevator"
 2026-10-07T21:41:30 source=chat from=bertram to=#deep-sleep-operations msg="dunno. ask him"
@@ -854,7 +854,7 @@ ts,metric,labels,value,ingested_at
 
 # System Logs
 
-Logs from the sleep rings, floor power, smart outlets, the quota-reward system, the emergency speaker controller, the elevator controller, camera analytics, Floor Security and the medical office. A non-empty `ingested_at` means the record was buffered and uploaded late.
+Logs from the sleep rings, floor power, smart outlets, the floor events calendar, the emergency speaker controller, the elevator controller, camera analytics, Floor Security and the medical office. A non-empty `ingested_at` means the record was buffered and uploaded late.
 
 ```text
 2026-09-24T00:36:55 source=ring employee=agnes level=info msg="ring lock nominal"
@@ -906,8 +906,8 @@ Logs from the sleep rings, floor power, smart outlets, the quota-reward system, 
 2026-10-07T23:06:35 source=ring employee=agnes level=warn msg="lock drift (0.10), self-corrected"
 2026-10-07T23:29:03 source=ring employee=agnes level=info msg="ring lock nominal"
 2026-10-08T02:20:20 source=ring employee=clement level=warn msg="lock drift (0.09), self-corrected"
-2026-10-08T02:58:12 source=quota-reward level=info msg="Deep Sleep Operations quota reached. Cocoa Hour awarded."
-2026-10-08T03:00:00 source=quota-reward level=info msg="Cocoa Hour started" room=break-room-2
+2026-10-08T02:58:12 source=floor-events level=info msg="Holiday party at 03:00: the end-of-year Cocoa Hour" room=break-room-2
+2026-10-08T03:00:00 source=floor-events level=info msg="Cocoa Hour started" room=break-room-2
 2026-10-08T03:00:31 source=printer device=dso-printer-1 level=error msg="paper jam tray 2"
 2026-10-08T03:01:30 source=elevator level=info msg="door open" car=1 floor=SF
 2026-10-08T03:01:34 source=elevator level=info msg="door close" car=1 floor=SF
@@ -1039,5 +1039,5 @@ personnel id=hale name="Mr. Hale" role="Night Supervisor" sleepwalker=false
 
 === CALENDAR (night of 2026-10-07) ===
 2026-10-07T21:15:00 calendar owner=hale title="1:1 Bertram"
-2026-10-08T03:00:00 calendar owner=hale title="Cocoa Hour supervision (DSO), if earned"
+2026-10-08T03:00:00 calendar owner=hale title="Cocoa Hour supervision (DSO holiday party)"
 ```

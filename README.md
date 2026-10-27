@@ -2,7 +2,7 @@
 
 An observability murder mystery set on the Sleep Floor at Kipsake.
 
-Kipsake rents your sleep: at night its Dreamers sleep in pods while their sleepwalking selves work the floor. During the Cocoa Hour, a middle-of-the-night quota reward in Break Room 2, the floor loses power for five minutes. When the power comes back, the night supervisor, Mr. Reginald Hale, is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
+Kipsake rents your sleep: at night its Dreamers sleep in pods while their sleepwalking selves work the floor. During the Cocoa Hour, the floor's middle-of-the-night holiday party in Break Room 2, the floor loses power for five minutes. When the power comes back, the night supervisor, Mr. Reginald Hale, is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
 
 This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice. It also has the game itself, in a terminal version for demos and playtests and a web version to embed in a Grafana dashboard.
 
@@ -65,7 +65,7 @@ Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embe
 | `telemetry/door-and-badge-events.log` | Door readers, badge journeys and trace spans |
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |
-| `telemetry/system.log` | Sleep rings, power, outlets, quota rewards, emergency speakers, elevator, cameras, security, medical |
+| `telemetry/system.log` | Sleep rings, power, outlets, floor events, emergency speakers, elevator, cameras, security, medical |
 | `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
 | `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar |
 | `loader/` | `load.py` sends everything over OTLP; `test_load.py` checks its time shift |

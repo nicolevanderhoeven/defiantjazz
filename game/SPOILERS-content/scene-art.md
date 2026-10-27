@@ -46,7 +46,7 @@ image: flyer-kipsake
 
 ## The incident
 card: The Defiant Jazz Incident
-source: ea9f1351
+source: 11617c24
 image: scene-3-elevator
 where: Kipsake · Sleep Floor
 headline: We need your help to solve a murder.
@@ -67,8 +67,8 @@ Where Mr. Hale was found.
 image: scene-break-room
 where: Break Room 2 · Sleep Floor · 03:00
 headline: The Cocoa Hour.
-02:58. Agnes, Bertram and Clement, the three clerks of Deep Sleep Operations, are sleepwalkers on the Sleep Floor's night shift. They met their quota for the quarter.
-Their reward was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.
+Agnes, Bertram and Clement, the three clerks of Deep Sleep Operations, are sleepwalkers on the Sleep Floor's night shift.
+Tonight was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00, with Mr. Hale, the night supervisor, who stays awake all shift.
 
 ## The emergency speaker
 at: 36, 8
@@ -92,7 +92,7 @@ Clement, the third DSO clerk. Later, he'll call it a wonderful night, until it w
 
 ## Cocoa
 at: 94, 37
-The reward for meeting the quarter's quota: hot cocoa and a holiday break to sit together.
+The floor's holiday party: hot cocoa from the urn and a break to sit together.
 
 ## The power cut
 image: scene-break-room

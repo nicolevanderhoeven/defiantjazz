@@ -173,32 +173,17 @@ p { margin: 0 0 10px; }
 /* ---- title -------------------------------------------------------------------- */
 
 .title-view { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; }
-.banner {
-  margin: 0 0 12px; overflow-x: auto;
-  font-family: var(--mono); font-size: clamp(9px, 1.55vw, 15px); line-height: 1.15;
-  color: #f2b45c;
-}
-/* The key art, a dark corridor whose left half is left quiet for the title */
+/* The key art, the title on an office computer's screen, with the lede and Start under it.
+   It's a painting, not pixel art, so it scales smoothly. */
 .title-art {
-  position: relative; container-type: inline-size; max-width: 1164px;
+  max-width: 1164px;
   border: 1px solid #75887a; background: var(--c-bg);
 }
-.title-art img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.title-art img { display: block; width: 100%; height: auto; }
 @media (prefers-reduced-motion: no-preference) {
   .title-art img { animation: scene-in 0.8s ease-out; }
 }
-@media (min-width: 641px) {
-  .title-text {
-    position: absolute; top: 0; bottom: 0; left: 4%; width: 48%;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-  .title-text .banner { overflow: visible; font-size: 1.12cqw; }
-  .title-text .lede { color: #d8d4c4; font-size: max(13px, 1.6cqw); }
-}
-@media (max-width: 640px) {
-  .title-text { padding: 16px; }
-  .title-text .lede { color: var(--c-muted); }
-}
+.title-text { padding: 16px; }
 
 /* ---- panels --------------------------------------------------------------------- */
 /* One full-image panel: the picture, where we are and the headline over it, the text under it */

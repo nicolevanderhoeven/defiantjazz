@@ -30,7 +30,7 @@ Sweet dreams, Dreamers.
 
 **What happened that night**
 
-- **02:58.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. They met their quota for the quarter. Their reward was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00 in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.
+- **03:00.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. Tonight was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.
 - **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.
 - **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.
 

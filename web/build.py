@@ -69,6 +69,7 @@ SCENES = (
 # sheet scenes and the broadcast scene that newer art replaced stay in web/assets/, unused, so
 # they can be put back by naming them here.
 IMAGES = {
+    "title-screen": (1536, 864),
     "title-splash": (1536, 864),
     "flyer-kipsake": (800, 1200),
     "scene-break-room": (1200, 400),
@@ -90,7 +91,7 @@ IMAGES = {
 }
 # The title's key art goes with the title screen and the reveal's picture with the verdict, not
 # with a card. A panel may show them too.
-TITLE_ART = "title-splash"
+TITLE_ART = "title-screen"
 REVEAL_ART = "scene-reveal"
 # Lossy WebP: the sheet is painted, not drawn on a pixel grid, so lossless is 5 to 10 times
 # larger for no visible gain. The page scales the scenes with image-rendering: pixelated.
@@ -120,7 +121,6 @@ def data(cards=None):
     cards = cards or content.load()
     reveal = json.dumps([_card(c) for c in cards.reveal.cards], ensure_ascii=False)
     return {
-        "banner": engine.BANNER,
         "suspects": content.SUSPECTS,
         "leadKinds": engine.LEAD_KIND,
         "leadShort": engine.DECISION_SHORT,
