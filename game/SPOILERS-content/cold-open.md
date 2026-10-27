@@ -14,12 +14,14 @@ At Kipsake, we rent your sleep.
 Each night, you check in, settle into your pod, and drift off.
 Your sleepwalking self works the night shift for you.
 In the morning, you wake up rested, paid, and remembering nothing at all.
-And don't worry: our lullaby keeps you sound asleep all night long. Even in a power outage.
+And don't worry: our lullaby keeps you sound asleep all night long.
 **Kipsake. Earn while you sleep.**
 Sweet dreams, Dreamers.
 
 ## The Defiant Jazz Incident
-*The power went out for five minutes. When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.*
+**We need your help to solve a murder.**
+
+*Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.*
 
 > Incident File SF-1008
 > KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY

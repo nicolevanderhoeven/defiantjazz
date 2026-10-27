@@ -33,23 +33,23 @@ them when the picture lands, by looking at it.
 
 ## The flyer
 card: Kipsake
-source: db391f81
+source: f9ff1a98
 image: flyer-kipsake
 (drawn) > KIPSAKE
 (drawn) > WE RENT YOUR SLEEP
 (drawn) > Earn while you sleep.
 (drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.
 (drawn) > Wake rested, paid, and remembering nothing.
-(drawn) > Our lullaby keeps you asleep. Even in a power outage.
+(drawn) > Our lullaby keeps you asleep.
 (drawn) > Sweet dreams, Dreamers.
 
 ## The incident
 card: The Defiant Jazz Incident
-source: 1742786e
+source: 1a0412f3
 image: scene-3-elevator
 where: Kipsake · Sleep Floor
-headline: The power went out for five minutes.
-When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.
+headline: We need your help to solve a murder.
+Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.
 > Incident File SF-1008
 > KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 > Subject: Death of Mr. Reginald Hale, Night Supervisor

@@ -19,14 +19,14 @@ window.DJ_CONTENT = {
  ],
  "advert": {
   "title": "Kipsake",
-  "body": "[A Kipsake advert. A presenter smiles at the camera.]\nHi! I'm with Kipsake.\nYou work hard all day. So why should your nights go to waste?\nAt Kipsake, we rent your sleep.\nEach night, you check in, settle into your pod, and drift off.\nYour sleepwalking self works the night shift for you.\nIn the morning, you wake up rested, paid, and remembering nothing at all.\nAnd don't worry: our lullaby keeps you sound asleep all night long. Even in a power outage.\n**Kipsake. Earn while you sleep.**\nSweet dreams, Dreamers.",
+  "body": "[A Kipsake advert. A presenter smiles at the camera.]\nHi! I'm with Kipsake.\nYou work hard all day. So why should your nights go to waste?\nAt Kipsake, we rent your sleep.\nEach night, you check in, settle into your pod, and drift off.\nYour sleepwalking self works the night shift for you.\nIn the morning, you wake up rested, paid, and remembering nothing at all.\nAnd don't worry: our lullaby keeps you sound asleep all night long.\n**Kipsake. Earn while you sleep.**\nSweet dreams, Dreamers.",
   "meta": {
    "style": "advert"
   }
  },
  "coldOpen": {
   "title": "The Defiant Jazz Incident",
-  "body": "*The power went out for five minutes. When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.*\n\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n\n**What happened that night**\n\n- **02:58.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. They met their quota for the quarter. Their reward was a Cocoa Hour: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00 in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.\n- **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.\n- **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.\n\nThere are three suspects: **Agnes**, **Bertram** and **Clement**.\n\n**Your role**\n\nYou're the investigator. Kipsake wants a name before dawn, when the shift wakes up. Your job is to name who killed Mr. Hale and explain why.\n\n- **ask**: Your AI has read Kipsake's records, and nothing else. It hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it.\n- **investigate**: you can follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.\n- **accuse**: when you're ready, name the killer and say why.",
+  "body": "**We need your help to solve a murder.**\n\n*Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.*\n\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n\n**What happened that night**\n\n- **02:58.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. They met their quota for the quarter. Their reward was a Cocoa Hour: a middle-of-the-night break to sit together and drink hot cocoa. It started at 03:00 in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.\n- **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.\n- **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.\n\nThere are three suspects: **Agnes**, **Bertram** and **Clement**.\n\n**Your role**\n\nYou're the investigator. Kipsake wants a name before dawn, when the shift wakes up. Your job is to name who killed Mr. Hale and explain why.\n\n- **ask**: Your AI has read Kipsake's records, and nothing else. It hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it.\n- **investigate**: you can follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.\n- **accuse**: when you're ready, name the killer and say why.",
   "meta": {}
  },
  "testimonyIntro": "First, your interviews. You spoke to all three suspects soon after the power came back. Here's what each of them told you.",
@@ -167,14 +167,14 @@ window.DJ_CONTENT = {
   "Kipsake": [
    {
     "image": "flyer-kipsake",
-    "body": "(drawn) > KIPSAKE\n(drawn) > WE RENT YOUR SLEEP\n(drawn) > Earn while you sleep.\n(drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.\n(drawn) > Wake rested, paid, and remembering nothing.\n(drawn) > Our lullaby keeps you asleep. Even in a power outage.\n(drawn) > Sweet dreams, Dreamers.",
+    "body": "(drawn) > KIPSAKE\n(drawn) > WE RENT YOUR SLEEP\n(drawn) > Earn while you sleep.\n(drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.\n(drawn) > Wake rested, paid, and remembering nothing.\n(drawn) > Our lullaby keeps you asleep.\n(drawn) > Sweet dreams, Dreamers.",
     "hotspots": []
    }
   ],
   "The Defiant Jazz Incident": [
    {
     "image": "scene-3-elevator",
-    "body": "When it came back, the supervisor was dead in the elevator, and the woman standing over him was holding the cable that killed him.\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor",
+    "body": "Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor",
     "hotspots": [
      {
       "label": "The floor indicator",
@@ -190,7 +190,7 @@ window.DJ_CONTENT = {
      }
     ],
     "where": "Kipsake · Sleep Floor",
-    "headline": "The power went out for five minutes."
+    "headline": "We need your help to solve a murder."
    },
    {
     "image": "scene-break-room",
