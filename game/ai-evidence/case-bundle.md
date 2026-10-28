@@ -906,7 +906,7 @@ Logs from the sleep rings, floor power, smart outlets, the floor events calendar
 2026-10-07T23:06:35 source=ring employee=agnes level=warn msg="lock drift (0.10), self-corrected"
 2026-10-07T23:29:03 source=ring employee=agnes level=info msg="ring lock nominal"
 2026-10-08T02:20:20 source=ring employee=clement level=warn msg="lock drift (0.09), self-corrected"
-2026-10-08T02:58:12 source=floor-events level=info msg="Holiday party at 03:00: the end-of-year Cocoa Hour" room=break-room-2
+2026-10-08T02:58:12 source=floor-events level=info msg="Holiday party tonight: the end-of-year Cocoa Hour" room=break-room-2
 2026-10-08T03:00:00 source=floor-events level=info msg="Cocoa Hour started" room=break-room-2
 2026-10-08T03:00:31 source=printer device=dso-printer-1 level=error msg="paper jam tray 2"
 2026-10-08T03:01:30 source=elevator level=info msg="door open" car=1 floor=SF
