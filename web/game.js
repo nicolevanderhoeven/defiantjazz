@@ -621,11 +621,121 @@
 
   var views = {};
 
+  // Motion over the title picture, drawn in CSS and kept off the title text: the disco ball's
+  // glints and the light it throws, and a few digits drifting on the screen. Positions are
+  // percentages of the picture, so they track it at every size; style.css does the moving and
+  // holds still for players who ask for reduced motion.
+  var TITLE_DIGITS = [
+    // [left %, top %, digit], in the clear bands above and below the title on the screen
+    [30, 18, 7], [35, 22, 4], [41, 16, 2], [47, 25, 1], [53, 19, 8], [60, 15, 9], [66, 23, 5], [72, 18, 3],
+    [28, 66, 3], [34, 72, 8], [41, 68, 6], [49, 76, 1], [56, 70, 9], [62, 77, 7], [69, 68, 2], [74, 74, 4],
+  ];
+  var TITLE_SPARKS = [
+    // [left %, top %, hue]: coloured spots from the disco ball, sliding across the ceiling and wall
+    [62, 3, 330], [70, 9, 190], [77, 4, 50], [84, 12, 280], [93, 8, 140], [97, 16, 20], [88, 20, 200],
+  ];
+  var TITLE_GLINTS = [[-30, -22], [24, -12], [-8, 8], [28, 26], [-26, 20]];
+  var TITLE_BULBS = [
+    // [x, y, hue] in picture pixels (1536 x 864): the fairy lights on the tree and the garlands
+    [1364, 276, 45], [1412, 576, 350], [1487, 528, 45], [1376, 528, 200], [1328, 252, 45], [1402, 528, 120],
+    [1473, 445, 45], [1497, 416, 350], [1349, 307, 45], [1379, 327, 200], [1480, 370, 45], [1324, 528, 120],
+    [1385, 195, 45], [1412, 463, 350], [1307, 250, 45], [1337, 545, 45], [1460, 170, 200], [1400, 408, 45],
+    [1502, 373, 120], [1385, 311, 350], [1438, 351, 45], [1412, 488, 45], [1362, 557, 200], [1403, 228, 45],
+    [1428, 522, 350], [1394, 297, 45], [1461, 370, 120], [1340, 511, 45], [1365, 438, 200], [1458, 270, 45],
+    [1477, 266, 350], [1430, 207, 45], [1424, 414, 120], [1452, 483, 45],
+    [116, 47, 45], [154, 82, 45], [75, 19, 45], [108, 17, 45], [202, 108, 45], [85, 42, 45], [214, 82, 45],
+    [20, 13, 45], [136, 64, 45], [164, 103, 45],
+    [9, 187, 45], [23, 197, 45], [132, 232, 45], [108, 233, 45], [3, 202, 45], [100, 214, 45], [72, 200, 45], [55, 178, 45],
+  ];
+  // The title is typed on the screen, a line at a time. Each line is { fill: the box that hides the
+  // picture's own lettering, text: where its first letter sits, n: letters, w: one letter's width,
+  // y, h: the cursor's top and height } in picture pixels.
+  var TITLE_LINES = [
+    { fill: [412, 1155, 281, 370], x: 431, n: 16, w: 43.9, y: 293, h: 65 },
+    { fill: [585, 1010, 371, 450], x: 592, n: 9, w: 43.9, y: 378, h: 62 },
+    { fill: [398, 1168, 474, 541], x: 413, n: 31, w: 23.8, y: 481, h: 40 },
+  ];
+  var TITLE_SIZE = [1536, 864];
+  var TITLE_TYPE_DELAY = 0.5, TITLE_TYPE_STEP = 0.06, TITLE_TYPE_GAP = 0.14;
+  var titleTyped = false; // typed once per visit to the title screen
+
+  // Paint a box with part of the picture: stretched so the source columns [x, x + sw) of the
+  // picture fill a box bw wide (all in picture pixels), and the rows from y at its top, for a box
+  // bh high. Offsets are in cqw, units of the picture's width, so it tracks at every size.
+  function titlePaint(node, x, y, sw, bw, bh) {
+    var src = picture(TITLE_ART).getAttribute("src"), sx = bw / sw;
+    node.style.backgroundImage = "url(" + JSON.stringify(src) + ")";
+    node.style.backgroundSize = (TITLE_SIZE[0] * sx / bw * 100) + "% " + (TITLE_SIZE[1] / bh * 100) + "%";
+    node.style.backgroundPosition = (-x * sx / TITLE_SIZE[0] * 100) + "cqw " + (-y / TITLE_SIZE[0] * 100) + "cqw";
+    return node;
+  }
+
+  // One line of typing: a box that hides the picture's lettering with the screen on either side
+  // of it stretched across (so the scan lines carry on), the lettering uncovered a letter at a
+  // time, and a block cursor. Once the last line is typed the boxes fade, leaving the picture
+  // itself, and the cursor blinks.
+  function titleTyping() {
+    var parts = [], t = TITLE_TYPE_DELAY, W = TITLE_SIZE[0], H = TITLE_SIZE[1];
+    var end = t + TITLE_LINES.reduce(function (sum, l) { return sum + l.n * TITLE_TYPE_STEP + TITLE_TYPE_GAP; }, 0) - TITLE_TYPE_GAP;
+    TITLE_LINES.forEach(function (l, i) {
+      var x0 = l.fill[0], x1 = l.fill[1], y0 = l.fill[2], y1 = l.fill[3], bw = x1 - x0, bh = y1 - y0, strip = 4;
+      var dur = l.n * TITLE_TYPE_STEP, last = i === TITLE_LINES.length - 1;
+      function place(node, x, y, w, h) {
+        node.style.left = (x / W * 100) + "%";
+        node.style.top = (y / H * 100) + "%";
+        node.style.width = (w / W * 100) + "%";
+        node.style.height = (h / H * 100) + "%";
+        return node;
+      }
+      var fill = place(el("div", { class: "tl-fill" }, [
+        titlePaint(el("div", { class: "tl-edge" }), x0 - 5, y0, strip, bw, bh),
+        titlePaint(el("div", { class: "tl-edge tl-fade" }), x1 + 1, y0, strip, bw, bh),
+      ]), x0, y0, bw, bh);
+      fill.style.setProperty("--end", end.toFixed(2) + "s");
+      var type = place(titlePaint(el("div", { class: "tl-type" }), l.x, y0, l.n * l.w, l.n * l.w, bh), l.x, y0, l.n * l.w, bh);
+      type.style.setProperty("--n", l.n);
+      type.style.setProperty("--start", t.toFixed(2) + "s");
+      type.style.setProperty("--dur", dur.toFixed(2) + "s");
+      var cur = place(el("i", { class: "tl-cursor" + (last ? " tl-last" : "") }), l.x, l.y, l.w, l.h);
+      cur.style.setProperty("--n", l.n);
+      cur.style.setProperty("--start", t.toFixed(2) + "s");
+      cur.style.setProperty("--dur", dur.toFixed(2) + "s");
+      parts.push(fill, type, cur);
+      t += dur + TITLE_TYPE_GAP;
+    });
+    return parts;
+  }
+
+  function titleLights() {
+    // Set through the style object, not a style attribute, so a strict page can't block them.
+    function at(node, left, top, vars) {
+      node.style.left = left + "%";
+      node.style.top = top + "%";
+      Object.keys(vars || {}).forEach(function (k) { node.style.setProperty("--" + k, vars[k]); });
+      return node;
+    }
+    var lights = [];
+    TITLE_SPARKS.forEach(function (s, i) {
+      lights.push(at(el("i", { class: "tl-spark" }), s[0], s[1], { hue: s[2], i: i }));
+    });
+    TITLE_BULBS.forEach(function (b, i) {
+      lights.push(at(el("i", { class: "tl-bulb" }), b[0] / TITLE_SIZE[0] * 100, b[1] / TITLE_SIZE[1] * 100, { hue: b[2], i: i }));
+    });
+    lights.push(el("div", { class: "tl-ball" }, [el("i", { class: "tl-shimmer" })].concat(
+      TITLE_GLINTS.map(function (g, i) { return at(el("i", { class: "tl-glint" }), 50 + g[0], 50 + g[1], { i: i }); }))));
+    TITLE_DIGITS.forEach(function (d, i) {
+      lights.push(at(el("b", { class: "tl-digit", text: String(d[2]) }), d[0], d[1], { i: i }));
+    });
+    if (!titleTyped) lights = lights.concat(titleTyping());
+    titleTyped = true;
+    return el("div", { class: "title-lights", "aria-hidden": "true" }, lights);
+  }
+
   views.title = function () {
     var resume = state.chosen.length > 0;
     // The key art carries the title on its screen, so the lede and Start go under it.
     return el("section", { class: "title-view" }, el("div", { class: "title-art" }, [
-      picture(TITLE_ART),
+      el("div", { class: "title-pic" }, [picture(TITLE_ART), titleLights()]),
       el("div", { class: "title-text" }, [
         el("h1", { class: "sr-only" }, "The Defiant Jazz Incident"),
         el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
@@ -1001,6 +1111,7 @@
     hideSpot();
     keyNav = null;
     var view = views[state.view] ? state.view : "title";
+    if (view !== "title") titleTyped = false;
     main.replaceChildren(views[view]());
     music.follow(!!main.querySelector(".panel[data-music]"));
     var started = view !== "title" || state.chosen.length > 0;

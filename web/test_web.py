@@ -179,6 +179,16 @@ class SceneArtTest(unittest.TestCase):
         for name in (build.TITLE_ART, "portrait-agnes", "portrait-bertram", "portrait-clement"):
             self.assertIn(name, present)
 
+    def test_title_motion_is_off_for_reduced_motion(self):
+        # The title's lights move only for players who haven't asked for reduced motion.
+        css = read("style.css")
+        start = css.index(".title-lights { display: none;")
+        block = css[start:css.index("@keyframes tl-spin")]
+        before, _, moving = block.partition("@media (prefers-reduced-motion: no-preference)")
+        self.assertNotIn("animation", before)
+        self.assertIn("animation", moving)
+        self.assertIn("titleLights()", read("game.js"))
+
     def test_bundle_knows_each_picture(self):
         data = bundle_data()
         self.assertEqual(data["pictures"], {n: list(size) for n, size in build.IMAGES.items()})
