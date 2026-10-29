@@ -36,14 +36,13 @@
   // Examples only: the player asks whatever they like, in whichever AI they like. Each one points
   // at the case's data, so it works on its own, and shows off something Assistant can do.
   // The loader can move the data to just before the load, so these avoid clock times.
-  var DATA = "Using the Kipsake data in this stack, ";
+  var DATA = "Using the Kipsake data in this stack from the last 30 days, ";
   var QUESTIONS = [
     ["Ask for a verdict", DATA + "during a five-minute power outage on the night shift, Night Supervisor " +
       "Mr. Hale was killed in the elevator. Who killed Mr. Hale? Name one person, your confidence, and " +
       "the records behind it."],
-    ["Build a page", DATA + "create a page with an interactive map of the Kipsake Sleep Floor and a " +
-      "timeline slider across the power outage, showing where each badge was and what the microphones " +
-      "heard at each moment."],
+    ["Make a table", DATA + "make a table of where Agnes, Bertram and Clement were during the power " +
+      "outage, in order, with what the microphones heard in each place."],
     ["Make a graph", DATA + "graph Mr. Hale's heart rate against the badge movements of Agnes, Bertram " +
       "and Clement during the power outage, on one chart."],
   ];
@@ -803,7 +802,7 @@
         el("h3", { id: "h-inv" }, n < LEADS ? leadsLeft() + " of " + LEADS + " leads left" : "All three leads followed"),
         leadTrack(),
         el("p", { class: "note" }, n < LEADS
-          ? "Follow up your leads in order, whenever you like. Each time, you pick one of three options and see only that one."
+          ? "Follow up your leads in order, whenever you like. Each time, you pick one of three options and see only that one. The other two stay closed for this game."
           : "You've followed up all three leads. When you're ready, accuse the killer."),
         n < LEADS ? el("div", { class: "actions" }, [
           iconButton(LEAD_ICONS[n], "Investigate lead " + (n + 1) + ": " + C.leadKinds[n], investigate, "btn-primary"),
@@ -929,7 +928,7 @@
         el("div", { class: "console-body" }, [
           heading(leadTitle(n)),
           cardBody(d.prompt),
-          el("p", { class: "legend", id: "lead-legend" }, "Choose one. You'll see only the one you pick."),
+          el("p", { class: "legend", id: "lead-legend" }, "One only. The other two stay closed for this game, and your choice is final."),
           group,
           error,
           framebar([button("Decide later", function () { go("hub"); announce("No rush. Investigate when you're ready."); }, "btn-quiet-console")],

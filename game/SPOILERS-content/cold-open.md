@@ -17,7 +17,7 @@ In the morning, you wake up rested, paid, and remembering nothing at all.
 And don't worry: our lullaby keeps you sound asleep all night long.
 **Kipsake. Earn while you sleep.**
 Happy holidays from Kipsake.
-Sweet dreams, Dreamers.
+Join our team of Dreamers in time for the holidays.
 
 ## The Defiant Jazz Incident
 **We need your help to solve a murder.**

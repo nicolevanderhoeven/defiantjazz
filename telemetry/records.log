@@ -43,3 +43,19 @@ personnel id=hale name="Mr. Hale" role="Night Supervisor" sleepwalker=false
 === CALENDAR (night of 2026-10-07) ===
 2026-10-07T21:15:00 calendar owner=hale title="1:1 Bertram"
 2026-10-08T03:00:00 calendar owner=hale title="Cocoa Hour supervision (DSO holiday party)"
+
+=== COCOA HOUR SEATING PLAN (Facilities, Break Room 2) ===
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=1 position="head of the table, by the cocoa urn" assigned=hale
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=2 position="chair by the window" assigned=agnes
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=3 position="chair by the door" assigned=bertram
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=4 position="chair by the speaker" assigned=clement
+
+=== COCOA HOUR FESTIVE-WEAR REGISTER (Facilities, logged at the Break Room 2 door) ===
+2026-10-08T02:58:40 festive-wear employee=agnes item="oatmeal cardigan" colours="oatmeal" pattern=none
+2026-10-08T02:58:52 festive-wear employee=bertram item="reindeer jumper" colours="green, red, white" pattern=reindeer
+2026-10-08T02:59:05 festive-wear employee=clement item="Christmas sweater" colours="navy, blue, red, orange, green, white" pattern="stripes and squares"
+2026-10-08T02:59:30 festive-wear employee=hale item="charcoal suit jacket and tie" colours="charcoal" pattern=none
+
+=== PROCEDURE REVISION LOG ===
+procedure-revision id=114 title="Sleepwalker night-shift procedure, revision 114" status=approved approved_by=hale approved_in=February
+procedure-revision id=114 status=withdrawn withdrawn_in=March reason="following a sleepwalker fatality"

@@ -33,7 +33,7 @@ them when the picture lands, by looking at it.
 
 ## The flyer
 card: Kipsake
-source: d466dca6
+source: 28db60c2
 image: flyer-kipsake
 (drawn) > KIPSAKE
 (drawn) > WE RENT YOUR SLEEP
@@ -42,7 +42,7 @@ image: flyer-kipsake
 (drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.
 (drawn) > Wake rested, paid, and remembering nothing.
 (drawn) > Our lullaby keeps you asleep.
-(drawn) > Sweet dreams, Dreamers.
+(drawn) > Join our team of Dreamers in time for the holidays.
 
 ## The incident
 card: The Defiant Jazz Incident
@@ -95,8 +95,7 @@ at: 94, 37
 The floor's holiday party: hot cocoa from the urn and a break to sit together.
 
 ## The power cut
-image: scene-break-room
-dim: yes
+image: scene-power-cut
 music: yes
 where: Sleep Floor · 03:02
 headline: The power went out.
@@ -187,24 +186,23 @@ Folded in his lap. His hands are clean.
 
 ## The Gazette
 card: Outside World handout
-source: 64da3e8d
+source: a034636a
 image: scene-outside-world
 These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.
 (drawn) > **Port Quiet Gazette · Obituaries**
 (drawn) > **June, 41.** June died suddenly in March in what her employer, Kipsake, has described as a workplace incident. She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.
 (drawn) > **Port Quiet Gazette · Local**
-(drawn) > **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal Procedure Revision 114 was withdrawn after the death of a sleepwalker in March. Records obtained by the Gazette show the revision was approved by night supervisor R. Hale. Kipsake declined to comment further.
+(drawn) > **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal Procedure Revision 114 was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.
 
 ## The evidence
 card: Elevator car 1
-source: 1fbafcfc
+source: 08ac282a
 image: scene-elevator-evidence
 [Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]
 (drawn) > 03:09 · Elevator car 1
 (drawn) > 1 · Ligature. Recovered from Agnes's hands.
 (drawn) > 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.
 (drawn) > 3 · Found in the victim's closed right hand. Not from his own clothing.
-(drawn) > Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby.
 (drawn) > Corridor E and lobby compliance mics ran on emergency power.
 
 ## Marker 1
@@ -247,28 +245,28 @@ Clement sits on the floor beside the chair, in his Christmas sweater, wearing hi
 
 ## The waffle
 card: Supply Room B
-source: 9eae6fd9
+source: 415530e4
 image: scene-supply-room
 [Floor Security's evidence, already laid out on a dark cloth, filmed from above.]
 (drawn) > SR-B-03 · unregistered appliance (waffle iron) · confiscated
 (drawn) > KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM
-(drawn) > Supply Room B · 03:18. Circuit C-7: Break Room 2 cocoa urn and lights, Supply Room B. Overload. Main breaker tripped, 03:02:00.
+(drawn) > Supply Room B · 03:18. The waffle iron's cycle timer: started 03:01:47, never finished. Circuit C-7: Break Room 2 cocoa urn and lights, Supply Room B. Overload. Main breaker tripped, 03:02:00.
 
 ## The bag
 at: 28, 46
 An evidence bag holding a pale, half-cooked waffle.
 
-## Peggy
+## Agnes's waking self
 card: Agnes at home
-source: 965d6d35
+source: 76b48427
 image: scene-agnes-home
-At home, Agnes goes by Peggy. Her waking self, Peggy, sits on the same chair. No lanyard.
-You: Peggy? You were there last night.
-(drawn) > 06:40 · Port Quiet · Peggy's flat
-(drawn) Peggy: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.
+Agnes's waking self sits on the same chair. No lanyard.
+You: Agnes? You were there last night.
+(drawn) > 06:40 · Port Quiet · Agnes's flat
+(drawn) Agnes: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.
 [She holds her bandaged wrist, arms wrapped around herself.]
 You: Anything else?
-(drawn) Peggy: This was in my pocket. It isn't mine.
+(drawn) Agnes: This was in my pocket. It isn't mine.
 
 ## Her wrist
 at: 34, 70
@@ -276,17 +274,17 @@ Her right wrist is in a crepe bandage.
 
 ## The napkin
 at: 40, 85
-A folded cloth napkin. On one corner, in laundry marker, a single block capital: "C".
+A folded cloth napkin. On one corner, in laundry marker, a single digit: "4".
 
 ## Bertram at home
 card: Bertram at home
-source: 5d5c0888
+source: 418b7417
 image: scene-bertram-home
 Bertram's waking self sits on the same chair. No lanyard.
 You: Bertram? You were on that floor last night.
 (drawn) > 06:40 · Port Quiet · Bertram's flat
 (drawn) Bertram: Someone trod on me in the dark. I grabbed at them.
-(drawn) Bertram: They said sorry. Called me 'Waffles'. Who's Waffles?
+(drawn) Bertram: They said sorry. Called me something, like a pet's name.
 [He looks puzzled.]
 
 ## His hand
@@ -299,7 +297,7 @@ He touches his right shoulder.
 
 ## Clement at home
 card: Clement at home
-source: 92ccf641
+source: f07d8521
 image: scene-clement-home
 where: Port Quiet · Clement's flat · 06:40
 headline: Clement
@@ -316,17 +314,14 @@ Clement's waking self, at home. No lanyard, but he's wearing the Christmas sweat
 
 ## The clipping
 at: 43, 87
-A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114. "R. Hale" is circled in red.
+A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.
 > PORT QUIET GAZETTE
 > … Procedure Revision 114 …
-> ( R. Hale )  ← circled in red
 
 ## The evacuation plan
 at: 55, 85
-A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red "You are here" dot is in Break Room 2. A route is drawn over it in pen: from Break Room 2, along corridor E, to the elevator, which is circled.
+A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red "You are here" dot is in Break Room 2.
 > ● You are here: Break Room 2
->   ↓  corridor E, in pen
-> ( the elevator )  ← circled
 
 ## The photo
 at: 65, 85
@@ -367,7 +362,7 @@ image: portrait-bertram-push
 
 ## Clement pushed
 card: Clement
-source: 1bb6e8d0
+source: d2aa1425
 image: portrait-clement-push
 [Clement, wearing his lanyard and Christmas sweater, with a clipboard and a Kipsake "Incident Statement" form.]
 (drawn) > 04:30 · Kipsake · Clement
@@ -375,7 +370,7 @@ You: For the record, Clement. In your own hand. What did you do after the lights
 [He writes without speaking, in block capitals, line by line:]
 (drawn) > KIPSAKE · INCIDENT STATEMENT
 (drawn) > 03:07 LIGHTS RETURNED. I WAS SEATED BY THE SPEAKER.
-(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON WAFFLES (SHOULDER).
+(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON BERTRAM (SHOULDER).
 (drawn) > I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.
 [The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment.]
 (drawn) Clement: Is that all?

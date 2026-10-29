@@ -4,7 +4,7 @@ Source: "Defiant Jazz - Clue Map.md", "The vote prompts" (Decision 3) and "Decis
 -->
 
 # Decision 3 · Push one sleepwalker
-prompt: Kipsake wants a name before dawn, when the shift wakes up. There's time for one more interview. Who do you push?
+prompt: Kipsake wants a name before dawn, when the shift wakes up. There's time for one more interview. Who do you push? You can choose only one. The other two stay closed for this game, and your choice is final.
 
 ## Agnes
 option: Agnes
@@ -44,7 +44,7 @@ aliases: clement, c
 You: For the record, Clement. In your own hand. What did you do after the lights came back?
 [He writes without speaking. What he writes on the form, in block capitals, line by line:]
 > 03:07 Lights returned. I was seated by the speaker.
-> I went to the corridor and checked on Waffles (shoulder).
+> I went to the corridor and checked on Bertram (shoulder).
 > I hope ~~Peggy~~ Agnes is being looked after.
 [The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. His hands are clean. He holds out the clipboard to you.]
 Clement: Is that all?

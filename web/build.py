@@ -73,6 +73,7 @@ IMAGES = {
     "title-splash": (1536, 864),
     "flyer-kipsake": (800, 1200),
     "scene-break-room": (1200, 400),
+    "scene-power-cut": (1050, 700),
     "scene-3-elevator": (1086, 364),
     "portrait-agnes": (1200, 400),
     "portrait-bertram": (1200, 400),

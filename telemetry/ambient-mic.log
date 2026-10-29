@@ -20,6 +20,7 @@
 2026-10-08T03:03:36 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.37 clock=LOST est_error_s=±90 ts_basis=uptime text="What is this place" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:37 source=ambient-mic zone=hush-room speaker=unknown confidence=0.37 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:38 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.66 clock=LOST est_error_s=±90 ts_basis=uptime text="There's a light, there's a light over there" ingested_at=2026-10-08T03:07:41
+2026-10-08T03:03:38 source=ambient-mic zone=elevator-lobby speaker=unknown confidence=0.84 clock=LOST est_error_s=±90 ts_basis=uptime text="[screaming]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:39 source=ambient-mic zone=break-room-2 speaker=unknown confidence=0.61 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:40 source=ambient-mic zone=break-room-2 speaker=unknown confidence=0.86 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:42 source=ambient-mic zone=break-room-2 speaker=unknown confidence=0.57 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
@@ -30,6 +31,8 @@
 2026-10-08T03:04:30 source=ambient-mic zone=dso-office speaker=unknown confidence=0.63 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:04:34 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.76 clock=LOST est_error_s=±90 ts_basis=uptime text="This is a dream. This is a dream." ingested_at=2026-10-08T03:07:41
 2026-10-08T03:04:57 source=ambient-mic zone=dso-office speaker=unknown confidence=0.88 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
+2026-10-08T03:05:09 source=ambient-mic zone=elevator-lobby speaker=unknown confidence=0.79 clock=LOST est_error_s=±90 ts_basis=uptime text="[screaming]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:05:27 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.53 clock=LOST est_error_s=±90 ts_basis=uptime text="Somebody turn on a light" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:06:40 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.38 clock=LOST est_error_s=±90 ts_basis=uptime text="What is this place" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:06:40 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.90 clock=LOST est_error_s=±90 ts_basis=uptime text="Is anyone there" ingested_at=2026-10-08T03:07:41
+2026-10-08T03:07:30 source=ambient-mic zone=elevator-lobby speaker=unknown confidence=0.91 clock=ok text="[shouting] Nobody move! Stay where you are!"

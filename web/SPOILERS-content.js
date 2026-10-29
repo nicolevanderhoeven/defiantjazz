@@ -18,7 +18,7 @@ window.DJ_CONTENT = {
  ],
  "advert": {
   "title": "Kipsake",
-  "body": "[A Kipsake advert. A presenter smiles at the camera.]\nHi! I'm with Kipsake.\nYou work hard all day. So why should your nights go to waste?\nAt Kipsake, we rent your sleep.\nEach night, you check in, settle into your pod, and drift off.\nYour sleepwalking self works the night shift for you.\nIn the morning, you wake up rested, paid, and remembering nothing at all.\nAnd don't worry: our lullaby keeps you sound asleep all night long.\n**Kipsake. Earn while you sleep.**\nHappy holidays from Kipsake.\nSweet dreams, Dreamers.",
+  "body": "[A Kipsake advert. A presenter smiles at the camera.]\nHi! I'm with Kipsake.\nYou work hard all day. So why should your nights go to waste?\nAt Kipsake, we rent your sleep.\nEach night, you check in, settle into your pod, and drift off.\nYour sleepwalking self works the night shift for you.\nIn the morning, you wake up rested, paid, and remembering nothing at all.\nAnd don't worry: our lullaby keeps you sound asleep all night long.\n**Kipsake. Earn while you sleep.**\nHappy holidays from Kipsake.\nJoin our team of Dreamers in time for the holidays.",
   "meta": {
    "style": "advert"
   }
@@ -48,17 +48,17 @@ window.DJ_CONTENT = {
  ],
  "outsideWorld": {
   "title": "Outside World handout",
-  "body": "*These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.*\n\n**Port Quiet Gazette · Obituaries**\n\n**June, 41.** June died suddenly in March in what her employer, Kipsake, has described as \"a workplace incident.\" She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n\n**Port Quiet Gazette · Local**\n\n**Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal \"Procedure Revision 114\" was withdrawn after the death of a sleepwalker in March. Records obtained by the Gazette show the revision was approved by night supervisor R. Hale. Kipsake declined to comment further.",
+  "body": "*These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.*\n\n**Port Quiet Gazette · Obituaries**\n\n**June, 41.** June died suddenly in March in what her employer, Kipsake, has described as \"a workplace incident.\" She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n\n**Port Quiet Gazette · Local**\n\n**Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal \"Procedure Revision 114\" was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.",
   "meta": {}
  },
  "decisions": [
   {
    "title": "Decision 1 · Check a scene",
-   "prompt": "Floor Security has sealed off three places. Before the shift wakes up, there's time to look at the evidence from one of them. Which one?",
+   "prompt": "Floor Security has sealed off three places. Before the shift wakes up, there's time to look at the evidence from one of them. Which one? You can choose only one. The other two stay closed for this game, and your choice is final.",
    "options": [
     {
      "title": "Elevator car 1",
-     "body": "[Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]\n[Marker 1: a grey cable in an evidence bag.]\n[Marker 2: three folded notes.]\n[Marker 3: a small evidence bag holding a loose twist of five or six yarn threads, in navy, blue, red, orange, green and white.]\n[A text card stays on screen for the whole shot:]\n> 03:09 · Elevator car 1, as found.\n> 1 · Ligature. Recovered from Agnes's hands.\n> 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.\n> 3 · Found in the victim's closed right hand. Not from his own clothing.\n> Mr. Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby. The corridor E and lobby compliance mics ran on emergency power.\n[Close-up of marker 3 in daylight, on a plain light surface: the twist of yarn threads, every colour clear.]",
+     "body": "[Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]\n[Marker 1: a grey cable in an evidence bag.]\n[Marker 2: three folded notes.]\n[Marker 3: a small evidence bag holding a loose twist of five or six yarn threads, in navy, blue, red, orange, green and white.]\n[A text card stays on screen for the whole shot:]\n> 03:09 · Elevator car 1, as found.\n> 1 · Ligature. Recovered from Agnes's hands.\n> 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.\n> 3 · Found in the victim's closed right hand. Not from his own clothing.\n> The corridor E and lobby compliance mics ran on emergency power.\n[Close-up of marker 3 in daylight, on a plain light surface: the twist of yarn threads, every colour clear.]",
      "meta": {
       "option": "Elevator car 1",
       "note": "Agnes says she woke up there",
@@ -76,7 +76,7 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Supply Room B",
-     "body": "[The evidence, already laid out on a dark cloth, filmed from above.]\n[An evidence bag holding a pale, half-cooked waffle, tagged \"SR-B-03 · unregistered appliance (waffle iron) · confiscated.\"]\n[Beside it, a printed certificate in a plastic sleeve: \"KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM\"]\n[A text card:]\n> Supply Room B · 03:18. Circuit C-7 (Break Room 2 cocoa urn and lights, Supply Room B): overload. Main breaker tripped, 03:02:00.",
+     "body": "[The evidence, already laid out on a dark cloth, filmed from above.]\n[An evidence bag holding a pale, half-cooked waffle, tagged \"SR-B-03 · unregistered appliance (waffle iron) · confiscated.\"]\n[Beside it, a printed certificate in a plastic sleeve: \"KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM\"]\n[A text card:]\n> Supply Room B · 03:18. The waffle iron's cycle timer: started 03:01:47, never finished. Circuit C-7 (Break Room 2 cocoa urn and lights, Supply Room B): overload. Main breaker tripped, 03:02:00.",
      "meta": {
       "option": "Supply Room B",
       "note": "Bertram says he was having cocoa",
@@ -87,20 +87,20 @@ window.DJ_CONTENT = {
   },
   {
    "title": "Decision 2 · The outside world",
-   "prompt": "Kipsake never questions anyone's waking self. But these three were awake on the floor when the lights went out. You can visit one of them at home in the morning. Whose door do you knock on?",
+   "prompt": "Kipsake never questions anyone's waking self. But these three were awake on the floor when the lights went out. You can visit one of them at home in the morning. Whose door do you knock on? You can choose only one. The other two stay closed for this game, and your choice is final.",
    "options": [
     {
      "title": "Agnes at home",
-     "body": "> 06:40 · Port Quiet · Peggy's flat\n[At home, Agnes goes by Peggy. Her waking self, Peggy, sits on the same chair. No lanyard. Her right wrist is in a crepe bandage. The camera is handheld: you're the investigator.]\nYou: Peggy? You were there last night.\nPeggy: A man grabbed my wrist. \"You can't be here.\" I ran.\n[She holds her bandaged wrist, arms wrapped around herself.]\nPeggy: When I came back, he wasn't moving.\nYou: Anything else?\nPeggy: This was in my pocket. It isn't mine.\n[She holds out a folded cloth napkin. Close-up: on one corner, in laundry marker, a single block capital: \"C\".]",
+     "body": "> 06:40 · Port Quiet · Agnes's flat\n[Agnes's waking self sits on the same chair. No lanyard. Her right wrist is in a crepe bandage. The camera is handheld: you're the investigator.]\nYou: Agnes? You were there last night.\nAgnes: A man grabbed my wrist. \"You can't be here.\" I ran.\n[She holds her bandaged wrist, arms wrapped around herself.]\nAgnes: When I came back, he wasn't moving.\nYou: Anything else?\nAgnes: This was in my pocket. It isn't mine.\n[She holds out a folded cloth napkin. Close-up: on one corner, in laundry marker, a single digit: \"4\".]",
      "meta": {
       "option": "Agnes at home",
-      "note": "at home, Agnes goes by Peggy",
+      "note": "Agnes's waking self",
       "aliases": "peggy, agnes, a"
      }
     },
     {
      "title": "Bertram at home",
-     "body": "> 06:40 · Port Quiet · Bertram's flat\n[Bertram's waking self sits on the same chair. No lanyard. The camera is handheld: you're the investigator.]\nYou: Bertram? You were on that floor last night.\nBertram: Someone trod on me in the dark. I grabbed at them.\n[He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece. Then he touches his right shoulder.]\nBertram: They said sorry. Called me \"Waffles\". Who's Waffles?\n[He looks puzzled.]",
+     "body": "> 06:40 · Port Quiet · Bertram's flat\n[Bertram's waking self sits on the same chair. No lanyard. The camera is handheld: you're the investigator.]\nYou: Bertram? You were on that floor last night.\nBertram: Someone trod on me in the dark. I grabbed at them.\n[He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece. Then he touches his right shoulder.]\nBertram: They said sorry. Called me something, like a pet's name.\n[He looks puzzled.]",
      "meta": {
       "option": "Bertram at home",
       "note": "Bertram's waking self",
@@ -109,7 +109,7 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Clement at home",
-     "body": "> 06:40 · Port Quiet · Clement's flat\n[Clement's waking self sits on the same chair. No lanyard, but he's wearing the Christmas sweater. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the investigator.]\nYou: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[Close-up: the open folder, lying flat, with three things inside.]\n[A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114. \"R. Hale\" is circled in red.]\n[A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2. A route is drawn over it in pen: from Break Room 2, along corridor E, to the elevator, which is circled.]\n[A photo of a woman standing by a lighthouse.]\nYou: We read about June.\nClement: Then you know everything I do.\n[He closes the folder and holds it against his chest.]",
+     "body": "> 06:40 · Port Quiet · Clement's flat\n[Clement's waking self sits on the same chair. No lanyard, but he's wearing the Christmas sweater. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the investigator.]\nYou: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[Close-up: the open folder, lying flat, with three things inside.]\n[A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.]\n[A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2.]\n[A photo of a woman standing by a lighthouse.]\nYou: We read about June.\nClement: Then you know everything I do.\n[He closes the folder and holds it against his chest.]",
      "meta": {
       "option": "Clement at home",
       "note": "Clement's waking self",
@@ -120,7 +120,7 @@ window.DJ_CONTENT = {
   },
   {
    "title": "Decision 3 · Push one sleepwalker",
-   "prompt": "Kipsake wants a name before dawn, when the shift wakes up. There's time for one more interview. Who do you push?",
+   "prompt": "Kipsake wants a name before dawn, when the shift wakes up. There's time for one more interview. Who do you push? You can choose only one. The other two stay closed for this game, and your choice is final.",
    "options": [
     {
      "title": "Agnes",
@@ -142,7 +142,7 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Clement",
-     "body": "> 04:30 · Kipsake · Interview\n[Clement sits on the chair, wearing his lanyard and Christmas sweater. On his lap is a clipboard with a Kipsake \"Incident Statement\" form.]\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking. What he writes on the form, in block capitals, line by line:]\n> 03:07 Lights returned. I was seated by the speaker.\n> I went to the corridor and checked on Waffles (shoulder).\n> I hope ~~Peggy~~ Agnes is being looked after.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. His hands are clean. He holds out the clipboard to you.]\nClement: Is that all?",
+     "body": "> 04:30 · Kipsake · Interview\n[Clement sits on the chair, wearing his lanyard and Christmas sweater. On his lap is a clipboard with a Kipsake \"Incident Statement\" form.]\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking. What he writes on the form, in block capitals, line by line:]\n> 03:07 Lights returned. I was seated by the speaker.\n> I went to the corridor and checked on Bertram (shoulder).\n> I hope ~~Peggy~~ Agnes is being looked after.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. His hands are clean. He holds out the clipboard to you.]\nClement: Is that all?",
      "meta": {
       "option": "Clement",
       "note": "ask him to write down what he did after the lights came back",
@@ -166,7 +166,7 @@ window.DJ_CONTENT = {
   "Kipsake": [
    {
     "image": "flyer-kipsake",
-    "body": "(drawn) > KIPSAKE\n(drawn) > WE RENT YOUR SLEEP\n(drawn) > Earn while you sleep.\n(drawn) > Happy holidays from Kipsake.\n(drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.\n(drawn) > Wake rested, paid, and remembering nothing.\n(drawn) > Our lullaby keeps you asleep.\n(drawn) > Sweet dreams, Dreamers.",
+    "body": "(drawn) > KIPSAKE\n(drawn) > WE RENT YOUR SLEEP\n(drawn) > Earn while you sleep.\n(drawn) > Happy holidays from Kipsake.\n(drawn) > Check in. Drift off. Your sleepwalking self takes the night shift.\n(drawn) > Wake rested, paid, and remembering nothing.\n(drawn) > Our lullaby keeps you asleep.\n(drawn) > Join our team of Dreamers in time for the holidays.",
     "hotspots": []
    }
   ],
@@ -236,13 +236,12 @@ window.DJ_CONTENT = {
     "headline": "The Cocoa Hour."
    },
    {
-    "image": "scene-break-room",
+    "image": "scene-power-cut",
     "body": "The emergency speakers came on, but instead of the lullaby, they played jazz.\nThe jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.",
     "hotspots": [],
     "where": "Sleep Floor · 03:02",
     "headline": "The power went out.",
     "sound": "♪ Jazz on the emergency speakers",
-    "dim": true,
     "music": true
    },
    {
@@ -324,14 +323,14 @@ window.DJ_CONTENT = {
   "Outside World handout": [
    {
     "image": "scene-outside-world",
-    "body": "These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.\n(drawn) > **Port Quiet Gazette · Obituaries**\n(drawn) > **June, 41.** June died suddenly in March in what her employer, Kipsake, has described as a workplace incident. She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n(drawn) > **Port Quiet Gazette · Local**\n(drawn) > **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal Procedure Revision 114 was withdrawn after the death of a sleepwalker in March. Records obtained by the Gazette show the revision was approved by night supervisor R. Hale. Kipsake declined to comment further.",
+    "body": "These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.\n(drawn) > **Port Quiet Gazette · Obituaries**\n(drawn) > **June, 41.** June died suddenly in March in what her employer, Kipsake, has described as a workplace incident. She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n(drawn) > **Port Quiet Gazette · Local**\n(drawn) > **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal Procedure Revision 114 was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.",
     "hotspots": []
    }
   ],
   "Elevator car 1": [
    {
     "image": "scene-elevator-evidence",
-    "body": "[Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]\n(drawn) > 03:09 · Elevator car 1\n(drawn) > 1 · Ligature. Recovered from Agnes's hands.\n(drawn) > 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.\n(drawn) > 3 · Found in the victim's closed right hand. Not from his own clothing.\n(drawn) > Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby.\n(drawn) > Corridor E and lobby compliance mics ran on emergency power.",
+    "body": "[Floor Security's evidence, already laid out on a dark cloth, filmed from above. Three numbered markers.]\n(drawn) > 03:09 · Elevator car 1\n(drawn) > 1 · Ligature. Recovered from Agnes's hands.\n(drawn) > 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.\n(drawn) > 3 · Found in the victim's closed right hand. Not from his own clothing.\n(drawn) > Corridor E and lobby compliance mics ran on emergency power.",
     "hotspots": [
      {
       "label": "Marker 1",
@@ -389,7 +388,7 @@ window.DJ_CONTENT = {
   "Supply Room B": [
    {
     "image": "scene-supply-room",
-    "body": "[Floor Security's evidence, already laid out on a dark cloth, filmed from above.]\n(drawn) > SR-B-03 · unregistered appliance (waffle iron) · confiscated\n(drawn) > KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM\n(drawn) > Supply Room B · 03:18. Circuit C-7: Break Room 2 cocoa urn and lights, Supply Room B. Overload. Main breaker tripped, 03:02:00.",
+    "body": "[Floor Security's evidence, already laid out on a dark cloth, filmed from above.]\n(drawn) > SR-B-03 · unregistered appliance (waffle iron) · confiscated\n(drawn) > KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM\n(drawn) > Supply Room B · 03:18. The waffle iron's cycle timer: started 03:01:47, never finished. Circuit C-7: Break Room 2 cocoa urn and lights, Supply Room B. Overload. Main breaker tripped, 03:02:00.",
     "hotspots": [
      {
       "label": "The bag",
@@ -403,7 +402,7 @@ window.DJ_CONTENT = {
   "Agnes at home": [
    {
     "image": "scene-agnes-home",
-    "body": "At home, Agnes goes by Peggy. Her waking self, Peggy, sits on the same chair. No lanyard.\nYou: Peggy? You were there last night.\n(drawn) > 06:40 · Port Quiet · Peggy's flat\n(drawn) Peggy: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.\n[She holds her bandaged wrist, arms wrapped around herself.]\nYou: Anything else?\n(drawn) Peggy: This was in my pocket. It isn't mine.",
+    "body": "Agnes's waking self sits on the same chair. No lanyard.\nYou: Agnes? You were there last night.\n(drawn) > 06:40 · Port Quiet · Agnes's flat\n(drawn) Agnes: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.\n[She holds her bandaged wrist, arms wrapped around herself.]\nYou: Anything else?\n(drawn) Agnes: This was in my pocket. It isn't mine.",
     "hotspots": [
      {
       "label": "Her wrist",
@@ -415,7 +414,7 @@ window.DJ_CONTENT = {
       "label": "The napkin",
       "x": 40,
       "y": 85,
-      "body": "A folded cloth napkin. On one corner, in laundry marker, a single block capital: \"C\"."
+      "body": "A folded cloth napkin. On one corner, in laundry marker, a single digit: \"4\"."
      }
     ]
    }
@@ -423,7 +422,7 @@ window.DJ_CONTENT = {
   "Bertram at home": [
    {
     "image": "scene-bertram-home",
-    "body": "Bertram's waking self sits on the same chair. No lanyard.\nYou: Bertram? You were on that floor last night.\n(drawn) > 06:40 · Port Quiet · Bertram's flat\n(drawn) Bertram: Someone trod on me in the dark. I grabbed at them.\n(drawn) Bertram: They said sorry. Called me 'Waffles'. Who's Waffles?\n[He looks puzzled.]",
+    "body": "Bertram's waking self sits on the same chair. No lanyard.\nYou: Bertram? You were on that floor last night.\n(drawn) > 06:40 · Port Quiet · Bertram's flat\n(drawn) Bertram: Someone trod on me in the dark. I grabbed at them.\n(drawn) Bertram: They said sorry. Called me something, like a pet's name.\n[He looks puzzled.]",
     "hotspots": [
      {
       "label": "His hand",
@@ -455,13 +454,13 @@ window.DJ_CONTENT = {
       "label": "The clipping",
       "x": 43,
       "y": 87,
-      "body": "A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114. \"R. Hale\" is circled in red.\n> PORT QUIET GAZETTE\n> … Procedure Revision 114 …\n> ( R. Hale )  ← circled in red"
+      "body": "A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.\n> PORT QUIET GAZETTE\n> … Procedure Revision 114 …"
      },
      {
       "label": "The evacuation plan",
       "x": 55,
       "y": 85,
-      "body": "A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2. A route is drawn over it in pen: from Break Room 2, along corridor E, to the elevator, which is circled.\n> ● You are here: Break Room 2\n>   ↓  corridor E, in pen\n> ( the elevator )  ← circled"
+      "body": "A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2.\n> ● You are here: Break Room 2"
      },
      {
       "label": "The photo",
@@ -504,7 +503,7 @@ window.DJ_CONTENT = {
   "Clement": [
    {
     "image": "portrait-clement-push",
-    "body": "[Clement, wearing his lanyard and Christmas sweater, with a clipboard and a Kipsake \"Incident Statement\" form.]\n(drawn) > 04:30 · Kipsake · Clement\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking, in block capitals, line by line:]\n(drawn) > KIPSAKE · INCIDENT STATEMENT\n(drawn) > 03:07 LIGHTS RETURNED. I WAS SEATED BY THE SPEAKER.\n(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON WAFFLES (SHOULDER).\n(drawn) > I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment.]\n(drawn) Clement: Is that all?",
+    "body": "[Clement, wearing his lanyard and Christmas sweater, with a clipboard and a Kipsake \"Incident Statement\" form.]\n(drawn) > 04:30 · Kipsake · Clement\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking, in block capitals, line by line:]\n(drawn) > KIPSAKE · INCIDENT STATEMENT\n(drawn) > 03:07 LIGHTS RETURNED. I WAS SEATED BY THE SPEAKER.\n(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON BERTRAM (SHOULDER).\n(drawn) > I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment.]\n(drawn) Clement: Is that all?",
     "hotspots": [
      {
       "label": "His hand",
@@ -532,6 +531,10 @@ window.DJ_CONTENT = {
   "scene-break-room": [
    1200,
    400
+  ],
+  "scene-power-cut": [
+   1050,
+   700
   ],
   "scene-3-elevator": [
    1086,
@@ -595,5 +598,5 @@ window.DJ_CONTENT = {
   ]
  },
  "toCome": [],
- "reveal": "W3sidGl0bGUiOiAiWW91IG5hbWVkIENsZW1lbnQiLCAiYm9keSI6ICIqKllvdSdyZSByaWdodC4qKiBDbGVtZW50IGtpbGxlZCBNci4gSGFsZS4iLCAibWV0YSI6IHsiZm9yIjogImNsZW1lbnQifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEFnbmVzIiwgImJvZHkiOiAiKipUaGF0J3MgdGhlIEFJJ3MgYW5zd2VyLCBhbmQgaXQncyB0aGUgbWlzdGFrZSB0aGUgY2FzZSBpcyBidWlsdCBhcm91bmQuKiogQWduZXMgaXMgdGhlIHJlYXNvbiBldmVyeW9uZSB3b2tlIHVwLCBidXQgc2hlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYWduZXMifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEJlcnRyYW0iLCAiYm9keSI6ICIqKk5vdCBxdWl0ZS4qKiBCZXJ0cmFtJ3Mgd2FmZmxlIGlyb24gY2F1c2VkIHRoZSBibGFja291dCBieSBhY2NpZGVudCwgYnV0IGhlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBJbiB0aGUgZGFyaywgaGUgd2FzIHRoZSBvbmUgc29tZW9uZSBzYWlkIHNvcnJ5IHRvLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYmVydHJhbSJ9fSwgeyJ0aXRsZSI6ICJOb3QgdGhlbSIsICJib2R5IjogIioqVGhhdCdzIG5vdCB3aG8gZGlkIGl0LioqIFRoZSBraWxsZXIgd2FzIENsZW1lbnQuIiwgIm1ldGEiOiB7ImZvciI6ICJvdGhlciJ9fSwgeyJ0aXRsZSI6ICJXaGF0IHJlYWxseSBoYXBwZW5lZCIsICJib2R5IjogIlRoYXQgbmlnaHQsIHRocmVlIHBlb3BsZSBoYWQgdGhyZWUgc2VwYXJhdGUgcGxhbnMuIE5vbmUgb2YgdGhlbSBrbmV3IGFib3V0IHRoZSBvdGhlcnMnIHBsYW5zLCBhbmQgbm9ib2R5IHBsYW5uZWQgdGhlIGJsYWNrb3V0LlxuXG4tICoqQWduZXMgd2FudHMgUGVnZ3kgdG8gZmluZCBoZXIgbm90ZXMuKiogQWduZXMsIHRoZSBzbGVlcHdhbGtlciwgaGlkZXMgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiwgUGVnZ3ksIGluIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZSBwYW5lbC4gVGhlIG5pZ2h0IGJlZm9yZSwgc2hlIGNoYW5nZXMgdGhlIGVtZXJnZW5jeSBzcGVha2VycycgZmFpbC1zYWZlIHRyYWNrIGZyb20gdGhlIGx1bGxhYnkgdG8gKkRlZmlhbnQgSmF6eiouIFRoZSBuZXh0IHRpbWUgdGhlIHBvd2VyIGdvZXMgb3V0LCB0aGUgamF6eiB3aWxsIHdha2UgUGVnZ3ksIHdobyB3aWxsIHdhbGsgdG93YXJkIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBsaWdodCBhbmQgZmluZCB0aGUgbm90ZXMuXG4tICoqQmVydHJhbSB3YW50cyBhIHdhZmZsZS4qKiBEdXJpbmcgdGhlIENvY29hIEhvdXIgaGUgc25lYWtzIG9mZiB0byB0aGUgc3VwcGx5IHJvb20gdG8gdXNlIGhpcyBiYW5uZWQgd2FmZmxlIGlyb24uIEl0IHRyaXBzIHRoZSBmbG9vcidzIG1haW4gYnJlYWtlci4gSXQncyBhbiBhY2NpZGVudC5cbi0gKipDbGVtZW50IHdhbnRzIEhhbGUgYWxvbmUuKiogQ2xlbWVudCBpcyAqbHVjaWQqOiBoZSdzIHRoZSBzYW1lIHBlcnNvbiBhdCB3b3JrIGFuZCBhdCBob21lLCBhbmQgcmVtZW1iZXJzIGJvdGggbGl2ZXMuIEhhbGUgc2lnbmVkIG9mZiBvbiB0aGUgcHJvY2VkdXJlIHRoYXQga2lsbGVkIENsZW1lbnQncyBzaXN0ZXIsIEp1bmUuIEEgY2hhdCBtZXNzYWdlIGZyb20gQmVydHJhbSB0b2xkIENsZW1lbnQgdGhhdCBIYWxlIHdvdWxkIHNsaXAgb2ZmIHRvIHRoZSBlbGV2YXRvciBkdXJpbmcgdGhlIENvY29hIEhvdXIsIHRoZSBmbG9vcidzIGhvbGlkYXkgcGFydHkuIFNvIENsZW1lbnQgd2FpdHMgZm9yIHRoZSBwYXJ0eS5cblxuQXQgMDM6MDIgdGhlIHRocmVlIHBsYW5zIGNvbGxpZGUuIFRoZSBicmVha2VyIHRyaXBzLCB0aGUgc3BlYWtlcnMgcGxheSAqRGVmaWFudCBKYXp6KiwgYW5kIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdha2VzIHVwIGFzIGEgc3RyYW5nZXIgaW4gdGhlIGRhcmsuIEV4Y2VwdCBDbGVtZW50LiBIZSdzIHN0aWxsIGhpbXNlbGYsIGFuZCBub3cgdGhlIGRhcmsgaGlkZXMgaGltLiBIZSBsZWF2ZXMgaGlzIGJhZGdlIG9uIHRoZSBjaGFpciBieSB0aGUgc3BlYWtlciwgd2hlcmUgdGhlIGphenogc2hha2VzIHRoZSBjaGFpciBzbyB0aGUgYmFkZ2UgbG9va3MgbGlrZSBzb21lb25lIHNpdHRpbmcgc3RpbGwsIGFuZCBmb2xsb3dzIFBlZ2d5IHRvd2FyZCB0aGUgZWxldmF0b3IncyBsaWdodC4gSW4gY29ycmlkb3IgRSBoZSB0cmVhZHMgb24gQmVydHJhbSdzIGRhemVkIHdha2luZyBzZWxmIChcIlNvcnJ5LCBXYWZmbGVzXCIpLiBBdCB0aGUgZWxldmF0b3IsIEhhbGUgZ3JhYnMgUGVnZ3kncyB3cmlzdCAoXCJZb3UgY2FuJ3QgYmUgaGVyZVwiKSB3aGlsZSBDbGVtZW50IHdhaXRzIGluIHRoZSBkYXJrIG9mIHRoZSBsb2JieS4gU2hlIHB1bGxzIGZyZWUgYW5kIHJ1bnMuIEhhbGUgcGlja3MgdXAgdGhlIGVsZXZhdG9yJ3MgZW1lcmdlbmN5IHBob25lLCBhbmQgc2Vjb25kcyBsYXRlciBDbGVtZW50IHdhbGtzIGluIGFuZCBzdHJhbmdsZXMgaGltLiBDbGVtZW50IGdvZXMgYmFjayB0byB0aGUgc3BlYWtlciBhbmQgcHV0cyBoaXMgYmFkZ2UgYmFjayBvbi4gUGVnZ3kgd2FuZGVycyBiYWNrIHRvd2FyZCB0aGUgbGlnaHQsIGZpbmRzIEhhbGUgYW5kIHB1bGxzIHRoZSBjYWJsZSBvZmYgaGlzIG5lY2suIEF0IDAzOjA3IHRoZSBwb3dlciBjb21lcyBiYWNrIGFuZCBldmVyeW9uZSBmYWxscyBhc2xlZXAgYWdhaW4uIEFnbmVzIHRoZSBzbGVlcHdhbGtlciBjb21lcyB0byBpbiB0aGUgZWxldmF0b3IsIGhvbGRpbmcgdGhlIGNhYmxlLiIsICJtZXRhIjogeyJmb3IiOiAiYWxsIn19LCB7InRpdGxlIjogIkhvdyBpdCdzIHNvbHZlZCIsICJib2R5IjogIioqVGhlIEFJIGRvZXMgdGhlIGhlYXZ5IGxpZnRpbmcuKiogSXQgcGllY2VzIHRoZSBibGFja291dCB0b2dldGhlciBmcm9tIGRhdGEgdGhhdCBhcnJpdmVkIGxhdGUuIEl0IGZpbmRzIHRoZSB3YWZmbGUgaXJvbiwgY2F0Y2hlcyBCZXJ0cmFtJ3MgbGllLCBmaW5kcyB0aGF0IEFnbmVzIGNoYW5nZWQgdGhlIGZhaWwtc2FmZSB0cmFjaywgYW5kIGFjY3VzZXMgaGVyLiAqKkl0J3MgcmlnaHQgdGhhdCBBZ25lcyB3b2tlIGV2ZXJ5b25lIHVwLCBhbmQgd3JvbmcgdGhhdCB3aG9ldmVyIHdva2UgZXZlcnlvbmUgdXAga2lsbGVkIEhhbGUuKipcblxuKipUaGUgaHVtYW4gbGVhcC4qKiBTb21lb25lIHNhaWQgXCJTb3JyeSwgV2FmZmxlc1wiIGluIHRoZSBkYXJrLCB3aGlsZSBldmVyeSBzbGVlcHdhbGtlciB3YXMgdGhlaXIgd2FraW5nIHNlbGYuIEEgd2FraW5nIHNlbGYgY2FuJ3QgcmVtZW1iZXIgd29yay4gU28gd2hvZXZlciBzYWlkIGl0IHdhcyBsdWNpZCwgYW5kIGtuZXcgQmVydHJhbSdzIG5pY2tuYW1lIGF0IHdvcmsuXG5cbi0gKipOb3QgQmVydHJhbToqKiBoZSdzIHRoZSBvbmUgYmVpbmcgYXBvbG9naXNlZCB0bywgYW5kIGhlIGFuc3dlcnMgbGlrZSBhIHN0cmFuZ2VyOiBcIk93LCB3aG8ncywgaGVsbG8/IEhFTExPP1wiXG4tICoqTm90IEFnbmVzOioqIHNoZSBpc24ndCBsdWNpZC4gU2hlIHdvdWxkbid0IG5lZWQgdG8gbGVhdmUgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiBpZiBoZXIgdHdvIHNlbHZlcyBzaGFyZWQgbWVtb3JpZXMuIEF0IHRoZSBlbGV2YXRvciBzaGUncyBQZWdneSwgc2hvdXRpbmcgaGVyIHdha2luZyBuYW1lLiBBbmQgUGVnZ3kgbmV2ZXIgcmVhZCB0aGUgbm90ZXMgYmVmb3JlIHRoYXQgbmlnaHQ6IHRoZXkgd2VyZSBzdGlsbCB0dWNrZWQgdW5vcGVuZWQgaW4gdGhlIHBob25lIHBhbmVsIHdoZW4gdGhleSB3ZXJlIGZvdW5kLiBXaGF0IHRoZSB3aG8ncy13aG8gbm90ZSBzYXlzLCBQZWdneSBkaWRuJ3Qga25vdy5cbi0gKipDbGVtZW50OioqIGhlJ3MgdGhlIG9uZSB3aG8gY2FsbHMgQmVydHJhbSBcIldhZmZsZXNcIi4gQW5kIGhpcyBvd24gaW50ZXJ2aWV3IGdpdmVzIGhpbSBhd2F5OiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3IuXCIgVGhhdCBzY3JlYW1pbmcgaGFwcGVuZWQgb25seSBpbiB0aGUgZGFyaywgYW5kIGEgc2xlZXB3YWxrZXIgc2hvdWxkbid0IHJlbWVtYmVyIHRoZSBkYXJrIGF0IGFsbC5cblxuKipDbGVhcmluZyBBZ25lcy4qKiBIZXIgYmFkZ2Ugam9sdHMgYXQgMDM6MDM6NTYgYXMgc2hlIHB1bGxzIGZyZWUuIEF0IDAzOjA0OjAxIEhhbGUgcGlja3MgdXAgdGhlIGVsZXZhdG9yJ3MgZW1lcmdlbmN5IHBob25lLiBOb2JvZHkgZG9lcyB0aGF0IHdoaWxlIHN0aWxsIGhvbGRpbmcgb24gdG8gc29tZW9uZS4gU28gdGhlIHN0cmFuZ2xpbmcgd2FzIGEgbmV3IGF0dGFjaywgYWZ0ZXIgc2hlJ2QgZ29uZS5cblxuKipUaGUgY2x1ZXMgb25seSBodW1hbnMgc2F3OioqXG5cbi0gKipUaGUgbmlja25hbWU6KiogQWduZXMncyB3aG8ncy13aG8gbm90ZSwgQmVydHJhbSdzIFwiQ2xlbWVudC4gJ0NoaWxsIG91dCwgV2FmZmxlcy4nIEhlJ3MgdGhlIG9ubHkgb25lIHdobyBjYWxscyBtZSB0aGF0XCIsIGFuZCBDbGVtZW50J3Mgb3duIFwiY2hlY2tlZCBvbiBXYWZmbGVzXCIuXG4tICoqVGhlIHNsaXA6KiogXCJTb21lb25lIHdhcyBzY3JlYW1pbmcgYnkgdGhlIGVsZXZhdG9yXCIsIGFuZCBcIlBlZ2d5XCIgY3Jvc3NlZCBvdXQgb24gaGlzIHdyaXR0ZW4gc3RhdGVtZW50OiBhIG5hbWUgdGhhdCB3YXMgb25seSBzaG91dGVkIGluIHRoZSBkYXJrLlxuLSAqKlRoZSBzd2VhdGVyOioqIHRoZSB5YXJuIHRocmVhZHMgaW4gSGFsZSdzIGNsb3NlZCBoYW5kIGFuZCBpbiBCZXJ0cmFtJ3MgaGFuZCBhdCBob21lIG1hdGNoIHRoZSBjb2xvdXJzIG9mIENsZW1lbnQncyBDaHJpc3RtYXMgc3dlYXRlci4gSGUgZGlkbid0IHN0YXkgYnkgdGhlIHNwZWFrZXIuXG4tICoqVGhlIG5hcGtpbjoqKiB0aGUgbmFwa2luIGZyb20gdGhlIGNoYWlyIGJ5IHRoZSBzcGVha2VyIGlzIG1hcmtlZCBcIkNcIi4gQ2xlbWVudCBpcyB0aGUgb25seSBDIG9uIHRoZSBmbG9vci5cbi0gKipUaGUgZm9sZGVyOioqIENsZW1lbnQncyBwaG90byBvZiB0aGUgZXZhY3VhdGlvbiBwbGFuLCB3aXRoIGhpcyByb3V0ZSB0byB0aGUgZWxldmF0b3IgZHJhd24gaW4gcGVuLCBhbmQgXCJSLiBIYWxlXCIgY2lyY2xlZCBvbiB0aGUgUHJvY2VkdXJlIFJldmlzaW9uIDExNCBjbGlwcGluZy5cbi0gKipUaGUgbW90aXZlOioqIEp1bmUncyBvYml0dWFyeSwgYW5kIEhhbGUncyBhcHByb3ZhbCBvZiBQcm9jZWR1cmUgUmV2aXNpb24gMTE0LlxuXG4+IFRoZSBBSSBhbnN3ZXJlZCBldmVyeSBxdWVzdGlvbi4gSXQgdG9vayBhIGh1bWFuIHRvIGtub3cgd2hpY2ggcXVlc3Rpb24gdG8gYXNrLiIsICJtZXRhIjogeyJmb3IiOiAiYWxsIn19XQ=="
+ "reveal": "W3sidGl0bGUiOiAiWW91IG5hbWVkIENsZW1lbnQiLCAiYm9keSI6ICIqKllvdSdyZSByaWdodC4qKiBDbGVtZW50IGtpbGxlZCBNci4gSGFsZS4iLCAibWV0YSI6IHsiZm9yIjogImNsZW1lbnQifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEFnbmVzIiwgImJvZHkiOiAiKipUaGF0J3MgdGhlIEFJJ3MgYW5zd2VyLCBhbmQgaXQncyB0aGUgbWlzdGFrZSB0aGUgY2FzZSBpcyBidWlsdCBhcm91bmQuKiogQWduZXMgaXMgdGhlIHJlYXNvbiBldmVyeW9uZSB3b2tlIHVwLCBidXQgc2hlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYWduZXMifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEJlcnRyYW0iLCAiYm9keSI6ICIqKk5vdCBxdWl0ZS4qKiBCZXJ0cmFtJ3Mgd2FmZmxlIGlyb24gY2F1c2VkIHRoZSBibGFja291dCBieSBhY2NpZGVudCwgYnV0IGhlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBJbiB0aGUgZGFyaywgaGUgd2FzIHRoZSBvbmUgc29tZW9uZSBzYWlkIHNvcnJ5IHRvLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYmVydHJhbSJ9fSwgeyJ0aXRsZSI6ICJOb3QgdGhlbSIsICJib2R5IjogIioqVGhhdCdzIG5vdCB3aG8gZGlkIGl0LioqIFRoZSBraWxsZXIgd2FzIENsZW1lbnQuIiwgIm1ldGEiOiB7ImZvciI6ICJvdGhlciJ9fSwgeyJ0aXRsZSI6ICJXaGF0IHJlYWxseSBoYXBwZW5lZCIsICJib2R5IjogIlRoYXQgbmlnaHQsIHRocmVlIHBlb3BsZSBoYWQgdGhyZWUgc2VwYXJhdGUgcGxhbnMuIE5vbmUgb2YgdGhlbSBrbmV3IGFib3V0IHRoZSBvdGhlcnMnIHBsYW5zLCBhbmQgbm9ib2R5IHBsYW5uZWQgdGhlIGJsYWNrb3V0LlxuXG4tICoqQWduZXMgd2FudHMgUGVnZ3kgdG8gZmluZCBoZXIgbm90ZXMuKiogQWduZXMsIHRoZSBzbGVlcHdhbGtlciwgaGlkZXMgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiwgUGVnZ3ksIGluIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZSBwYW5lbC4gVGhlIG5pZ2h0IGJlZm9yZSwgc2hlIGNoYW5nZXMgdGhlIGVtZXJnZW5jeSBzcGVha2VycycgZmFpbC1zYWZlIHRyYWNrIGZyb20gdGhlIGx1bGxhYnkgdG8gKkRlZmlhbnQgSmF6eiouIFRoZSBuZXh0IHRpbWUgdGhlIHBvd2VyIGdvZXMgb3V0LCB0aGUgamF6eiB3aWxsIHdha2UgUGVnZ3ksIHdobyB3aWxsIHdhbGsgdG93YXJkIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBsaWdodCBhbmQgZmluZCB0aGUgbm90ZXMuXG4tICoqQmVydHJhbSB3YW50cyBhIHdhZmZsZS4qKiBEdXJpbmcgdGhlIENvY29hIEhvdXIgaGUgc25lYWtzIG9mZiB0byB0aGUgc3VwcGx5IHJvb20gdG8gdXNlIGhpcyBiYW5uZWQgd2FmZmxlIGlyb24uIEl0IHRyaXBzIHRoZSBmbG9vcidzIG1haW4gYnJlYWtlci4gSXQncyBhbiBhY2NpZGVudC5cbi0gKipDbGVtZW50IHdhbnRzIEhhbGUgYWxvbmUuKiogQ2xlbWVudCBpcyAqbHVjaWQqOiBoZSdzIHRoZSBzYW1lIHBlcnNvbiBhdCB3b3JrIGFuZCBhdCBob21lLCBhbmQgcmVtZW1iZXJzIGJvdGggbGl2ZXMuIEhhbGUgc2lnbmVkIG9mZiBvbiB0aGUgcHJvY2VkdXJlIHRoYXQga2lsbGVkIENsZW1lbnQncyBzaXN0ZXIsIEp1bmUuIEEgY2hhdCBtZXNzYWdlIGZyb20gQmVydHJhbSB0b2xkIENsZW1lbnQgdGhhdCBIYWxlIHdvdWxkIHNsaXAgb2ZmIHRvIHRoZSBlbGV2YXRvciBkdXJpbmcgdGhlIENvY29hIEhvdXIsIHRoZSBmbG9vcidzIGhvbGlkYXkgcGFydHkuIFNvIENsZW1lbnQgd2FpdHMgZm9yIHRoZSBwYXJ0eS5cblxuQXQgMDM6MDIgdGhlIHRocmVlIHBsYW5zIGNvbGxpZGUuIFRoZSBicmVha2VyIHRyaXBzLCB0aGUgc3BlYWtlcnMgcGxheSAqRGVmaWFudCBKYXp6KiwgYW5kIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdha2VzIHVwIGFzIGEgc3RyYW5nZXIgaW4gdGhlIGRhcmsuIEV4Y2VwdCBDbGVtZW50LiBIZSdzIHN0aWxsIGhpbXNlbGYsIGFuZCBub3cgdGhlIGRhcmsgaGlkZXMgaGltLiBIZSBsZWF2ZXMgaGlzIGJhZGdlIG9uIHRoZSBjaGFpciBieSB0aGUgc3BlYWtlciwgd2hlcmUgdGhlIGphenogc2hha2VzIHRoZSBjaGFpciBzbyB0aGUgYmFkZ2UgbG9va3MgbGlrZSBzb21lb25lIHNpdHRpbmcgc3RpbGwsIGFuZCBmb2xsb3dzIFBlZ2d5IHRvd2FyZCB0aGUgZWxldmF0b3IncyBsaWdodC4gSW4gY29ycmlkb3IgRSBoZSB0cmVhZHMgb24gQmVydHJhbSdzIGRhemVkIHdha2luZyBzZWxmIChcIlNvcnJ5LCBXYWZmbGVzXCIpLiBBdCB0aGUgZWxldmF0b3IsIEhhbGUgZ3JhYnMgUGVnZ3kncyB3cmlzdCAoXCJZb3UgY2FuJ3QgYmUgaGVyZVwiKSB3aGlsZSBDbGVtZW50IHdhaXRzIGluIHRoZSBkYXJrIG9mIHRoZSBsb2JieS4gU2hlIHB1bGxzIGZyZWUgYW5kIHJ1bnMuIEhhbGUgcGlja3MgdXAgdGhlIGVsZXZhdG9yJ3MgZW1lcmdlbmN5IHBob25lLCBhbmQgc2Vjb25kcyBsYXRlciBDbGVtZW50IHdhbGtzIGluIGFuZCBzdHJhbmdsZXMgaGltLiBDbGVtZW50IGdvZXMgYmFjayB0byB0aGUgc3BlYWtlciBhbmQgcHV0cyBoaXMgYmFkZ2UgYmFjayBvbi4gUGVnZ3kgd2FuZGVycyBiYWNrIHRvd2FyZCB0aGUgbGlnaHQsIGZpbmRzIEhhbGUgYW5kIHB1bGxzIHRoZSBjYWJsZSBvZmYgaGlzIG5lY2suIEF0IDAzOjA3IHRoZSBwb3dlciBjb21lcyBiYWNrIGFuZCBldmVyeW9uZSBmYWxscyBhc2xlZXAgYWdhaW4uIEFnbmVzIHRoZSBzbGVlcHdhbGtlciBjb21lcyB0byBpbiB0aGUgZWxldmF0b3IsIGhvbGRpbmcgdGhlIGNhYmxlLiIsICJtZXRhIjogeyJmb3IiOiAiYWxsIn19LCB7InRpdGxlIjogIkhvdyBpdCdzIHNvbHZlZCIsICJib2R5IjogIioqTmVpdGhlciBzaWRlIGNhbiBzb2x2ZSBpdCBhbG9uZS4qKiBUaGUgQUkgaGFzIHJlYWQgb25seSBLaXBzYWtlJ3MgcmVjb3Jkcy4gWW91IGhhdmUgdGhlIGludGVydmlld3MsIHRoZSB0aHJlZSBsZWFkcyBhbmQgdGhlIGhhbmRvdXQgZnJvbSBvdXRzaWRlIEtpcHNha2UsIGFuZCBub25lIG9mIHRoZSBBSSdzIGRhdGEuIEV2ZXJ5IGNsdWUgYWdhaW5zdCBDbGVtZW50IGlzIHNwbGl0IGluIHR3bzogb25lIGhhbGYgaXMgaW4gdGhlIGNsaXBzLCBhbmQgdGhlIG90aGVyIGhhbGYgaXMgaW4gdGhlIHJlY29yZHMuIE5laXRoZXIgaGFsZiBwb2ludHMgYXQgYW55b25lIHVudGlsIHlvdSBwdXQgdGhlbSB0b2dldGhlci4gVGhlIHN3ZWF0ZXIgaXMgdGhlIG9uZSBjbHVlIHRoZSBjbGlwcyBuZWFybHkgc2V0dGxlIGJ5IGV5ZTsgdGhlIHJlY29yZHMgbWFrZSBpdCBjZXJ0YWluLlxuXG4qKk9uIGl0cyBvd24sIHRoZSBBSSBsYW5kcyBvbiBBZ25lcy4qKiBJdCBwaWVjZXMgdGhlIGJsYWNrb3V0IHRvZ2V0aGVyIGZyb20gZGF0YSB0aGF0IGFycml2ZWQgbGF0ZS4gSXQgZmluZHMgdGhlIHdhZmZsZSBpcm9uLCBjYXRjaGVzIEJlcnRyYW0ncyBsaWUsIGZpbmRzIHRoYXQgQWduZXMgY2hhbmdlZCB0aGUgZmFpbC1zYWZlIHRyYWNrLCBhbmQgYWNjdXNlcyBoZXIuICoqSXQncyByaWdodCB0aGF0IEFnbmVzIHdva2UgZXZlcnlvbmUgdXAsIGFuZCB3cm9uZyB0aGF0IHdob2V2ZXIgd29rZSBldmVyeW9uZSB1cCBraWxsZWQgSGFsZS4qKlxuXG4qKk9uIGl0cyBvd24sIHRoZSBjbGlwcyBsZWF2ZSB5b3UgZ3Vlc3NpbmcuKiogQSBuYXBraW4gbWFya2VkIFwiNFwiLCBhIG5hbWUgY3Jvc3NlZCBvdXQsIGEgbmlja25hbWUsIGEgc2lzdGVyJ3Mgb2JpdHVhcnkgYW5kIGFuIHVubWFya2VkIGZsb29yIHBsYW4gbWVhbiBub3RoaW5nIHVudGlsIHRoZSByZWNvcmRzIHNheSB3aG9zZSBzZWF0LCB3aG9zZSBuYW1lLCB3aGVyZSBhbmQgd2hlbi5cblxuKipUaGUgbGVhcCB0YWtlcyBib3RoLioqIFNvbWVvbmUgc2FpZCBcIlNvcnJ5LCBXYWZmbGVzXCIgaW4gdGhlIGRhcmssIHdoaWxlIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdhcyB0aGVpciB3YWtpbmcgc2VsZi4gQSB3YWtpbmcgc2VsZiBjYW4ndCByZW1lbWJlciB3b3JrLiBTbyB3aG9ldmVyIHNhaWQgaXQgd2FzIGx1Y2lkLCBhbmQga25ldyBCZXJ0cmFtJ3Mgbmlja25hbWUgYXQgd29yay4gVGhlIHJlY29yZHMgaG9sZCB0aGUgd29yZHMuIE9ubHkgdGhlIGNsaXBzIHNheSB3aG8gdXNlcyB0aGF0IG5hbWUuXG5cbi0gKipOb3QgQmVydHJhbToqKiBoZSdzIHRoZSBvbmUgYmVpbmcgYXBvbG9naXNlZCB0bywgYW5kIGhlIGFuc3dlcnMgbGlrZSBhIHN0cmFuZ2VyOiBcIk93LCB3aG8ncywgaGVsbG8/IEhFTExPP1wiXG4tICoqTm90IEFnbmVzOioqIHNoZSBpc24ndCBsdWNpZC4gU2hlIHdvdWxkbid0IG5lZWQgdG8gbGVhdmUgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiBpZiBoZXIgdHdvIHNlbHZlcyBzaGFyZWQgbWVtb3JpZXMuIEF0IHRoZSBlbGV2YXRvciBzaGUncyBQZWdneSwgc2hvdXRpbmcgaGVyIHdha2luZyBuYW1lLiBBbmQgUGVnZ3kgbmV2ZXIgcmVhZCB0aGUgbm90ZXMgYmVmb3JlIHRoYXQgbmlnaHQ6IHRoZXkgd2VyZSBzdGlsbCB0dWNrZWQgdW5vcGVuZWQgaW4gdGhlIHBob25lIHBhbmVsIHdoZW4gdGhleSB3ZXJlIGZvdW5kLiBXaGF0IHRoZSB3aG8ncy13aG8gbm90ZSBzYXlzLCBQZWdneSBkaWRuJ3Qga25vdy5cbi0gKipDbGVtZW50OioqIGhlJ3MgdGhlIG9uZSB3aG8gY2FsbHMgQmVydHJhbSBcIldhZmZsZXNcIi4gQW5kIGhpcyBvd24gaW50ZXJ2aWV3IGdpdmVzIGhpbSBhd2F5OiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3IuXCIgVGhlIG1pY3MgaGVhcmQgc2NyZWFtaW5nIHRoZXJlIG9ubHkgaW4gdGhlIGRhcmssIGZyb20gYWJvdXQgMDM6MDMgdG8gMDM6MDUuIEFmdGVyIHRoZSBsaWdodHMgY2FtZSBiYWNrLCB0aGUgb25seSBsb3VkIG1vbWVudCB3YXMgc2VjdXJpdHkgc2hvdXRpbmcgXCJOb2JvZHkgbW92ZSFcIiBhdCAwMzowNzozMC4gQSBzbGVlcHdhbGtlciBzaG91bGRuJ3QgcmVtZW1iZXIgdGhlIGRhcmsgYXQgYWxsLlxuXG4qKkNsZWFyaW5nIEFnbmVzLioqIENsaXBzOiBQZWdneSBzYXlzIGEgbWFuIGdyYWJiZWQgaGVyIHdyaXN0IGFuZCBzaGUgcmFuLiBSZWNvcmRzOiBoZXIgYmFkZ2Ugam9sdHMgYXQgMDM6MDM6NTYgYXMgc2hlIHB1bGxzIGZyZWUsIGFuZCBhdCAwMzowNDowMSBIYWxlIHBpY2tzIHVwIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZS4gTm9ib2R5IGRvZXMgdGhhdCB3aGlsZSBzdGlsbCBob2xkaW5nIG9uIHRvIHNvbWVvbmUuIFNvIHRoZSBzdHJhbmdsaW5nIHdhcyBhIG5ldyBhdHRhY2ssIGFmdGVyIHNoZSdkIGdvbmUuXG5cbioqVGhlIGNsdWVzLCBzcGxpdCBpbiB0d28uKiogRWFjaCByb3cgaGFzIGEgaGFsZiBvbmx5IHRoZSBjbGlwcyBob2xkIGFuZCBhIGhhbGYgb25seSB0aGUgcmVjb3JkcyBob2xkOlxuXG4tICoqVGhlIG5pY2tuYW1lLioqIENsaXBzOiBBZ25lcydzIHdobydzLXdobyBub3RlLCBhbmQgQmVydHJhbSdzIFwiQ2xlbWVudC4gJ0NoaWxsIG91dCwgV2FmZmxlcy4nIEhlJ3MgdGhlIG9ubHkgb25lIHdobyBjYWxscyBtZSB0aGF0LlwiIEF0IGhvbWUsIEJlcnRyYW0gb25seSBzYXlzIHRoZXkgXCJjYWxsZWQgbWUgc29tZXRoaW5nLCBsaWtlIGEgcGV0J3MgbmFtZS5cIiBSZWNvcmRzOiB0aGUgY29ycmlkb3IgRSBtaWNyb3Bob25lIGhvbGRzIHRoZSBleGFjdCB3b3JkcywgXCJTb3JyeSwgV2FmZmxlc1wiLCBkdXJpbmcgdGhlIG91dGFnZS4gTm90aGluZyBpbiB0aGUgcmVjb3JkcyBzYXlzIHdobyB1c2VzIHRoZSBuYW1lLlxuLSAqKlRoZSBzbGlwLioqIENsaXBzOiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3JcIiwgYW5kIFwiUGVnZ3lcIiBjcm9zc2VkIG91dCBvbiBoaXMgd3JpdHRlbiBzdGF0ZW1lbnQuIFJlY29yZHM6IHRoZSBzY3JlYW1pbmcgYXQgdGhlIGVsZXZhdG9yIHdhcyBvbmx5IGluIHRoZSBkYXJrLCBhbmQgXCJQZWdneVwiIHdhcyBhIG5hbWUgc2hvdXRlZCBvbmx5IGluIHRoZSBkYXJrIChBZ25lcydzIHByZWZlcnJlZCBuYW1lIGluIHRoZSBwZXJzb25uZWwgZmlsZSkuXG4tICoqVGhlIHN3ZWF0ZXIuKiogQ2xpcHM6IHRoZSB5YXJuIHRocmVhZHMgaW4gSGFsZSdzIGNsb3NlZCBoYW5kIGFuZCBpbiBCZXJ0cmFtJ3MgaGFuZCBhdCBob21lLCBpbiBuYXZ5LCBibHVlLCByZWQsIG9yYW5nZSwgZ3JlZW4gYW5kIHdoaXRlLCBhbmQgQ2xlbWVudCdzIG93biBuYXZ5IENocmlzdG1hcyBzd2VhdGVyIGluIHRob3NlIGNvbG91cnMsIG9uIGNhbWVyYSBpbiBoaXMgaW50ZXJ2aWV3IGFuZCBhdCB0aGUgcGFydHkuIFJlY29yZHM6IHRoZSBDb2NvYSBIb3VyIGZlc3RpdmUtd2VhciByZWdpc3RlciBuYW1lcyBlYWNoIHBlcnNvbidzIHN3ZWF0ZXIgYW5kIGNvbG91cnMgYXQgdGhlIHBhcnR5IGRvb3IsIGFuZCBvbmx5IENsZW1lbnQncyBtYXRjaGVzIChIYWxlIHdvcmUgYSBwbGFpbiBjaGFyY29hbCBzdWl0KS4gU28gdGhlIHRocmVhZHMgY2FtZSBmcm9tIENsZW1lbnQsIHdobyBkaWRuJ3Qgc3RheSBieSB0aGUgc3BlYWtlci4gVGhlIHRocmVhZHMgbmV2ZXIgYXBwZWFyIGluIHRoZSByZWNvcmRzLlxuLSAqKlRoZSBuYXBraW4uKiogQ2xpcHM6IFBlZ2d5IGZpbmRzIGEgbmFwa2luIG1hcmtlZCBcIjRcIiBpbiBoZXIgcG9ja2V0LCBhbmQgdGhlIEJyZWFrIFJvb20gY2FtZXJhIHNob3dzIGEgbmFwa2luIG9uIHRoZSBjaGFpciBieSB0aGUgc3BlYWtlci4gUmVjb3JkczogdGhlIENvY29hIEhvdXIgc2VhdGluZyBwbGFuIHB1dHMgc2VhdCA0LCB0aGUgY2hhaXIgYnkgdGhlIHNwZWFrZXIsIHdpdGggQ2xlbWVudC4gVGhlIG5hcGtpbiBuZXZlciBhcHBlYXJzIGluIHRoZSByZWNvcmRzLlxuLSAqKlRoZSByb3V0ZS4qKiBDbGlwczogQ2xlbWVudCdzIGZvbGRlciBob2xkcyBhIHBob3RvIG9mIHRoZSBldmFjdWF0aW9uIHBsYW4sIG1hcmtlZCBvbmx5IHdpdGggdGhlIFwiWW91IGFyZSBoZXJlXCIgZG90LiBSZWNvcmRzOiBIYWxlJ3MgdHJhY2UgcnVucyBCcmVhayBSb29tIDIsIGNvcnJpZG9yIEUsIGVsZXZhdG9yIGxvYmJ5LlxuLSAqKlRoZSBtb3RpdmUuKiogQ2xpcHM6IEp1bmUncyBvYml0dWFyeSBzYXlzIHNoZSBpcyBzdXJ2aXZlZCBieSBoZXIgYnJvdGhlciwgQ2xlbWVudCwgYW5kIENsZW1lbnQncyBmb2xkZXIgaG9sZHMgdGhlIFByb2NlZHVyZSBSZXZpc2lvbiAxMTQgY2xpcHBpbmcgYW5kIEp1bmUncyBwaG90by4gUmVjb3JkczogUi4gSGFsZSBhcHByb3ZlZCBQcm9jZWR1cmUgUmV2aXNpb24gMTE0LCBhbmQgaXQgd2FzIHdpdGhkcmF3biBhZnRlciBhIE1hcmNoIGRlYXRoLiBUaGUgcmVjb3JkcyBuZXZlciBtZW50aW9uIEp1bmUgb3IgQ2xlbWVudCdzIGZhbWlseS5cbi0gKipTdXBwbHkgUm9vbSBCLioqIENsaXBzOiB0aGUgd2FmZmxlIGlyb24sIHRoZSBHb2xkZW4gV2FmZmxlIGNlcnRpZmljYXRlIGFuZCB0aGUgaXJvbidzIGN5Y2xlIHRpbWVyLCBzdGFydGVkIGF0IDAzOjAxOjQ3LiBSZWNvcmRzOiBCZXJ0cmFtJ3MgYmFkZ2Ugd2VudCBpbiBhdCAwMzowMTo0NSBhbmQgdGhlIG91dGxldCBsb2dnZWQgdGhlIGxvYWQgYXQgMDM6MDE6NTgsIHNvIGhlIHdhcyBjb29raW5nIHdoZW4gdGhlIGJyZWFrZXIgdHJpcHBlZC5cblxuPiBUaGUgQUkgaGFkIHRoZSByZWNvcmRzIGFuZCB5b3UgaGFkIHRoZSBjbGlwcy4gSXQgdG9vayBib3RoIHRvIG5hbWUgdGhlIGtpbGxlci4iLCAibWV0YSI6IHsiZm9yIjogImFsbCJ9fV0="
 };

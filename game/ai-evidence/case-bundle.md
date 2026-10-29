@@ -33,7 +33,7 @@ Floor Security has named three persons of interest, all from DSO:
 | 04-metrics.md | Selected time series (CSV) |
 | 05-system-logs.md | Sleep rings, power, outlets, floor events, emergency speakers, elevator, cameras, security, medical |
 | 06-ambient-mic-transcripts.md | Ambient-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
-| 07-records.md | Personnel, detention, Hush Room notes, supervisor feedback, perks, keystroke drafts, calendar |
+| 07-records.md | Personnel, detention, Hush Room notes, supervisor feedback, perks, keystroke drafts, calendar, Cocoa Hour seating and festive wear, procedure revisions |
 
 ## Task
 
@@ -973,6 +973,7 @@ Kipsake ambient compliance microphones run on the emergency bus. They transcribe
 2026-10-08T03:03:35 source=ambient-mic zone=hush-room speaker=unknown confidence=0.87 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:36 source=ambient-mic zone=break-room-2 speaker=unknown confidence=0.37 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:38 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.66 clock=LOST est_error_s=±90 ts_basis=uptime text="There's a light, there's a light over there" ingested_at=2026-10-08T03:07:41
+2026-10-08T03:03:38 source=ambient-mic zone=elevator-lobby speaker=unknown confidence=0.84 clock=LOST est_error_s=±90 ts_basis=uptime text="[screaming]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:39 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.59 clock=LOST est_error_s=±90 ts_basis=uptime text="Somebody turn on a light" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:50 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.77 clock=LOST est_error_s=±90 ts_basis=uptime text="[yelp] Sorry, Waffles." ingested_at=2026-10-08T03:07:41
 2026-10-08T03:03:52 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.72 clock=LOST est_error_s=±90 ts_basis=uptime text="Ow, who's, hello? HELLO?" ingested_at=2026-10-08T03:07:41
@@ -983,8 +984,10 @@ Kipsake ambient compliance microphones run on the emergency bus. They transcribe
 2026-10-08T03:04:13 source=ambient-mic zone=dso-office speaker=unknown confidence=0.66 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:04:19 source=ambient-mic zone=dso-office speaker=unknown confidence=0.87 clock=LOST est_error_s=±90 ts_basis=uptime text="[music: Defiant Jazz]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:04:25 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.64 clock=LOST est_error_s=±90 ts_basis=uptime text="Why is there jazz" ingested_at=2026-10-08T03:07:41
+2026-10-08T03:05:09 source=ambient-mic zone=elevator-lobby speaker=unknown confidence=0.79 clock=LOST est_error_s=±90 ts_basis=uptime text="[screaming]" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:05:53 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.45 clock=LOST est_error_s=±90 ts_basis=uptime text="Is anyone there" ingested_at=2026-10-08T03:07:41
 2026-10-08T03:06:13 source=ambient-mic zone=corridor-e speaker=unknown confidence=0.54 clock=LOST est_error_s=±90 ts_basis=uptime text="Where's my phone" ingested_at=2026-10-08T03:07:41
+2026-10-08T03:07:30 source=ambient-mic zone=elevator-lobby speaker=unknown confidence=0.91 clock=ok text="[shouting] Nobody move! Stay where you are!"
 ```
 
 
@@ -992,7 +995,7 @@ Kipsake ambient compliance microphones run on the emergency bus. They transcribe
 
 # Kipsake Records
 
-Personnel, detention records, Hush Room notes, supervisor feedback, the perks ledger, flagged keystroke drafts and calendar entries.
+Personnel, detention records, Hush Room notes, supervisor feedback, the perks ledger, flagged keystroke drafts, calendar entries, the Cocoa Hour seating plan and festive-wear register, and the procedure revision log.
 
 ```text
 === PERSONNEL (sleepwalkers; waking-life data restricted to HR) ===
@@ -1040,4 +1043,20 @@ personnel id=hale name="Mr. Hale" role="Night Supervisor" sleepwalker=false
 === CALENDAR (night of 2026-10-07) ===
 2026-10-07T21:15:00 calendar owner=hale title="1:1 Bertram"
 2026-10-08T03:00:00 calendar owner=hale title="Cocoa Hour supervision (DSO holiday party)"
+
+=== COCOA HOUR SEATING PLAN (Facilities, Break Room 2) ===
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=1 position="head of the table, by the cocoa urn" assigned=hale
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=2 position="chair by the window" assigned=agnes
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=3 position="chair by the door" assigned=bertram
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=4 position="chair by the speaker" assigned=clement
+
+=== COCOA HOUR FESTIVE-WEAR REGISTER (Facilities, logged at the Break Room 2 door) ===
+2026-10-08T02:58:40 festive-wear employee=agnes item="oatmeal cardigan" colours="oatmeal" pattern=none
+2026-10-08T02:58:52 festive-wear employee=bertram item="reindeer jumper" colours="green, red, white" pattern=reindeer
+2026-10-08T02:59:05 festive-wear employee=clement item="Christmas sweater" colours="navy, blue, red, orange, green, white" pattern="stripes and squares"
+2026-10-08T02:59:30 festive-wear employee=hale item="charcoal suit jacket and tie" colours="charcoal" pattern=none
+
+=== PROCEDURE REVISION LOG ===
+procedure-revision id=114 title="Sleepwalker night-shift procedure, revision 114" status=approved approved_by=hale approved_in=February
+procedure-revision id=114 status=withdrawn withdrawn_in=March reason="following a sleepwalker fatality"
 ```

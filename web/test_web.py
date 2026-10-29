@@ -100,9 +100,9 @@ class PageTest(unittest.TestCase):
         game = read("game.js")
         block = game.split("var DATA = ", 1)[1].split("var LINKS", 1)[0]
         hints = re.findall(r'\[\"([^"]+)\", DATA \+', block)
-        self.assertEqual(hints, ["Ask for a verdict", "Build a page", "Make a graph"])
-        self.assertIn('var DATA = "Using the Kipsake data in this stack, ";', game)
-        self.assertIn("Who killed Mr. Hale?", block.split("Build a page")[0])
+        self.assertEqual(hints, ["Ask for a verdict", "Make a table", "Make a graph"])
+        self.assertIn('var DATA = "Using the Kipsake data in this stack from the last 30 days, ";', game)
+        self.assertIn("Who killed Mr. Hale?", block.split("Make a table")[0])
         # The loader can shift the data's times, so the examples name no clock time.
         self.assertNotRegex(block, r"\b\d\d:\d\d\b")
         self.assertIn("These are only examples: ask it anything.", game)

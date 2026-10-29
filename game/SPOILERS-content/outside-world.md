@@ -14,4 +14,4 @@ Source: "Defiant Jazz - Paper Test/Outside World - human only.md". Shown before 
 
 **Port Quiet Gazette · Local**
 
-**Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal "Procedure Revision 114" was withdrawn after the death of a sleepwalker in March. Records obtained by the Gazette show the revision was approved by night supervisor R. Hale. Kipsake declined to comment further.
+**Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal "Procedure Revision 114" was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.

@@ -35,7 +35,7 @@ These are raw exports, too large to read end to end. Query them by searching (fo
 | metrics.csv | Time series: ts,metric,labels,value,ingested_at |
 | system.log | Sleep rings, power, outlets, floor events, emergency speakers, elevator, cameras, security, medical |
 | ambient-mic.log | Ambient-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
-| records.log | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar |
+| records.log | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar, Cocoa Hour seating and festive wear, procedure revisions |
 
 ## Task
 

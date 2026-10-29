@@ -4,7 +4,7 @@ Source: "Defiant Jazz - Clue Map.md", "The vote prompts" (Decision 1) and "Decis
 -->
 
 # Decision 1 · Check a scene
-prompt: Floor Security has sealed off three places. Before the shift wakes up, there's time to look at the evidence from one of them. Which one?
+prompt: Floor Security has sealed off three places. Before the shift wakes up, there's time to look at the evidence from one of them. Which one? You can choose only one. The other two stay closed for this game, and your choice is final.
 
 ## Elevator car 1
 option: Elevator car 1
@@ -20,7 +20,7 @@ aliases: elevator, car, lift, e
 > 1 · Ligature. Recovered from Agnes's hands.
 > 2 · Phone panel, cover loose. Three folded notes, still tucked inside, unopened.
 > 3 · Found in the victim's closed right hand. Not from his own clothing.
-> Mr. Hale's route, 03:01: Break Room 2 → corridor E → elevator lobby. The corridor E and lobby compliance mics ran on emergency power.
+> The corridor E and lobby compliance mics ran on emergency power.
 [Close-up of marker 3 in daylight, on a plain light surface: the twist of yarn threads, every colour clear.]
 
 ## Break Room 2
@@ -45,4 +45,4 @@ aliases: supply room, supply, sr, waffle iron, breaker
 [An evidence bag holding a pale, half-cooked waffle, tagged "SR-B-03 · unregistered appliance (waffle iron) · confiscated."]
 [Beside it, a printed certificate in a plastic sleeve: "KIPSAKE · THE GOLDEN WAFFLE · Q3 · BERTRAM"]
 [A text card:]
-> Supply Room B · 03:18. Circuit C-7 (Break Room 2 cocoa urn and lights, Supply Room B): overload. Main breaker tripped, 03:02:00.
+> Supply Room B · 03:18. The waffle iron's cycle timer: started 03:01:47, never finished. Circuit C-7 (Break Room 2 cocoa urn and lights, Supply Room B): overload. Main breaker tripped, 03:02:00.

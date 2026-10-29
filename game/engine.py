@@ -18,8 +18,9 @@ Commands:
                     to know something, tell it.
   investigate       Follow up the next of your three leads, in order: a crime
                     scene, a home visit, one last interview. Each time, you
-                    pick one of three options and see only that one. Use them
-                    whenever you like, between questions.
+                    pick one of three options and see only that one: the other
+                    two stay closed. Use them whenever you like, between
+                    questions.
   review [n|all]    Re-read the advert, cold open, interviews and clips you've
                     unlocked.
   accuse <name>     When you're ready, name the killer and say why. You can do
@@ -345,7 +346,7 @@ class Game:
             if picked:
                 return picked
         while True:
-            answer = self.read("Choose 1, 2 or 3 ([Enter] to decide later): ")
+            answer = self.read("Choose 1, 2 or 3, once and for all ([Enter] to decide later): ")
             if not answer:
                 return None
             picked = match(answer)
@@ -375,6 +376,8 @@ class Game:
         for i, card in enumerate(decision.options, 1):
             note = card.meta.get("note")
             self.say(f"  {i}) {card.meta['option']}" + (f"  ({note})" if note else ""))
+        self.say()
+        self.say(self._style("One only. The other two stay closed for this game, and your choice is final.", "1"))
         self.say()
         picked = self._choose(decision, arg)
         if picked is None:

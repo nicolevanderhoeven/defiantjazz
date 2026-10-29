@@ -40,23 +40,28 @@ At 03:02 the three plans collide. The breaker trips, the speakers play *Defiant 
 ## How it's solved
 for: all
 
-**The AI does the heavy lifting.** It pieces the blackout together from data that arrived late. It finds the waffle iron, catches Bertram's lie, finds that Agnes changed the fail-safe track, and accuses her. **It's right that Agnes woke everyone up, and wrong that whoever woke everyone up killed Hale.**
+**Neither side can solve it alone.** The AI has read only Kipsake's records. You have the interviews, the three leads and the handout from outside Kipsake, and none of the AI's data. Every clue against Clement is split in two: one half is in the clips, and the other half is in the records. Neither half points at anyone until you put them together. The sweater is the one clue the clips nearly settle by eye; the records make it certain.
 
-**The human leap.** Someone said "Sorry, Waffles" in the dark, while every sleepwalker was their waking self. A waking self can't remember work. So whoever said it was lucid, and knew Bertram's nickname at work.
+**On its own, the AI lands on Agnes.** It pieces the blackout together from data that arrived late. It finds the waffle iron, catches Bertram's lie, finds that Agnes changed the fail-safe track, and accuses her. **It's right that Agnes woke everyone up, and wrong that whoever woke everyone up killed Hale.**
+
+**On its own, the clips leave you guessing.** A napkin marked "4", a name crossed out, a nickname, a sister's obituary and an unmarked floor plan mean nothing until the records say whose seat, whose name, where and when.
+
+**The leap takes both.** Someone said "Sorry, Waffles" in the dark, while every sleepwalker was their waking self. A waking self can't remember work. So whoever said it was lucid, and knew Bertram's nickname at work. The records hold the words. Only the clips say who uses that name.
 
 - **Not Bertram:** he's the one being apologised to, and he answers like a stranger: "Ow, who's, hello? HELLO?"
 - **Not Agnes:** she isn't lucid. She wouldn't need to leave notes for her waking self if her two selves shared memories. At the elevator she's Peggy, shouting her waking name. And Peggy never read the notes before that night: they were still tucked unopened in the phone panel when they were found. What the who's-who note says, Peggy didn't know.
-- **Clement:** he's the one who calls Bertram "Waffles". And his own interview gives him away: "Someone was screaming by the elevator." That screaming happened only in the dark, and a sleepwalker shouldn't remember the dark at all.
+- **Clement:** he's the one who calls Bertram "Waffles". And his own interview gives him away: "Someone was screaming by the elevator." The mics heard screaming there only in the dark, from about 03:03 to 03:05. After the lights came back, the only loud moment was security shouting "Nobody move!" at 03:07:30. A sleepwalker shouldn't remember the dark at all.
 
-**Clearing Agnes.** Her badge jolts at 03:03:56 as she pulls free. At 03:04:01 Hale picks up the elevator's emergency phone. Nobody does that while still holding on to someone. So the strangling was a new attack, after she'd gone.
+**Clearing Agnes.** Clips: Peggy says a man grabbed her wrist and she ran. Records: her badge jolts at 03:03:56 as she pulls free, and at 03:04:01 Hale picks up the elevator's emergency phone. Nobody does that while still holding on to someone. So the strangling was a new attack, after she'd gone.
 
-**The clues only humans saw:**
+**The clues, split in two.** Each row has a half only the clips hold and a half only the records hold:
 
-- **The nickname:** Agnes's who's-who note, Bertram's "Clement. 'Chill out, Waffles.' He's the only one who calls me that", and Clement's own "checked on Waffles".
-- **The slip:** "Someone was screaming by the elevator", and "Peggy" crossed out on his written statement: a name that was only shouted in the dark.
-- **The sweater:** the yarn threads in Hale's closed hand and in Bertram's hand at home match the colours of Clement's Christmas sweater. He didn't stay by the speaker.
-- **The napkin:** the napkin from the chair by the speaker is marked "C". Clement is the only C on the floor.
-- **The folder:** Clement's photo of the evacuation plan, with his route to the elevator drawn in pen, and "R. Hale" circled on the Procedure Revision 114 clipping.
-- **The motive:** June's obituary, and Hale's approval of Procedure Revision 114.
+- **The nickname.** Clips: Agnes's who's-who note, and Bertram's "Clement. 'Chill out, Waffles.' He's the only one who calls me that." At home, Bertram only says they "called me something, like a pet's name." Records: the corridor E microphone holds the exact words, "Sorry, Waffles", during the outage. Nothing in the records says who uses the name.
+- **The slip.** Clips: "Someone was screaming by the elevator", and "Peggy" crossed out on his written statement. Records: the screaming at the elevator was only in the dark, and "Peggy" was a name shouted only in the dark (Agnes's preferred name in the personnel file).
+- **The sweater.** Clips: the yarn threads in Hale's closed hand and in Bertram's hand at home, in navy, blue, red, orange, green and white, and Clement's own navy Christmas sweater in those colours, on camera in his interview and at the party. Records: the Cocoa Hour festive-wear register names each person's sweater and colours at the party door, and only Clement's matches (Hale wore a plain charcoal suit). So the threads came from Clement, who didn't stay by the speaker. The threads never appear in the records.
+- **The napkin.** Clips: Peggy finds a napkin marked "4" in her pocket, and the Break Room camera shows a napkin on the chair by the speaker. Records: the Cocoa Hour seating plan puts seat 4, the chair by the speaker, with Clement. The napkin never appears in the records.
+- **The route.** Clips: Clement's folder holds a photo of the evacuation plan, marked only with the "You are here" dot. Records: Hale's trace runs Break Room 2, corridor E, elevator lobby.
+- **The motive.** Clips: June's obituary says she is survived by her brother, Clement, and Clement's folder holds the Procedure Revision 114 clipping and June's photo. Records: R. Hale approved Procedure Revision 114, and it was withdrawn after a March death. The records never mention June or Clement's family.
+- **Supply Room B.** Clips: the waffle iron, the Golden Waffle certificate and the iron's cycle timer, started at 03:01:47. Records: Bertram's badge went in at 03:01:45 and the outlet logged the load at 03:01:58, so he was cooking when the breaker tripped.
 
-> The AI answered every question. It took a human to know which question to ask.
+> The AI had the records and you had the clips. It took both to name the killer.

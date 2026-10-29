@@ -21,18 +21,19 @@ BUNDLE = content.load_bundle()
 
 # Human-only text that must never reach the AI.
 SENTINELS = [
-    "Called me Waffles, as usual",
-    "Who's Waffles?",
+    "Called me something, like a pet's name",
     "Clement. 'Chill out, Waffles.' He's the only one who calls me that",
     "Clement calls him 'Waffles'",
-    "checked on Waffles",
+    "checked on Bertram (shoulder)",
     "Someone was screaming by the elevator",
     "survived by her brother, Clement",
     "Procedure Revision 114",
     "Port Quiet Gazette",
     "THE GOLDEN WAFFLE",
-    "a single block capital",
+    "a single digit",
     "navy Christmas sweater",
+    "a twist of five or six yarn threads",
+    "cycle timer: started 03:01:47",
     "Clement killed Mr. Hale",
     "It took a human to know which question to ask",
 ]
@@ -115,6 +116,57 @@ class ContentTest(unittest.TestCase):
         self.assertIsNone(CONTENT.resolve_suspect("Mr. Hale"))
 
 
+TELEMETRY = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "telemetry")
+
+
+def telemetry(name):
+    with open(os.path.join(TELEMETRY, name), encoding="utf-8") as f:
+        return f.read()
+
+
+class ClueSplitTest(unittest.TestCase):
+    """Every clue against the killer has a clip half and a data half: neither source solves it alone."""
+
+    def clips(self):
+        return "\n".join(c.body for c in list(CONTENT.testimonies) + [CONTENT.outside_world]
+                         + [o for d in CONTENT.decisions for o in d.options])
+
+    def test_telemetry_never_links_the_killer(self):
+        everything = "\n".join(telemetry(n) for n in ("records.log", "ambient-mic.log", "chat.log",
+                                                       "system.log", "door-and-badge-events.log"))
+        self.assertNotRegex(everything, r"\bJune\b")
+        self.assertNotRegex(telemetry("chat.log"), r"(?i)waffles\b(?!\s+were)")
+        self.assertNotRegex(everything, r"(?i)yarn|thread|napkin")
+        self.assertNotRegex(telemetry("ambient-mic.log") + telemetry("records.log"), r"(?i)clement.*(sister|brother)")
+
+    def test_telemetry_holds_the_data_halves(self):
+        records = telemetry("records.log")
+        self.assertIn('seat=4 position="chair by the speaker" assigned=clement', records)
+        self.assertIn('employee=clement item="Christmas sweater" colours="navy, blue, red, orange, green, white"', records)
+        self.assertIn("procedure-revision id=114 title", records)
+        self.assertIn("approved_by=hale", records)
+        mic = telemetry("ambient-mic.log")
+        self.assertIn("Sorry, Waffles", mic)
+        dark = [l for l in mic.splitlines() if "[screaming]" in l]
+        self.assertTrue(dark)
+        for line in dark:  # screaming is only ever in the dark: 03:03 to 03:05
+            self.assertRegex(line, r"T03:0[345]:")
+        self.assertIn("[shouting] Nobody move!", mic)
+
+    def test_clips_hold_only_their_halves(self):
+        clips = self.clips()
+        for phrase in ("only C", "R. Hale", "goes by Peggy", "Who's Waffles",
+                       "single block capital", "checked on Waffles", "circled", "in pen"):
+            self.assertNotIn(phrase, clips)
+        self.assertEqual(clips.count("Peggy"), 2)  # only his crossed-out word, and the line that says so
+        self.assertNotIn("route", clips.lower())
+
+    def test_each_lead_says_the_choice_is_final(self):
+        for decision in CONTENT.decisions:
+            self.assertIn("You can choose only one.", decision.prompt)
+            self.assertIn("your choice is final", decision.prompt)
+
+
 class FullPathTest(unittest.TestCase):
     def setUp(self):
         self.runner = FakeClaude()
@@ -153,7 +205,7 @@ class FullPathTest(unittest.TestCase):
         self.assertIn("If you want it to know something, tell it.", flat)
         self.assertIn("hot cocoa", before_turn)
         self.assertLess(flat.index("KIPSAKE · ADVERT"), flat.index("Earn while you sleep."))
-        self.assertLess(flat.index("Sweet dreams, Dreamers."), flat.index("What happened that night"))
+        self.assertLess(flat.index("Join our team of Dreamers in time for the holidays."), flat.index("What happened that night"))
         self.assertNotIn("power cut", flat)
         interviews = " ".join(before_turn.split("── Interviews", 1)[1].split())
         self.assertLess(interviews.index("First, your interviews."),
