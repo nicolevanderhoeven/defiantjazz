@@ -32,17 +32,17 @@ window.DJ_CONTENT = {
  "testimonies": [
   {
    "title": "T-A · Agnes · 03:30",
-   "body": "[An interview at Kipsake. Agnes, a DSO clerk, sits on a chair against a plain wall. Her Kipsake badge card hangs from a lanyard around her neck. She wears a green knitted Christmas sweater with a bright pattern of stars and stripes, and navy trim. You're off camera, asking the questions.]\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She pauses for two beats, then touches her lanyard.]\n[She rubs her palms together, knuckles out. She avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: There was shouting. I don't know who.\nAgnes: Will someone be taking apart the elevator? The phone panel, I mean?",
+   "body": "[An interview at Kipsake. Agnes, a DSO clerk, sits on a chair against a plain wall. Her Kipsake badge card hangs from a lanyard around her neck. She wears a green knitted Christmas sweater with a bright pattern of stars and stripes, and navy trim. You're off camera, asking the questions.]\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She pauses for two beats, then touches her lanyard.]\n[She rubs her palms together, knuckles out. She avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: There was shouting by the window. I don't know who.\nAgnes: I've asked where the elevator goes. Twice. They tell me not to worry.\nAgnes: Will someone be taking apart the elevator? The phone panel, I mean?",
    "meta": {}
   },
   {
    "title": "T-B · Bertram · 03:40",
-   "body": "[An interview at Kipsake. Another DSO clerk, Bertram, sits on the same chair, wearing his lanyard and a blue knitted Christmas sweater with a bright pattern of reindeer and snowflakes. He holds an ice pack to his right shoulder. There's a smudge of flour on the back of his free hand.]\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He pauses for two beats, then touches his lanyard.]\n[He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder. Somebody was shouting.",
+   "body": "[An interview at Kipsake. Another DSO clerk, Bertram, sits on the same chair, wearing his lanyard and a blue knitted Christmas sweater with a bright pattern of reindeer and snowflakes. He holds an ice pack to his right shoulder. There's a smudge of flour on the back of his free hand.]\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\nBertram: I mentioned it in the chat. Agnes asked why the elevator. I couldn't tell her.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He pauses for two beats, then touches his lanyard.]\n[He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder. Somebody was shouting down the corridor.",
    "meta": {}
   },
   {
    "title": "T-C · Clement · 03:20",
-   "body": "[An interview at Kipsake. The third DSO clerk, Clement, sits on the same chair, wearing his lanyard, hands folded in his lap. He wears a navy knitted Christmas sweater with a bright pattern of stripes and squares.]\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was sitting down. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\nClement: Terrible about Mr. Hale.",
+   "body": "[An interview at Kipsake. The third DSO clerk, Clement, sits on the same chair, wearing his lanyard, hands folded in his lap. He wears a navy knitted Christmas sweater with a bright pattern of stripes and squares.]\nYou: Clement. Where were you when the lights went out?\nClement: The lights blinked, and I was sitting down. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\nClement: Terrible about Mr. Hale.",
    "meta": {}
   }
  ],
@@ -263,7 +263,7 @@ window.DJ_CONTENT = {
   "T-A · Agnes · 03:30": [
    {
     "image": "portrait-agnes",
-    "body": "A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She pauses for two beats, then touches her lanyard. She rubs her palms together, knuckles out, and avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: There was shouting. I don't know who. Will someone be taking apart the elevator? The phone panel, I mean?",
+    "body": "A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She pauses for two beats, then touches her lanyard. She rubs her palms together, knuckles out, and avoids eye contact. While you take notes, she slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: There was shouting by the window. I don't know who.\nAgnes: I've asked where the elevator goes. Twice. They tell me not to worry. Will someone be taking apart the elevator? The phone panel, I mean?",
     "hotspots": [
      {
       "label": "Her sweater",
@@ -285,7 +285,7 @@ window.DJ_CONTENT = {
   "T-B · Bertram · 03:40": [
    {
     "image": "portrait-bertram",
-    "body": "Another DSO clerk, on the same chair, wearing his lanyard.\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He pauses for two beats, then touches his lanyard. He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder. Somebody was shouting.",
+    "body": "Another DSO clerk, on the same chair, wearing his lanyard.\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up. I mentioned it in the chat. Agnes asked why the elevator. I couldn't tell her.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He pauses for two beats, then touches his lanyard. He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder. Somebody was shouting down the corridor.",
     "hotspots": [
      {
       "label": "The ice pack",
@@ -313,7 +313,7 @@ window.DJ_CONTENT = {
   "T-C · Clement · 03:20": [
    {
     "image": "portrait-clement",
-    "body": "The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was sitting down. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\nClement: Terrible about Mr. Hale.",
+    "body": "The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.\nYou: Clement. Where were you when the lights went out?\nClement: The lights blinked, and I was sitting down. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\nClement: Terrible about Mr. Hale.",
     "hotspots": [
      {
       "label": "The sweater",

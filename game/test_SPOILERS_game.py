@@ -248,9 +248,18 @@ class ClueRedesignTest(unittest.TestCase):
         self.assertIn("Port Quiet Gazette · Letters", CONTENT.outside_world.body)
         for title in ("T-A · Agnes · 03:30", "T-B · Bertram · 03:40"):
             self.assertIn("pauses for two beats", self.card(title).body)
-        for title, line in (("T-A · Agnes · 03:30", "There was shouting."), ("T-B · Bertram · 03:40", "Somebody was shouting.")):
+        # the heard sound is mirrored in place as well as in kind: each clerk says where it was
+        for title, line in (("T-A · Agnes · 03:30", "There was shouting by the window."),
+                            ("T-B · Bertram · 03:40", "Somebody was shouting down the corridor."),
+                            ("T-C · Clement · 03:20", "Someone was screaming by the elevator.")):
             self.assertIn(line, self.card(title).body)
         self.assertNotIn("pauses", self.card("T-C · Clement · 03:20").body)
+        self.assertNotIn("wonderful night", self.card("T-C · Clement · 03:20").body)
+        # one more thing each that no lead explains, grounded in the data (Hush Room note; the 21:40 chat)
+        self.assertIn("I've asked where the elevator goes. Twice.", self.card("T-A · Agnes · 03:30").body)
+        self.assertIn("Agnes asked why the elevator.", self.card("T-B · Bertram · 03:40").body)
+        self.assertIn("Asked twice where the elevator goes.", telemetry("records.log"))
+        self.assertIn("the elevator? why the elevator", telemetry("chat.log"))
 
     def test_telemetry_still_never_holds_the_yarn_or_the_chart(self):
         everything = "\n".join(telemetry(n) for n in ("records.log", "ambient-mic.log", "chat.log", "system.log",

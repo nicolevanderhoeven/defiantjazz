@@ -123,7 +123,7 @@ You're the investigator. There are three suspects: **Agnes**, **Bertram** and **
 
 ## Agnes
 card: T-A · Agnes · 03:30
-source: 44e9d4bc
+source: 08126b24
 image: portrait-agnes
 where: An interview at Kipsake · 03:30
 headline: Agnes
@@ -132,9 +132,9 @@ You: Agnes. Where were you when the lights went out?
 Agnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.
 You: And Mr. Hale?
 Agnes: I think I was trying to get it off him?
-[She pauses for two beats, then touches her lanyard. She rubs her palms together, knuckles out, and avoids eye contact.]
-[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]
-Agnes: There was shouting. I don't know who. Will someone be taking apart the elevator? The phone panel, I mean?
+[She pauses for two beats, then touches her lanyard. She rubs her palms together, knuckles out, and avoids eye contact. While you take notes, she slips a folded piece of paper behind the badge card in her lanyard holder.]
+Agnes: There was shouting by the window. I don't know who.
+Agnes: I've asked where the elevator goes. Twice. They tell me not to worry. Will someone be taking apart the elevator? The phone panel, I mean?
 
 ## Her sweater
 at: 44, 55
@@ -146,18 +146,18 @@ Her Kipsake badge card, on a lanyard around her neck. Tucked behind it in the ho
 
 ## Bertram
 card: T-B · Bertram · 03:40
-source: fe511206
+source: 4740e3e9
 image: portrait-bertram
 where: An interview at Kipsake · 03:40
 headline: Bertram
 Another DSO clerk, on the same chair, wearing his lanyard.
 You: Bertram. Mr. Hale met you earlier tonight?
-Bertram: He said he'd step out during the Cocoa Hour. Something to pick up.
+Bertram: He said he'd step out during the Cocoa Hour. Something to pick up. I mentioned it in the chat. Agnes asked why the elevator. I couldn't tell her.
 [He looks down and to the left.]
 You: And when the lights went?
 Bertram: I was having cocoa.
 [He pauses for two beats, then touches his lanyard. He avoids eye contact.]
-Bertram: Then I was in the corridor. Sore shoulder. Somebody was shouting.
+Bertram: Then I was in the corridor. Sore shoulder. Somebody was shouting down the corridor.
 
 ## The ice pack
 at: 44, 38
@@ -173,13 +173,12 @@ A blue knitted Christmas sweater with a bright pattern of reindeer and snowflake
 
 ## Clement
 card: T-C · Clement · 03:20
-source: 7b0285db
+source: b656ec62
 image: portrait-clement
 where: An interview at Kipsake · 03:20
 headline: Clement
 The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.
 You: Clement. Where were you when the lights went out?
-Clement: A wonderful night, until it wasn't.
 Clement: The lights blinked, and I was sitting down. Same as everyone, I expect.
 Clement: Someone was screaming by the elevator.
 Clement: Terrible about Mr. Hale.
