@@ -272,7 +272,7 @@ An evidence bag holding a pale, half-cooked waffle.
 
 ## Agnes's waking self
 card: Agnes at home
-source: ca30c0b3
+source: 378f9d1d
 image: scene-agnes-home
 Agnes's waking self sits on the same chair. No lanyard, and she's still in her Christmas sweater.
 You: Agnes? You were there last night.
@@ -295,6 +295,11 @@ A folded cloth napkin. On one corner, in laundry marker, a single digit: "4".
 at: 63, 84
 A sticky note in her own handwriting.
 > HE HAS TO STOP. THE ELEVATOR.
+
+## The second note
+at: 71, 88
+A second sticky note, in the same handwriting.
+> WHEN THE LIGHTS GO OUT, HE'LL BE ALONE AT THE ELEVATOR. I'LL BE WAITING.
 
 ## The evacuation plan
 at: 85, 78

@@ -41,6 +41,7 @@ SENTINELS = [
     "4 · Clement",
     "Tell me about the folder",
     "Tell him about A. and the elevator",
+    "I'LL BE WAITING",
     "cycle timer: started 03:01:47",
     "Clement killed Mr. Hale",
     "It took a human to know which question to ask",
@@ -252,6 +253,14 @@ class ClueRedesignTest(unittest.TestCase):
         self.assertIn("supervisor-feedback submitted_by=bertram to=hale", telemetry("records.log"))
         self.assertIn('calendar owner=hale title="1:1 Bertram"', telemetry("records.log"))
         self.assertIn("Tell me about the folder.", self.card("Clement at home").body)
+        # Agnes's flat holds a second sticky note that makes her look planned from the clips alone;
+        # its words are nowhere in the telemetry, and it only anticipates the dark (the fail-safe change is in the records)
+        flat = self.card("Agnes at home").body
+        self.assertIn("WHEN THE LIGHTS GO OUT, HE'LL BE ALONE AT THE ELEVATOR. I'LL BE WAITING.", flat)
+        self.assertIn("HE HAS TO STOP. THE ELEVATOR.", flat)
+        for fragment in ("I'LL BE WAITING", "ALONE AT THE ELEVATOR", "WHEN THE LIGHTS GO OUT"):
+            for name in ("records.log", "ambient-mic.log", "chat.log", "system.log", "door-and-badge-events.log"):
+                self.assertNotIn(fragment.lower(), telemetry(name).lower())
         self.assertIn("Port Quiet Gazette · Letters", CONTENT.outside_world.body)
         for title in ("T-A · Agnes · 03:30", "T-B · Bertram · 03:40"):
             self.assertIn("pauses for two beats", self.card(title).body)

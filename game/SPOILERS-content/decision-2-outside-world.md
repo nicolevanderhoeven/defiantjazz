@@ -20,7 +20,7 @@ Agnes: When I came back, he wasn't moving.
 You: Anything else?
 Agnes: This was in my pocket. It isn't mine.
 [She holds out a folded cloth napkin. Close-up: on one corner, in laundry marker, a single digit: "4".]
-[Beside her on the table: a sticky note in her own handwriting: "HE HAS TO STOP. THE ELEVATOR." Next to it, a printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red "You are here" dot is in Break Room 2.]
+[Beside her on the table: a sticky note in her own handwriting: "HE HAS TO STOP. THE ELEVATOR." Next to it, a second sticky note in the same hand: "WHEN THE LIGHTS GO OUT, HE'LL BE ALONE AT THE ELEVATOR. I'LL BE WAITING." And a printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red "You are here" dot is in Break Room 2.]
 Agnes: And there's this. I find notes like it all over my flat. I don't remember writing them.
 
 ## Bertram at home
