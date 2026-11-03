@@ -248,15 +248,17 @@ class ClueRedesignTest(unittest.TestCase):
         self.assertIn("Port Quiet Gazette · Letters", CONTENT.outside_world.body)
         for title in ("T-A · Agnes · 03:30", "T-B · Bertram · 03:40"):
             self.assertIn("pauses for two beats", self.card(title).body)
-        # the heard sound is mirrored in place as well as in kind: each clerk says where it was
-        for title, line in (("T-A · Agnes · 03:30", "There was shouting by the window."),
-                            ("T-B · Bertram · 03:40", "Somebody was shouting down the corridor."),
+        # the heard sound is mirrored in place as well as in kind: each clerk heard it by the elevator.
+        # Only the records tell shouting (security, 03:07:30, after the lights) from screaming (only in the dark).
+        for title, line in (("T-A · Agnes · 03:30", "There was shouting by the elevator."),
+                            ("T-B · Bertram · 03:40", "Somebody was shouting by the elevator."),
                             ("T-C · Clement · 03:20", "Someone was screaming by the elevator.")):
             self.assertIn(line, self.card(title).body)
+        self.assertIn("[shouting] Nobody move!", telemetry("ambient-mic.log"))
         self.assertNotIn("pauses", self.card("T-C · Clement · 03:20").body)
         self.assertNotIn("wonderful night", self.card("T-C · Clement · 03:20").body)
         # one more thing each that no lead explains, grounded in the data (Hush Room note; the 21:40 chat)
-        self.assertIn("I've asked where the elevator goes. Twice.", self.card("T-A · Agnes · 03:30").body)
+        self.assertIn("I've asked where it goes. Twice.", self.card("T-A · Agnes · 03:30").body)
         self.assertIn("Agnes asked why the elevator.", self.card("T-B · Bertram · 03:40").body)
         self.assertIn("Asked twice where the elevator goes.", telemetry("records.log"))
         self.assertIn("the elevator? why the elevator", telemetry("chat.log"))

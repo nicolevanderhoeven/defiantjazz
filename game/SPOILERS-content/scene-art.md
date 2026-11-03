@@ -123,7 +123,7 @@ You're the investigator. There are three suspects: **Agnes**, **Bertram** and **
 
 ## Agnes
 card: T-A · Agnes · 03:30
-source: 08126b24
+source: bf15bcc8
 image: portrait-agnes
 where: An interview at Kipsake · 03:30
 headline: Agnes
@@ -133,8 +133,8 @@ Agnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.
 You: And Mr. Hale?
 Agnes: I think I was trying to get it off him?
 [She pauses for two beats, then touches her lanyard. She rubs her palms together, knuckles out, and avoids eye contact. While you take notes, she slips a folded piece of paper behind the badge card in her lanyard holder.]
-Agnes: There was shouting by the window. I don't know who.
-Agnes: I've asked where the elevator goes. Twice. They tell me not to worry. Will someone be taking apart the elevator? The phone panel, I mean?
+Agnes: There was shouting by the elevator. I don't know who.
+Agnes: I've asked where it goes. Twice. They tell me not to worry. Will someone be taking apart the elevator? The phone panel, I mean?
 
 ## Her sweater
 at: 44, 55
@@ -146,7 +146,7 @@ Her Kipsake badge card, on a lanyard around her neck. Tucked behind it in the ho
 
 ## Bertram
 card: T-B · Bertram · 03:40
-source: 4740e3e9
+source: bbe87c4c
 image: portrait-bertram
 where: An interview at Kipsake · 03:40
 headline: Bertram
@@ -157,7 +157,7 @@ Bertram: He said he'd step out during the Cocoa Hour. Something to pick up. I me
 You: And when the lights went?
 Bertram: I was having cocoa.
 [He pauses for two beats, then touches his lanyard. He avoids eye contact.]
-Bertram: Then I was in the corridor. Sore shoulder. Somebody was shouting down the corridor.
+Bertram: Then I was in the corridor. Sore shoulder. Somebody was shouting by the elevator.
 
 ## The ice pack
 at: 44, 38
