@@ -20,6 +20,7 @@
  *   askAssistant(prompt)       opens Grafana Assistant with the prompt; returns a promise
  *   scenes                     the pictures as { name: URL }, for a frame that can't load files
  *   music                      the jazz as a data: URL, when the build has the track
+ *   track(name, attrs)         records an anonymous play statistic (see "play statistics" below)
  * A static page gets the music from window.DJ_MUSIC instead: with-music.html, which web/build.py
  * writes only from a copy of the track that isn't committed. Without it, nothing plays.
  */
@@ -32,6 +33,7 @@
   var THEME_KEY = "defiantjazz.theme";
   var MUSIC_KEY = "defiantjazz.music";
   var LEADS = C.decisions.length;
+  var CASE_ID = "SF-1008";
 
   // Examples only: the player asks whatever they like, in whichever AI they like. Each one points
   // at the case's data, so it works on its own, and shows off something Assistant can do.
@@ -97,6 +99,29 @@
 
   function noop() {}
 
+  // ---- play statistics -----------------------------------------------------------
+  // HOST.track(name, attrs) is optional: only a Grafana Page built with a collector has it (the title
+  // screen then says so), and everywhere else, the static page and the terminal game, nothing is
+  // recorded. What goes in attrs is short ids and counts as strings: which part of the story the
+  // player reached, which clue or lead they picked, who they accused, and how long their own text was.
+  // Never what they typed, never a picture's or a card's text, and never the answer.
+
+  function track(name, attrs) {
+    if (!HOST.track) return;
+    var out = {};
+    Object.keys(attrs || {}).forEach(function (k) { out[k] = String(attrs[k]); });
+    try {
+      var sent = HOST.track(name, out);
+      if (sent && typeof sent.catch === "function") sent.catch(noop);
+    } catch (e) { /* counting never gets in the player's way */ }
+  }
+
+  var gameStarted = false;  // game_started sent for this run
+  var lastChapter = null;   // the chapter last reported, so a panel step or a re-render isn't a new one
+  var openedClues = {};     // clue ids opened this visit, each reported once
+  var viewedVerdict = false;
+  var restored = null;      // whether this visit began from saved progress
+
   // Resolves to the stored text, or null when there's none, storage fails, or a host
   // store takes more than a few seconds to answer.
   function readStored(key) {
@@ -140,6 +165,31 @@
 
   function save() {
     writeStored(STORE_KEY, JSON.stringify(state));
+  }
+
+  // Which part of the story a view is, for the play statistics: title, advert, cold, statement_1..3,
+  // hub, outside, lead_1..3, result_1..3, review, accuse, confirm, verdict.
+  function chapterId(view) {
+    if (view === "statement") return "statement_" + (Math.min(Math.max(state.step | 0, 0), C.testimonies.length - 1) + 1);
+    if (view === "lead") return "lead_" + Math.min(state.chosen.length + 1, LEADS);
+    if (view === "result") return "result_" + Math.max(state.chosen.length, 1);
+    if (view === "card") return "review";
+    return view;
+  }
+
+  // Reports a new chapter the first time it shows, and the moves the statistics count in it.
+  function trackView(view) {
+    if (restored === null) restored = view !== "title" || state.chosen.length > 0;
+    if (!gameStarted && view !== "title") {
+      gameStarted = true;
+      track("game_started", { case: CASE_ID, resumed: restored });
+    }
+    var chapter = chapterId(view);
+    if (chapter === lastChapter) return;
+    var before = lastChapter;
+    lastChapter = chapter;
+    track("chapter_reached", { chapter: chapter });
+    if (view === "accuse" && before !== "confirm") track("accusation_started", {});
   }
 
   // Every move starts on the first panel of what it shows, unless it says otherwise.
@@ -301,6 +351,10 @@
     if (pin) spot.pinned = true;
     if (openSpot === spot) return;
     openSpot = spot;
+    if (!openedClues[spot.clue]) {
+      openedClues[spot.clue] = true;
+      track("clue_opened", { clue: spot.clue, label: spot.label, chapter: chapterId(state.view) });
+    }
     spot.note.hidden = false;
     spot.button.setAttribute("aria-expanded", "true");
     placeSpot(spot);
@@ -328,7 +382,7 @@
     note.style.top = (down ? b.offsetTop + b.offsetHeight + 6 : b.offsetTop - h - 6) + "px";
   }
 
-  function hotspot(h, i) {
+  function hotspot(h, i, image) {
     var id = "spot" + (++spotIds);
     var text = cardBody(h.body);
     text.id = id;
@@ -343,7 +397,7 @@
     // Set through the style object, not a style attribute: the page's CSP allows only that.
     button.style.left = h.x + "%";
     button.style.top = h.y + "%";
-    var spot = { button: button, note: note, pinned: false, hovered: false };
+    var spot = { button: button, note: note, pinned: false, hovered: false, clue: image + "." + (i + 1), label: h.label };
     button.addEventListener("pointerenter", function (e) {
       if (e.pointerType !== "mouse") return;
       spot.hovered = true;
@@ -434,7 +488,7 @@
       pic.classList.add("panel-black");
     } else if (pictured) {
       pic.appendChild(picture(name));
-      frame.hotspots.forEach(function (h, i) { hotspot(h, i).forEach(function (n) { pic.appendChild(n); }); });
+      frame.hotspots.forEach(function (h, i) { hotspot(h, i, name).forEach(function (n) { pic.appendChild(n); }); });
     } else {
       // Art to come: the same frame, and a quiet label. The file to add is in data-picture.
       pic.classList.add("panel-placeholder");
@@ -601,6 +655,10 @@
   // Grafana Assistant with it filled in. A page can't send it for the player: Assistant opens
   // it as a draft, so the player presses Enter. Only the question goes, never story text.
   function ask(text, sourceNode) {
+    // Only which example and how long it is: Assistant gets the text, the statistics don't.
+    var example = QUESTIONS.map(function (pair) { return pair[1]; }).indexOf(text);
+    track("ai_question_asked", { source: example < 0 ? "custom" : "example",
+      example_id: example < 0 ? "" : example + 1, question_length: text.length });
     var copied = copyText(text);
     Promise.resolve().then(function () { return HOST.askAssistant(text); }).then(function () {
       return copied.then(function (ok) {
@@ -738,6 +796,9 @@
       el("div", { class: "title-text" }, [
         el("h1", { class: "sr-only" }, "The Defiant Jazz Incident"),
         el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
+        // Only where the host records play statistics (a Grafana Page with a collector).
+        HOST.track ? el("p", { class: "note track-note" }, "This game records anonymous play statistics: " +
+          "which parts you reach, which clues you open and who you accuse. It never records what you type.") : null,
         el("div", { class: "actions" }, [
           button([el("span", null, resume ? "Continue" : "Start"), icon("next")],
             function () { go(resume ? "hub" : "advert"); }, "btn-primary btn-next"),
@@ -900,6 +961,7 @@
     var error = el("p", { class: "error", role: "alert" });
     var follow = button([el("span", null, "Follow this lead"), icon("next")], function () {
       if (state.picking === null || state.picking === undefined) { error.textContent = "Pick one of the three."; return; }
+      track("lead_chosen", { lead: n + 1, option_index: state.picking + 1, option: d.options[state.picking].meta.option });
       go("result", { chosen: state.chosen.concat([state.picking]), picking: null });
     }, "btn-primary btn-next");
     var options = d.options.map(function (opt, i) {
@@ -1067,6 +1129,9 @@
           ]),
           framebar([button("Not yet, go back", function () { go("accuse"); }, "btn-quiet-console")], [
             iconButton("accuse", "Accuse " + a.label + " and see the verdict", function () {
+              // The suspect's key, or "other" for anyone else: never the name that was typed, or the reasoning.
+              track("accusation_made", { suspect: a.key, is_listed_suspect: a.key !== "other",
+                reasoning_length: (state.draft.reasoning || "").trim().length });
               go("verdict", { accused: a, reasoning: (state.draft.reasoning || "").trim(), step: 0 });
             }, "btn-alert"),
           ]),
@@ -1080,6 +1145,11 @@
     var cards = decodeReveal();
     var verdict = cards.find(function (c) { return c.meta.for === a.key; });
     var pages = [verdict].concat(cards.filter(function (c) { return c.meta.for === "all"; }));
+    if (!viewedVerdict) {
+      viewedVerdict = true;
+      // Whether it was right is all that leaves the page, and only after the player has accused.
+      track("verdict_viewed", { correct: verdict.meta.correct === "yes", leads_followed: state.chosen.length });
+    }
     var i = Math.min(Math.max(state.step | 0, 0), pages.length - 1);
     var last = i === pages.length - 1;
     var parts = [el("div", { class: "chapterbar" }, [
@@ -1112,6 +1182,7 @@
     var view = views[state.view] ? state.view : "title";
     if (view !== "title") titleTyped = false;
     main.replaceChildren(views[view]());
+    trackView(view);
     music.follow(!!main.querySelector(".panel[data-music]"));
     var started = view !== "title" || state.chosen.length > 0;
     restartBtn.hidden = !started;
@@ -1242,6 +1313,11 @@
   })();
 
   function restart() {
+    track("game_restarted", { after: state.accused ? "verdict" : "mid_game" });
+    gameStarted = false;
+    restored = false;
+    viewedVerdict = false;
+    openedClues = {};
     state = fresh();
     save();
     render(true);

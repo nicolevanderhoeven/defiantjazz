@@ -130,7 +130,7 @@ class SandboxTest(unittest.TestCase):
 
     def test_host_hooks(self):
         game = read("game.js")
-        for hook in ("HOST.storage", "HOST.onTheme", "HOST.askAssistant"):
+        for hook in ("HOST.storage", "HOST.onTheme", "HOST.askAssistant", "HOST.track"):
             self.assertIn(hook, game)
         # Outside the storage adapter, only the theme toggle touches localStorage, guarded.
         uses = [line.strip() for line in game.splitlines()
@@ -576,3 +576,320 @@ class DashboardTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---- Play statistics -------------------------------------------------------------------
+
+COLLECTOR = "https://faro-collector-prod-us-central-0.grafana.net/collect/0123456789abcdef0123456789abcdef"
+FARO = {"url": COLLECTOR, "environment": "prod"}
+
+
+def faro_template():
+    """A project whose lockfile already resolves the pinned Faro SDK, as Grafana's page template does."""
+    files = fake_template()
+    files["package.json"] = json.dumps({"name": "grafana-page", "dependencies": {
+        "@grafana/data": "13.2.2", "@grafana/i18n": "13.2.2", "react": "19.3.0"}}, indent=2) + "\n"
+    files["pnpm-lock.yaml"] = (
+        "lockfileVersion: '9.0'\n\nimporters:\n\n  .:\n    dependencies:\n"
+        "      '@grafana/data':\n        specifier: 13.2.2\n        version: 13.2.2(react@19.3.0)\n"
+        "      '@grafana/i18n':\n        specifier: 13.2.2\n        version: 13.2.2(react@19.3.0)\n"
+        "      react:\n        specifier: 19.3.0\n        version: 19.3.0\n"
+        "    devDependencies:\n      typescript:\n        specifier: 7.0.2\n        version: 7.0.2\n"
+        "\npackages:\n\n  '@grafana/faro-web-sdk@2.11.0':\n    resolution: {integrity: sha512-x}\n")
+    return files
+
+
+def track_calls(game):
+    """Every track("name", {...}) call in game.js: (event, [attribute names], the object's text)."""
+    calls = []
+    for match in re.finditer(r'\btrack\("([a-z_]+)", ', game):
+        start = match.end()
+        if game[start] != "{":
+            calls.append((match.group(1), None, game[start:start + 40]))
+            continue
+        depth, end = 0, start
+        while True:
+            depth += {"{": 1, "}": -1}.get(game[end], 0)
+            end += 1
+            if depth == 0:
+                break
+        body = game[start:end]
+        inner = body[1:-1]
+        keys, level, word = [], 0, ""
+        for part in re.split(r"(,|\(|\)|\{|\})", inner):
+            if part in ("(", "{"):
+                level += 1
+            elif part in (")", "}"):
+                level -= 1
+            elif part == "," and level == 0:
+                word = ""
+            elif level == 0 and not word and part.strip():
+                keys.append(part.strip().split(":")[0].strip())
+                word = part
+        calls.append((match.group(1), keys, body))
+    return calls
+
+
+class PlayStatisticsTest(unittest.TestCase):
+    """HOST.track is optional: the static page and the terminal game never record anything."""
+
+    def test_game_reports_only_the_listed_events(self):
+        calls = track_calls(read("game.js"))
+        self.assertEqual({name for name, _, _ in calls}, set(build.TRACK_EVENTS))
+        for name, keys, body in calls:
+            self.assertIsNotNone(keys, f"{name}: pass track a literal object of attributes")
+            self.assertLessEqual(set(keys), set(build.TRACK_EVENTS[name]), f"{name}: {body}")
+
+    def test_the_hook_is_optional_and_never_in_the_way(self):
+        game = read("game.js")
+        helper = game.split("function track(name, attrs) {", 1)[1].split("\n  }\n", 1)[0]
+        self.assertIn("if (!HOST.track) return;", helper)
+        self.assertIn("String(attrs[k])", helper)
+        self.assertIn("catch (e)", helper)
+        # Neither the static page nor the terminal game has a collector or any of Faro.
+        self.assertNotIn("faro", game.lower())
+        self.assertNotIn("faro", read("index.html").lower())
+        self.assertNotIn("DJ_HOST", read("index.html"))
+        root = os.path.dirname(HERE)
+        for name in sorted(os.listdir(os.path.join(root, "game"))):
+            if name.endswith(".py") and not name.startswith("test_"):
+                text = open(os.path.join(root, "game", name), encoding="utf-8").read().lower()
+                self.assertNotIn("faro", text, name)
+                self.assertNotRegex(text, r"\btrack\(", name)
+
+    def test_no_free_text_leaves_the_page(self):
+        game = read("game.js")
+        calls = {name: body for name, _, body in track_calls(game)}
+        # An accusation is a suspect's key or "other", and the reasoning is only its length.
+        accused = calls["accusation_made"]
+        self.assertIn("suspect: a.key", accused)
+        self.assertIn("reasoning_length: (state.draft.reasoning || \"\").trim().length", accused)
+        for typed in ("a.label", "draft.other", ".other", "reasoning.value"):
+            self.assertNotIn(typed, accused)
+        # The question text and the story text stay out of it: only an id and a length.
+        asked = calls["ai_question_asked"]
+        self.assertIn("question_length: text.length", asked)
+        self.assertNotRegex(asked.replace("question_length: text.length", ""), r"\btext\b")
+        # Nothing is recorded as the player types.
+        for line in game.splitlines():
+            if 'addEventListener("input"' in line or 'addEventListener("keydown"' in line:
+                self.assertNotIn("track(", line)
+        # Clues are the picture's name and the marker's number, and the label the marker already shows.
+        self.assertIn('clue: image + "." + (i + 1), label: h.label', game)
+
+    def test_only_a_listed_suspect_or_other_is_an_accusation(self):
+        game = read("game.js")
+        self.assertIn('is_listed_suspect: a.key !== "other"', game)
+        # accusation() maps a typed name to a suspect's key, or to "other" with the typed name only as a label.
+        self.assertIn('{ key: "other", label: name }', game)
+
+    def test_correct_is_only_known_after_the_accusation(self):
+        game = read("game.js")
+        self.assertIn('correct: verdict.meta.correct === "yes"', game)
+        self.assertNotRegex(game, r"===?\s*[\"']clement")
+        self.assertNotIn('"correct"', read("SPOILERS-content.js"))
+        reveal = json.loads(base64.b64decode(bundle_data()["reveal"]).decode("utf-8"))
+        right = [card for card in reveal if card["meta"].get("correct") == "yes"]
+        self.assertEqual(len(right), 1)
+        self.assertIn(right[0]["meta"]["for"], build.content.SUSPECTS)
+
+    def test_the_title_says_so_where_play_is_recorded(self):
+        game = read("game.js")
+        note = game.split("HOST.track ? el(", 1)[1].split(") : null", 1)[0]
+        self.assertIn("anonymous play statistics", note)
+        self.assertIn("track-note", note)
+        # Not in the markup: a build that records nothing says nothing.
+        self.assertNotIn("play statistics", read("index.html"))
+
+    def test_clue_ids_are_unique(self):
+        ids = []
+        for frames in bundle_data()["art"].values():
+            for frame in frames:
+                ids += [f"{frame['image']}.{i + 1}" for i, _ in enumerate(frame["hotspots"])]
+        self.assertTrue(ids)
+        self.assertEqual(len(ids), len(set(ids)))
+
+
+class FaroConfigTest(unittest.TestCase):
+    def test_off_without_a_collector(self):
+        self.assertIsNone(build.faro_config({}))
+        self.assertIsNone(build.faro_config({"DJ_FARO_URL": "  "}))
+
+    def test_reads_the_collector_and_environment(self):
+        self.assertEqual(build.faro_config({"DJ_FARO_URL": COLLECTOR}), FARO)
+        self.assertEqual(build.faro_config({"DJ_FARO_URL": COLLECTOR, "DJ_FARO_ENV": "dev"})["environment"], "dev")
+
+    def test_rejects_what_is_not_a_collector(self):
+        for url in ("http://faro-collector-x.grafana.net/collect/abc", "https://example.net/other/abc",
+                    "https://faro-collector-x.grafana.net/collect/", COLLECTOR + "?x=1", "https://u:p@h.net/collect/a",
+                    "https://h.net/collect/a'b"):
+            with self.assertRaises(SystemExit, msg=url):
+                build.faro_config({"DJ_FARO_URL": url})
+        with self.assertRaises(SystemExit):
+            build.faro_config({"DJ_FARO_URL": COLLECTOR, "DJ_FARO_ENV": "Prod; drop"})
+
+    def test_the_repository_has_no_collector_or_app_key(self):
+        root = os.path.dirname(HERE)
+        found = []
+        for folder, dirs, names in os.walk(root):
+            dirs[:] = [d for d in dirs if d not in (".git", "dist", "private", "__pycache__", "node_modules")]
+            for name in names:
+                if name.endswith((".webp", ".png", ".jpg", ".mp3", ".pyc")):
+                    continue
+                path = os.path.join(folder, name)
+                with open(path, encoding="utf-8", errors="ignore") as f:
+                    if re.search(r"faro-collector-[a-z0-9-]+\.grafana[a-z-]*\.net/collect/[0-9a-f]{8}", f.read()):
+                        found.append(os.path.relpath(path, root))
+        self.assertEqual([p for p in found if not p.endswith("test_web.py")], [])
+
+
+class TrackedPageTest(unittest.TestCase):
+    def setUp(self):
+        self.files = build.page_files(faro_template(), CONTENT, FARO)
+        self.track = self.files["src/track.ts"]
+
+    def test_without_a_collector_the_page_has_no_faro(self):
+        plain = build.page_files(faro_template(), CONTENT)
+        self.assertNotIn("src/track.ts", plain)
+        for name in ("src/host.ts", "src/main.tsx", "src/game.js", "src/markup.ts", "src/page.css"):
+            self.assertNotIn("faro", plain[name].lower(), name)
+        self.assertEqual(plain["package.json"], faro_template()["package.json"])
+        self.assertEqual(plain["pnpm-lock.yaml"], faro_template()["pnpm-lock.yaml"])
+        self.assertNotIn("track", plain["src/host.ts"])
+
+    def test_pins_the_sdk_as_a_direct_dependency(self):
+        package = json.loads(self.files["package.json"])
+        self.assertEqual(package["dependencies"]["@grafana/faro-web-sdk"], "2.11.0")
+        self.assertEqual(list(package["dependencies"]), sorted(package["dependencies"]))
+        lock = self.files["pnpm-lock.yaml"]
+        self.assertIn("      '@grafana/faro-web-sdk':\n        specifier: 2.11.0\n        version: 2.11.0\n", lock)
+        self.assertLess(lock.index("'@grafana/data':"), lock.index("'@grafana/faro-web-sdk':"))
+        self.assertLess(lock.index("'@grafana/faro-web-sdk':"), lock.index("'@grafana/i18n':"))
+        self.assertEqual(lock.count("'@grafana/faro-web-sdk':\n        specifier"), 1)
+
+    def test_a_build_does_not_depend_on_the_last_one(self):
+        again = build.page_files(self.files, CONTENT, FARO)
+        self.assertEqual(again["package.json"], self.files["package.json"])
+        self.assertEqual(again["pnpm-lock.yaml"], self.files["pnpm-lock.yaml"])
+        plain = build.page_files(self.files, CONTENT)
+        self.assertEqual(plain["package.json"], faro_template()["package.json"])
+        self.assertEqual(plain["pnpm-lock.yaml"], faro_template()["pnpm-lock.yaml"])
+
+    def test_a_template_that_cannot_resolve_the_sdk_stops_the_build(self):
+        with self.assertRaises(SystemExit):
+            build.page_files(fake_template(), CONTENT, FARO)
+
+    def test_host_gets_the_hook(self):
+        host = self.files["src/host.ts"]
+        self.assertIn("import { track } from './track';", host)
+        self.assertIn("\n  track,\n", host)
+        self.assertEqual(re.findall(r"openAssistant\(([^)]*)\)", host), ["{ prompt }", "{ prompt }"])
+
+    def test_the_collector_is_an_input_not_part_of_the_source(self):
+        self.assertIn(f"url: '{COLLECTOR}'", self.track)
+        others = {k: v for k, v in self.files.items() if k != "src/track.ts" and k.startswith(("src/", "package", "pnpm"))}
+        self.assertNotIn("0123456789abcdef0123456789abcdef", json.dumps(others))
+        for name in ("build.py", "game.js", "README.md"):
+            self.assertNotRegex(read(name), r"/collect/[0-9a-f]{8}")
+
+    def test_faro_setup(self):
+        track = self.track
+        self.assertIn("captureConsole: false", track)
+        self.assertNotIn("captureConsole: true", track)
+        self.assertIn("app: { name: 'defiant-jazz', version: APP_VERSION, environment: ENVIRONMENT }", track)
+        self.assertRegex(track, r"const APP_VERSION = 'web-[0-9a-f]{8}';")
+        self.assertIn("const ENVIRONMENT = 'prod';", track)
+        self.assertIn("const DOMAIN = 'defiant-jazz';", track)
+        self.assertNotIn("tracing", track.lower().replace("// ", ""))
+        dev = build.page_files(faro_template(), CONTENT, {**FARO, "environment": "dev"})["src/track.ts"]
+        self.assertIn("const ENVIRONMENT = 'dev';", dev)
+
+    def test_player_is_a_random_id_in_user_storage(self):
+        track = self.track
+        self.assertIn("const PLAYER_KEY = 'dj_player_id';", track)
+        self.assertIn("grafana.userStorage", track)
+        self.assertIn("faro.api.setUser(", track)
+        self.assertIn("p_' + Array.from(bytes", track)
+        self.assertIn("player_id_source: 'user_storage'", track)
+        # No storage, no id: marked, and never a stand-in id shared by everyone.
+        self.assertIn("{ attributes: { player_id_source: 'none' } }", track)
+        self.assertNotRegex(track, r"p_unknown|p_anon|p_none|p_0")
+
+    def test_nothing_from_the_viewers_account_is_read_or_sent(self):
+        for name in ("src/track.ts", "src/host.ts"):
+            text = "\n".join(line for line in self.files[name].splitlines() if not line.strip().startswith("//"))
+            for account in ("viewer", "usePageContext", "login", "email", "userName"):
+                self.assertNotIn(account, text, f"{name} mentions {account}")
+        self.assertNotRegex(self.track, r"attributes: \{ (?!player_id_source)")
+
+    def test_events_are_the_listed_ones_and_strings(self):
+        listed = json.loads(self.track.split("const EVENTS: Record<string, string[]> = ", 1)[1].split(";\nconst", 1)[0])
+        self.assertEqual(listed, {k: list(v) for k, v in build.TRACK_EVENTS.items()})
+        self.assertIn("String(attrs[key]).slice(0, MAX_VALUE)", self.track)
+        self.assertIn("app_version: APP_VERSION, environment: ENVIRONMENT", self.track)
+        self.assertIn("faro.api.pushEvent(name, data, DOMAIN)", self.track)
+        for event, keys in build.TRACK_EVENTS.items():
+            for key in keys:
+                self.assertRegex(key, r"^[a-z_]+$")
+        for text in ("text", "name", "reasoning", "question", "answer", "solution", "killer", "login"):
+            self.assertNotIn(text, [k for keys in build.TRACK_EVENTS.values() for k in keys])
+
+    def test_version_follows_the_game(self):
+        first = build.app_version(CONTENT)
+        self.assertRegex(first, r"^web-[0-9a-f]{8}$")
+        with mock.patch.object(build, "HERE", self.tmp_game()):
+            self.assertNotEqual(build.app_version(CONTENT), first)
+
+    def tmp_game(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        with open(os.path.join(tmp.name, "game.js"), "w", encoding="utf-8") as f:
+            f.write("// another game\n")
+        return tmp.name
+
+    def test_build_and_check_follow_the_environment(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        template = os.path.join(tmp.name, "t.page.json")
+        with open(template, "w", encoding="utf-8") as f:
+            json.dump({"kind": "PageExport", "version": 2, "title": "x",
+                       "source": {"version": 1, "files": faro_template(), "binaryFiles": {}}}, f)
+        out = os.path.join(tmp.name, "dist", "out.page.json")
+        env = mock.patch.dict(os.environ, {"DJ_FARO_URL": COLLECTOR, "DJ_FARO_ENV": "dev"})
+        with mock.patch.object(build, "PAGE_PATH", out), env:
+            say = StringIO()
+            with redirect_stdout(say):
+                build.main(["--page", "--template", template])
+            self.assertIn("Play statistics: on, to faro-collector-prod-us-central-0.grafana.net, environment dev.", say.getvalue())
+            self.assertNotIn("0123456789abcdef", say.getvalue())
+            with redirect_stdout(StringIO()):
+                build.main(["--page", "--check"])
+            with open(out, encoding="utf-8") as f:
+                self.assertIn("src/track.ts", json.load(f)["source"]["files"])
+            os.environ.pop("DJ_FARO_URL")
+            with self.assertRaises(SystemExit), redirect_stdout(StringIO()):
+                build.main(["--page", "--check"])
+            say = StringIO()
+            with redirect_stdout(say):
+                build.main(["--page"])
+            self.assertIn("Play statistics: off", say.getvalue())
+
+
+class StatisticsDashboardTest(unittest.TestCase):
+    def test_six_panels_over_the_game_events_without_test_traffic(self):
+        dash = json.loads(read("dashboard-play-statistics.json"))
+        self.assertEqual(len(dash["panels"]), 6)
+        self.assertEqual({v["name"] for v in dash["templating"]["list"]}, {"loki", "environment", "exclude"})
+        text = json.dumps(dash)
+        self.assertNotIn("0123456789", text)
+        for panel in dash["panels"]:
+            self.assertEqual(panel["datasource"]["uid"], "${loki}")
+            for target in panel["targets"]:
+                expr = target["expr"]
+                self.assertIn('browser_name!="Chrome Headless"', expr)
+                self.assertIn('user_attr_player_id_source="user_storage"', expr)
+                self.assertIn('user_id!~"$exclude"', expr)
+                self.assertIn('event_domain="defiant-jazz"', expr)
+                for event in re.findall(r'event_name="([a-z_]+)"', expr):
+                    self.assertIn(event, build.TRACK_EVENTS)
+            self.assertEqual(len({t["refId"] for t in panel["targets"]}), len(panel["targets"]))

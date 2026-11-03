@@ -184,6 +184,7 @@ p { margin: 0 0 10px; }
   .title-pic > img { animation: scene-in 0.8s ease-out; }
 }
 .title-text { padding: 16px; }
+.title-text .track-note { margin: 0 0 12px; max-width: 90ch; }
 
 /* Motion over the picture (titleLights in game.js): the disco ball's glints and the coloured
    light it throws, and digits drifting on the screen above and below the title. Everything is

@@ -1,0 +1,716 @@
+{
+  "title": "The Defiant Jazz Incident: play statistics",
+  "uid": "dj-play-stats",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": [
+    "defiant-jazz",
+    "frontend-observability"
+  ],
+  "timezone": "utc",
+  "editable": true,
+  "graphTooltip": 0,
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "refresh": "",
+  "description": "Anonymous play statistics for the game, from its Faro events in Loki. Headless Chrome and visits without a player id are filtered out.",
+  "templating": {
+    "list": [
+      {
+        "name": "loki",
+        "label": "Loki",
+        "type": "datasource",
+        "query": "loki",
+        "current": {},
+        "hide": 0,
+        "refresh": 1
+      },
+      {
+        "name": "environment",
+        "label": "Environment",
+        "type": "custom",
+        "query": "prod,dev",
+        "multi": true,
+        "includeAll": false,
+        "current": {
+          "text": [
+            "prod"
+          ],
+          "value": [
+            "prod"
+          ]
+        },
+        "options": [
+          {
+            "text": "prod",
+            "value": "prod",
+            "selected": true
+          },
+          {
+            "text": "dev",
+            "value": "dev",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "name": "exclude",
+        "label": "Exclude player ids (regex)",
+        "type": "textbox",
+        "query": "__none__",
+        "current": {
+          "text": "__none__",
+          "value": "__none__"
+        },
+        "options": [
+          {
+            "text": "__none__",
+            "value": "__none__",
+            "selected": true
+          }
+        ]
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Players and visits",
+      "description": "Players are distinct player ids that started the game; visits are distinct page loads (every load is a new Faro session). Headless Chrome and visits with no player id (a draft of the Page, or user storage failing) are left out.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"game_started\" [$__range])))",
+          "legendFormat": "Players",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (session_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"game_started\" [$__range])))",
+          "legendFormat": "Visits",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"game_started\" | event_data_resumed=\"true\" [$__range])))",
+          "legendFormat": "Came back to a game",
+          "queryType": "instant",
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "noValue": "0",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "id": 2,
+      "type": "bargauge",
+      "title": "Funnel: players who reached each part",
+      "description": "Distinct players who reached each part of the story, in story order. The leads are optional and in any order, so a player can accuse before all three.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 8,
+        "h": 12
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"title\" [$__range])))",
+          "legendFormat": "title",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"advert\" [$__range])))",
+          "legendFormat": "advert",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"cold\" [$__range])))",
+          "legendFormat": "cold",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_1\" [$__range])))",
+          "legendFormat": "statement_1",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_2\" [$__range])))",
+          "legendFormat": "statement_2",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_3\" [$__range])))",
+          "legendFormat": "statement_3",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "G",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"hub\" [$__range])))",
+          "legendFormat": "hub",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "H",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"lead_1\" [$__range])))",
+          "legendFormat": "lead_1",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "I",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"lead_2\" [$__range])))",
+          "legendFormat": "lead_2",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "J",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"lead_3\" [$__range])))",
+          "legendFormat": "lead_3",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "K",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"accuse\" [$__range])))",
+          "legendFormat": "accuse",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "L",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"confirm\" [$__range])))",
+          "legendFormat": "confirm",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "M",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"verdict\" [$__range])))",
+          "legendFormat": "verdict",
+          "queryType": "instant",
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "noValue": "0",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "showUnfilled": true,
+        "valueMode": "color",
+        "namePlacement": "left",
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "sizing": "auto",
+        "legend": {
+          "showLegend": false
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "bargauge",
+      "title": "Clues opened",
+      "description": "Distinct players who opened each clue marker (picture name and marker number), most opened first.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 12
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "sort_desc(count by (event_data_clue, event_data_label)(sum by (event_data_clue, event_data_label, user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"clue_opened\" [$__range]))))",
+          "legendFormat": "{{event_data_clue}} · {{event_data_label}}",
+          "queryType": "instant",
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "noValue": "0",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "showUnfilled": true,
+        "valueMode": "color",
+        "namePlacement": "left",
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "sizing": "auto",
+        "legend": {
+          "showLegend": false
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "bargauge",
+      "title": "Accusations and verdicts",
+      "description": "Whom players accused (a suspect's key, or other), and how many verdicts were right. No typed name or reasoning is recorded.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count by (event_data_suspect)(sum by (event_data_suspect, user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"accusation_made\" [$__range])))",
+          "legendFormat": "accused {{event_data_suspect}}",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"verdict_viewed\" | event_data_correct=\"true\" [$__range])))",
+          "legendFormat": "verdict: right",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"verdict_viewed\" | event_data_correct=\"false\" [$__range])))",
+          "legendFormat": "verdict: wrong",
+          "queryType": "instant",
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "noValue": "0",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "showUnfilled": true,
+        "valueMode": "color",
+        "namePlacement": "left",
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "sizing": "auto",
+        "legend": {
+          "showLegend": false
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "bargauge",
+      "title": "Asking Assistant",
+      "description": "Players who pressed Ask Assistant, and how often each example question was used. No question text is recorded.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"ai_question_asked\" [$__range])))",
+          "legendFormat": "players who asked",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "sum by (event_data_example_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"ai_question_asked\" [$__range]))",
+          "legendFormat": "example {{event_data_example_id}}",
+          "queryType": "instant",
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "noValue": "0",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "showUnfilled": true,
+        "valueMode": "color",
+        "namePlacement": "left",
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "sizing": "auto",
+        "legend": {
+          "showLegend": false
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "bargauge",
+      "title": "Where people stop",
+      "description": "Players who reached a part of the story but not the next step on the way (the leads sit inside \"hub\": a player who followed leads and never accused is a stop at hub). verdict is players who finished.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 12,
+        "w": 16,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"title\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"advert\" [$__range]))))",
+          "legendFormat": "title",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"advert\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"cold\" [$__range]))))",
+          "legendFormat": "advert",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"cold\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_1\" [$__range]))))",
+          "legendFormat": "cold",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_1\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_2\" [$__range]))))",
+          "legendFormat": "statement_1",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_2\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_3\" [$__range]))))",
+          "legendFormat": "statement_2",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"statement_3\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"hub\" [$__range]))))",
+          "legendFormat": "statement_3",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "G",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"hub\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"accuse\" [$__range]))))",
+          "legendFormat": "hub",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "H",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"accuse\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"confirm\" [$__range]))))",
+          "legendFormat": "accuse",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "I",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "(count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"confirm\" [$__range])))) - (count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"verdict\" [$__range]))))",
+          "legendFormat": "confirm",
+          "queryType": "instant",
+          "editorMode": "code"
+        },
+        {
+          "refId": "J",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count(sum by (user_id)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"chapter_reached\" | event_data_chapter=\"verdict\" [$__range])))",
+          "legendFormat": "verdict (finished)",
+          "queryType": "instant",
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "noValue": "0",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "showUnfilled": true,
+        "valueMode": "color",
+        "namePlacement": "left",
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "sizing": "auto",
+        "legend": {
+          "showLegend": false
+        }
+      }
+    }
+  ]
+}

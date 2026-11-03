@@ -7,7 +7,7 @@ The terminal game as a static web page, made to sit in a Grafana dashboard panel
 
 The flow is the same as `python3 game/play.py`, told in full-image panels after the comic prototype: the Kipsake flyer and the cold open, your interviews with the suspects, then the case, where you follow up your three leads (one option each), review what you've unlocked, and accuse the killer. The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the Grafana MCP server or `gcx`, about the telemetry loaded in the stack. The page offers example questions with copy buttons.
 
-The page makes no network requests of its own: no CDNs, fonts or analytics. Progress is saved in the browser's `localStorage`, so reloading the dashboard keeps your place, and **Restart** clears it. Without storage the game still plays, it just forgets on reload.
+The page makes no network requests of its own: no CDNs, fonts or analytics (a Grafana Page build with a collector is the one exception, see [Play statistics](#play-statistics)). Progress is saved in the browser's `localStorage`, so reloading the dashboard keeps your place, and **Restart** clears it. Without storage the game still plays, it just forgets on reload.
 
 ## Run it locally
 
@@ -60,6 +60,39 @@ Who can play:
 - Players also need read access to the Loki, Prometheus and Tempo data sources with the case's telemetry.
 
 Spoilers: anyone who can open a page can export its source, and Grafana Assistant can read a published page's source when asked. The solution stays encoded, the page's title is spoiler-free, and **Ask Assistant** sends only the question, never story text. To discourage Assistant from reading the page, add a tenant-wide Assistant rule to the stack telling it never to read the page's source or reveal its solution. That's a soft guard, not a lock.
+
+## Play statistics
+
+A Grafana Page build can record anonymous play statistics with [Faro](https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/), so you can see how many people play, where they get to, which clues they open and whom they accuse. The static page and the terminal game record nothing: `game.js` only calls the optional `HOST.track(name, attrs)` hook, and only a Page build with a collector defines it. Where it's defined, the title screen says so.
+
+Set the stack's collector as a build input (the address and app key are per stack, so they aren't in the repository), then build as usual:
+
+```sh
+DJ_FARO_URL=https://faro-collector-.../collect/<app key> DJ_FARO_ENV=prod python3 web/build.py --page
+```
+
+`DJ_FARO_ENV` is `prod` by default. The build adds `@grafana/faro-web-sdk` 2.11.0 (pinned) to the page's `package.json` and lockfile, writes `src/track.ts`, and turns Faro's console capture off. Without `DJ_FARO_URL` the page has no Faro at all. Run `--page --check` with the same variables you built with.
+
+Setting up a stack:
+
+1. Create a Frontend Observability app named `defiant-jazz`, and set its CORS origin to the literal `null` (a Page runs in a sandboxed frame with an opaque origin). With gcx, `create` ignores CORS, so follow it with `gcx frontend apps update <id> -f app.yaml` whose `spec` has `corsOrigins: [{url: "null"}]`, and check with `gcx frontend apps get <id>`: the update accepts `allowedOrigins` silently and stores nothing.
+2. Build with that app's `<collectEndpointURL>/<appKey>`, import or write the files into the Page, and approve the collector's origin on that Page once (Page settings > Data access). It's a per-Page, per-stack click.
+3. The app's events are in the stack's Loki as `{service_name="defiant-jazz", kind="event"}`. [`dashboard-play-statistics.json`](dashboard-play-statistics.json) is the six-panel dashboard.
+
+What's recorded (`TRACK_EVENTS` in `build.py` is the list, and the page's glue drops anything else). Every event is `event_domain=defiant-jazz` with string attributes, plus `app_version` and `environment`, and Faro adds the session, browser and page load signals:
+
+| Event | Attributes |
+|---|---|
+| `game_started` | `case`, `resumed` |
+| `chapter_reached` | `chapter`: title, advert, cold, statement_1..3, hub, outside, lead_1..3, result_1..3, review, accuse, confirm, verdict |
+| `lead_chosen` | `lead`, `option_index`, `option` (the option's title) |
+| `clue_opened` | `clue` (picture and marker number), `label` (the marker's name), `chapter`; once per clue per visit |
+| `ai_question_asked` | `source`, `example_id`, `question_length` |
+| `accusation_started`, `game_restarted` | none, and `after` (`verdict` or `mid_game`) |
+| `accusation_made` | `suspect` (a suspect's key, or `other`), `is_listed_suspect`, `reasoning_length` |
+| `verdict_viewed` | `correct`, `leads_followed` |
+
+Not recorded: anything the player types (the name of someone else, their reasoning, a question), any story or reveal text, and the answer. `correct` comes from a marker on the right reveal card, `correct: yes`, and is only read after the accusation. The player is a random `p_...` id in their Grafana user storage (`dj_player_id`); the viewer's login, name and email are never read or sent. If user storage fails (a draft of the Page can't use it), there's no id and the visit is marked `player_id_source=none`. Faro still sees the browser, operating system, language and the page's size, and Frontend Observability derives an approximate location from the IP address. The statistics are indicative: the app key is in the page's source, so anyone can post to the app.
 
 ## Scene art
 
@@ -119,7 +152,8 @@ It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds 
 | `style.css` | Layout and the dark and light themes |
 | `assets/*.webp` | The title art, scenes and portraits, made by `build.py --art` |
 | `SPOILERS-content.js` | **Spoilers:** the story cards, generated by `build.py` |
-| `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/`, with `--page` the Grafana Page file, and with `--art` the pictures |
+| `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/`, with `--page` the Grafana Page file (with `DJ_FARO_URL`, one that records play statistics), and with `--art` the pictures |
+| `dashboard-play-statistics.json` | A six-panel dashboard of the play statistics, for the stack's Loki |
 | `dist/SPOILERS-defiantjazz.page.json` | **Spoilers:** the Grafana Page file, written by `build.py --page`, not committed |
 | `test_web.py` | The self-check |
 | `assets/private/`, `with-music.html` | Your copy of the music and the game with it, made by `build.py`, not committed |

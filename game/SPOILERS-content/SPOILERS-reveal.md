@@ -2,12 +2,14 @@
 SPOILERS: THE SOLUTION. Names the killer. Never give this to the AI.
 Source: "Defiant Jazz - Story.md", "What happened, in brief" and "How the case gets solved".
 The engine shows the matching verdict card, then every "for: all" card, only after the player accuses.
+"correct: yes" marks the card for the real killer: the web game's play statistics report only whether an accusation was right.
 -->
 
 # The reveal
 
 ## You named Clement
 for: clement
+correct: yes
 
 **You're right.** Clement killed Mr. Hale.
 
