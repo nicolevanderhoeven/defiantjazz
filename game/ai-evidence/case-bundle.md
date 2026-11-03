@@ -20,7 +20,7 @@ Floor Security has named three persons of interest, all from DSO:
 ## About the telemetry
 
 - Most floor systems stopped reporting during the outage.
-- Some devices record to a local buffer and uploaded their records after power was restored: employee badges, the elevator controller, ambient compliance microphones, sleep bands and the emergency speaker controller. These records carry both an event time (`ts`) and an ingestion time (`ingested_at`).
+- Some devices record to a local buffer and uploaded their records after power was restored: employee badges, the elevator controller, ambient compliance microphones, break room seat sensors, sleep bands and the emergency speaker controller. These records carry both an event time (`ts`) and an ingestion time (`ingested_at`).
 - Some buffered devices lost clock sync during the outage. Where that happened, the record says so.
 - The investigator's interviews with the clerks are not part of this telemetry export.
 
@@ -31,9 +31,9 @@ Floor Security has named three persons of interest, all from DSO:
 | 02-badge-and-door-events.md | Door readers and badge journeys, the two weeks up to the incident |
 | 03-chat.md | Floor chat, the two weeks up to the incident |
 | 04-metrics.md | Selected time series (CSV) |
-| 05-system-logs.md | Sleep rings, power, outlets, floor events, emergency speakers, elevator, cameras, security, medical |
+| 05-system-logs.md | Sleep rings, power, outlets, floor events, seat sensors, emergency speakers, elevator, cameras, security, medical |
 | 06-ambient-mic-transcripts.md | Ambient-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
-| 07-records.md | Personnel, detention, Hush Room notes, supervisor feedback, perks, keystroke drafts, calendar, Cocoa Hour seating and festive wear, procedure revisions |
+| 07-records.md | Personnel, detention, Hush Room notes, supervisor feedback, perks, keystroke drafts, calendar, Cocoa Hour seats and festive wear, procedure revisions |
 
 ## Task
 
@@ -854,7 +854,7 @@ ts,metric,labels,value,ingested_at
 
 # System Logs
 
-Logs from the sleep rings, floor power, smart outlets, the floor events calendar, the emergency speaker controller, the elevator controller, camera analytics, Floor Security and the medical office. A non-empty `ingested_at` means the record was buffered and uploaded late.
+Logs from the sleep rings, floor power, smart outlets, the floor events calendar, the Break Room 2 seat sensors, the emergency speaker controller, the elevator controller, camera analytics, Floor Security and the medical office. A non-empty `ingested_at` means the record was buffered and uploaded late.
 
 ```text
 2026-09-24T00:36:55 source=ring employee=agnes level=info msg="ring lock nominal"
@@ -907,8 +907,15 @@ Logs from the sleep rings, floor power, smart outlets, the floor events calendar
 2026-10-07T23:29:03 source=ring employee=agnes level=info msg="ring lock nominal"
 2026-10-08T02:20:20 source=ring employee=clement level=warn msg="lock drift (0.09), self-corrected"
 2026-10-08T02:58:12 source=floor-events level=info msg="Holiday party tonight: the end-of-year Cocoa Hour" room=break-room-2
+2026-10-08T02:59:41 source=seat-sensor room=break-room-2 seat=2 state=occupied
+2026-10-08T02:59:47 source=seat-sensor room=break-room-2 seat=3 state=occupied
+2026-10-08T02:59:56 source=seat-sensor room=break-room-2 seat=4 state=occupied
 2026-10-08T03:00:00 source=floor-events level=info msg="Cocoa Hour started" room=break-room-2
+2026-10-08T03:00:09 source=seat-sensor room=break-room-2 seat=1 state=occupied
 2026-10-08T03:00:31 source=printer device=dso-printer-1 level=error msg="paper jam tray 2"
+2026-10-08T03:00:52 source=seat-sensor room=break-room-2 seat=4 state=vacant
+2026-10-08T03:00:58 source=seat-sensor room=break-room-2 seat=1 state=vacant
+2026-10-08T03:01:27 source=seat-sensor room=break-room-2 seat=3 state=vacant
 2026-10-08T03:01:30 source=elevator level=info msg="door open" car=1 floor=SF
 2026-10-08T03:01:34 source=elevator level=info msg="door close" car=1 floor=SF
 2026-10-08T03:01:36 source=elevator level=info msg="car held at floor, doors held open (supervisor key: hale)" car=1 floor=SF
@@ -921,13 +928,16 @@ Logs from the sleep rings, floor power, smart outlets, the floor events calendar
 2026-10-08T03:02:00 source=ring employee=bertram level=critical msg="MUSIC DETECTED (not lullaby): sleepwalk released, wearer waking"
 2026-10-08T03:02:00 source=ring employee=clement level=critical msg="MUSIC DETECTED (not lullaby): sleepwalk released, wearer waking"
 2026-10-08T03:02:00 source=elevator level=warn msg="main power lost, UPS engaged, car held at SF" car=1 ingested_at=2026-10-08T03:07:41
+2026-10-08T03:02:14 source=seat-sensor room=break-room-2 seat=2 state=vacant ingested_at=2026-10-08T03:07:41
 2026-10-08T03:04:01 source=elevator level=warn msg="emergency phone off hook: auto-dial to Floor Security desk unanswered (desk on mains); call ended after 5s" car=1 ingested_at=2026-10-08T03:07:41
+2026-10-08T03:06:50 source=seat-sensor room=break-room-2 seat=4 state=occupied ingested_at=2026-10-08T03:07:41
 2026-10-08T03:07:00 source=power level=info msg="main power restored"
 2026-10-08T03:07:00 source=emergency-speakers level=info msg="mains restored: fail-safe released, floor speakers silent"
 2026-10-08T03:07:00 source=ring employee=agnes level=info msg="music stopped: sleepwalker re-engaged"
 2026-10-08T03:07:00 source=ring employee=bertram level=info msg="music stopped: sleepwalker re-engaged"
 2026-10-08T03:07:00 source=ring employee=clement level=info msg="music stopped: sleepwalker re-engaged"
 2026-10-08T03:07:01 source=camera cam=elevator-car-1 level=info msg="analytics: person (badge agnes) kneeling beside prone person; holding elongated object (cable-like)"
+2026-10-08T03:07:02 source=seat-sensor room=break-room-2 seat=4 state=vacant ingested_at=2026-10-08T03:07:41
 2026-10-08T03:07:03 source=camera cam=break-room-2 level=info msg="analytics: person (badge clement) seated on floor near speaker"
 2026-10-08T03:07:04 source=camera cam=corridor-e level=info msg="analytics: person (badge bertram) seated against wall, holding shoulder"
 2026-10-08T03:07:05 source=camera cam=supply-room-b level=info msg="analytics: no persons; small appliance on shelf, steam"
@@ -995,13 +1005,13 @@ Kipsake ambient compliance microphones run on the emergency bus. They transcribe
 
 # Kipsake Records
 
-Personnel, detention records, Hush Room notes, supervisor feedback, the perks ledger, flagged keystroke drafts, calendar entries, the Cocoa Hour seating plan and festive-wear register, and the procedure revision log.
+Personnel, detention records, Hush Room notes, supervisor feedback, the perks ledger, flagged keystroke drafts, calendar entries, the Cocoa Hour seat list and festive-wear register, and the procedure revision log.
 
 ```text
 === PERSONNEL (sleepwalkers; waking-life data restricted to HR) ===
-personnel id=agnes name="Agnes" dept="Deep Sleep Operations" preferred_name="Peggy" tenure_years=1
-personnel id=bertram name="Bertram" dept="Deep Sleep Operations" preferred_name="" tenure_years=7
-personnel id=clement name="Clement" dept="Deep Sleep Operations" preferred_name="" tenure_years=3
+personnel id=agnes name="Agnes Tanaka" dept="Deep Sleep Operations" preferred_name="Peggy" tenure_years=1
+personnel id=bertram name="Bertram Mensah" dept="Deep Sleep Operations" preferred_name="" tenure_years=7
+personnel id=clement name="Clement Whitlow" dept="Deep Sleep Operations" preferred_name="" tenure_years=3
 personnel id=hale name="Mr. Hale" role="Night Supervisor" sleepwalker=false
 
 === DETENTION RECORDS (current quarter) ===
@@ -1044,15 +1054,15 @@ personnel id=hale name="Mr. Hale" role="Night Supervisor" sleepwalker=false
 2026-10-07T21:15:00 calendar owner=hale title="1:1 Bertram"
 2026-10-08T03:00:00 calendar owner=hale title="Cocoa Hour supervision (DSO holiday party)"
 
-=== COCOA HOUR SEATING PLAN (Facilities, Break Room 2) ===
-2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=1 position="head of the table, by the cocoa urn" assigned=hale
-2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=2 position="chair by the window" assigned=agnes
-2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=3 position="chair by the door" assigned=bertram
-2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=4 position="chair by the speaker" assigned=clement
+=== COCOA HOUR SEATS (Facilities, Break Room 2; who sits where is on the chart posted in the room) ===
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=1 position="head of the table, by the cocoa urn"
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=2 position="chair by the window"
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=3 position="chair by the door"
+2026-10-07T20:15:00 seating event=cocoa-hour room=break-room-2 seat=4 position="chair by the speaker"
 
 === COCOA HOUR FESTIVE-WEAR REGISTER (Facilities, logged at the Break Room 2 door) ===
-2026-10-08T02:58:40 festive-wear employee=agnes item="oatmeal cardigan" colours="oatmeal" pattern=none
-2026-10-08T02:58:52 festive-wear employee=bertram item="reindeer jumper" colours="green, red, white" pattern=reindeer
+2026-10-08T02:58:40 festive-wear employee=agnes item="Christmas sweater" colours="green, red, orange, white, navy" pattern="stars and stripes"
+2026-10-08T02:58:52 festive-wear employee=bertram item="Christmas sweater" colours="blue, red, orange, white, green" pattern="reindeer and snowflakes"
 2026-10-08T02:59:05 festive-wear employee=clement item="Christmas sweater" colours="navy, blue, red, orange, green, white" pattern="stripes and squares"
 2026-10-08T02:59:30 festive-wear employee=hale item="charcoal suit jacket and tie" colours="charcoal" pattern=none
 

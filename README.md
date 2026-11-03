@@ -65,9 +65,9 @@ Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embe
 | `telemetry/door-and-badge-events.log` | Door readers, badge journeys and trace spans |
 | `telemetry/chat.log` | Floor chat |
 | `telemetry/metrics.csv` | Time series (`ts,metric,labels,value,ingested_at`) |
-| `telemetry/system.log` | Sleep rings, power, outlets, floor events, emergency speakers, elevator, cameras, security, medical |
+| `telemetry/system.log` | Sleep rings, power, outlets, floor events, seat sensors, emergency speakers, elevator, cameras, security, medical |
 | `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
-| `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar, Cocoa Hour seating and festive wear, procedure revisions |
+| `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar, Cocoa Hour seats and festive wear, procedure revisions |
 | `loader/` | `load.py` sends everything over OTLP; `test_load.py` checks its time shift |
 | `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana (with Grafana Assistant) and the Grafana MCP server |
 

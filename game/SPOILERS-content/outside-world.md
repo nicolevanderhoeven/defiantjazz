@@ -10,8 +10,12 @@ Source: "Defiant Jazz - Paper Test/Outside World - human only.md". Shown before 
 
 **Port Quiet Gazette · Obituaries**
 
-**June, 41.** June died suddenly in March in what her employer, Kipsake, has described as "a workplace incident." She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.
+**June Whitlow, 41.** June died suddenly in March in what her employer, Kipsake, has described as "a workplace incident." She is survived by her brother. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.
 
 **Port Quiet Gazette · Local**
 
 **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal "Procedure Revision 114" was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.
+
+**Port Quiet Gazette · Letters**
+
+**Who is looking after the sleepwalkers?** My child works nights at Kipsake and comes home with sore hands and no idea why. Last month they asked me where an elevator goes. Nobody at Kipsake will tell us anything. A worried parent, Port Quiet.

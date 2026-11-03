@@ -270,6 +270,36 @@ class SceneTextTest(unittest.TestCase):
             for h in p["hotspots"]:
                 self.assertTrue(h["label"].strip() and h["body"].strip(), title)
 
+    def hotspots(self, card):
+        return {h["label"]: h["body"] for p in self.art[card] for h in p["hotspots"]}
+
+    def test_every_clerk_wears_a_sweater_in_the_interviews(self):
+        # The clues are split by identity: all three clerks get a sweater hotspot, at the same level of detail.
+        for card in ("T-A \u00b7 Agnes \u00b7 03:30", "T-B \u00b7 Bertram \u00b7 03:40", "T-C \u00b7 Clement \u00b7 03:20"):
+            sweaters = [b for label, b in self.hotspots(card).items() if "sweater" in label.lower()]
+            self.assertEqual(len(sweaters), 1, card)
+            self.assertIn("knitted Christmas sweater with a bright pattern", sweaters[0], card)
+
+    def test_the_break_room_clip_has_the_chart_and_an_unnamed_person(self):
+        spots = self.hotspots("Break Room 2")
+        self.assertIn("4 \u00b7 Clement", spots["The seating chart"])
+        self.assertNotIn("Clement", spots["The person"])
+        self.assertNotIn("Clement", "".join(b for label, b in spots.items() if label != "The seating chart"))
+
+    def test_the_decoys_have_hotspots_and_clements_folder_has_one_thing(self):
+        self.assertIn("The sticky note", self.hotspots("Agnes at home"))
+        self.assertIn("The evacuation plan", self.hotspots("Agnes at home"))
+        self.assertIn("The letter", self.hotspots("Bertram at home"))
+        self.assertIn("The receipt", self.hotspots("Bertram at home"))
+        folder = self.hotspots("Clement at home")
+        self.assertEqual(sorted(folder), ["Clement", "The clipping"])
+
+    def test_the_redrawn_pictures_are_there(self):
+        for name in ("scene-break-room", "scene-power-cut", "portrait-agnes", "portrait-bertram", "portrait-agnes-push",
+                     "portrait-bertram-push", "portrait-clement-push", "scene-agnes-home", "scene-bertram-home",
+                     "scene-clement-home", "scene-break-room-camera", "scene-outside-world"):
+            self.assertIn(name, build.pictures())
+
     def test_hotspots_only_on_pictures_there_are(self):
         # A placeholder has no picture to point at: its hotspots come with its art.
         for title, p in self.panels():

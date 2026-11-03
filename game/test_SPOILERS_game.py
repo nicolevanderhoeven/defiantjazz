@@ -21,18 +21,25 @@ BUNDLE = content.load_bundle()
 
 # Human-only text that must never reach the AI.
 SENTINELS = [
-    "Called me something, like a pet's name",
     "Clement. 'Chill out, Waffles.' He's the only one who calls me that",
     "Clement calls him 'Waffles'",
-    "checked on Bertram (shoulder)",
     "Someone was screaming by the elevator",
-    "survived by her brother, Clement",
+    "She is survived by her brother",
+    "June Whitlow",
     "Procedure Revision 114",
     "Port Quiet Gazette",
     "THE GOLDEN WAFFLE",
     "a single digit",
-    "navy Christmas sweater",
+    "navy knitted Christmas sweater",
     "a twist of five or six yarn threads",
+    "a twist of yarn threads in navy, blue, red, orange, green and white",
+    "HE HAS TO STOP",
+    "Discretion appreciated. R. Hale",
+    "told Mr. Hale about Agnes's notes",
+    "Who is looking after the sleepwalkers",
+    "COCOA HOUR · BREAK ROOM 2 · SEATING",
+    "4 · Clement",
+    "Tell me about the folder",
     "cycle timer: started 03:01:47",
     "Clement killed Mr. Hale",
     "It took a human to know which question to ask",
@@ -98,7 +105,7 @@ class ContentTest(unittest.TestCase):
             self.assertTrue(decision.prompt)
             for card in decision.options:
                 self.assertTrue(card.body)
-        self.assertIn("June, 41.", CONTENT.outside_world.body)
+        self.assertIn("June Whitlow, 41.", CONTENT.outside_world.body)
         self.assertEqual(CONTENT.advert.meta.get("style"), "advert")
         self.assertIn("Earn while you sleep.", CONTENT.advert.body)
 
@@ -141,7 +148,7 @@ class ClueSplitTest(unittest.TestCase):
 
     def test_telemetry_holds_the_data_halves(self):
         records = telemetry("records.log")
-        self.assertIn('seat=4 position="chair by the speaker" assigned=clement', records)
+        self.assertIn('personnel id=clement name="Clement Whitlow"', records)
         self.assertIn('employee=clement item="Christmas sweater" colours="navy, blue, red, orange, green, white"', records)
         self.assertIn("procedure-revision id=114 title", records)
         self.assertIn("approved_by=hale", records)
@@ -155,16 +162,100 @@ class ClueSplitTest(unittest.TestCase):
 
     def test_clips_hold_only_their_halves(self):
         clips = self.clips()
-        for phrase in ("only C", "R. Hale", "goes by Peggy", "Who's Waffles",
-                       "single block capital", "checked on Waffles", "circled", "in pen"):
+        for phrase in ("only C", "goes by Peggy", "Who's Waffles", "pet's name", "hands are clean",
+                       "single block capital", "checked on Waffles", "(shoulder)", "circled", "in pen"):
             self.assertNotIn(phrase, clips)
+        self.assertEqual(clips.count("R. Hale"), 1)  # only the letter in Bertram's flat
         self.assertEqual(clips.count("Peggy"), 2)  # only his crossed-out word, and the line that says so
+        self.assertEqual(clips.count("by the speaker"), 0)  # where chair 4 is lives in the records, not the clips
         self.assertNotIn("route", clips.lower())
 
     def test_each_lead_says_the_choice_is_final(self):
         for decision in CONTENT.decisions:
             self.assertIn("You can choose only one.", decision.prompt)
             self.assertIn("your choice is final", decision.prompt)
+
+
+class ClueRedesignTest(unittest.TestCase):
+    """The clips say what and where, never whose: identity bindings live in the records."""
+
+    def card(self, title):
+        every = (list(CONTENT.testimonies) + [CONTENT.outside_world]
+                 + [o for d in CONTENT.decisions for o in d.options])
+        return next(c for c in every if c.title == title or c.meta.get("option") == title)
+
+    def test_the_yarn_is_in_the_shared_opening(self):
+        self.assertIn("Found in the victim's closed right hand: a twist of yarn threads in navy, blue, red, orange, green and white.",
+                      CONTENT.cold_open.body)
+
+    def test_all_three_clerks_wear_a_colourful_christmas_sweater(self):
+        for title in ("T-A · Agnes · 03:30", "T-B · Bertram · 03:40", "T-C · Clement · 03:20"):
+            self.assertRegex(self.card(title).body, r"knitted Christmas sweater with a bright pattern")
+        for title in ("Agnes at home", "Bertram at home", "Clement at home"):
+            self.assertIn("Christmas sweater", self.card(title).body)
+        records = telemetry("records.log")
+        wears = {}
+        for line in records.splitlines():
+            if " festive-wear " in line and "employee=" in line:
+                who = re.search(r"employee=(\w+)", line).group(1)
+                wears[who] = set(re.search(r'colours="([^"]*)"', line).group(1).split(", "))
+        yarn = {"navy", "blue", "red", "orange", "green", "white"}
+        for who in ("agnes", "bertram", "clement"):
+            self.assertIn("Christmas sweater", [l for l in records.splitlines() if f"employee={who} item=" in l][0])
+            self.assertGreaterEqual(len(wears[who] & yarn), 4, who)  # several of the yarn's colours: plausible by eye
+        self.assertEqual([w for w in wears if wears[w] >= yarn], ["clement"])  # only the register tells them apart
+
+    def test_clement_is_never_named_on_the_decoy_free_clips(self):
+        self.assertNotIn("Clement", CONTENT.outside_world.body)
+        frames = self.card("Break Room 2").body
+        self.assertNotIn("Clement sits", frames)
+        self.assertIn("too dark and grainy to make out", frames)
+        self.assertNotIn("Clement", self.card("Clement at home").body.replace("Clement's", "").replace("Clement:", "").replace("Clement?", ""))
+
+    def test_the_seating_chart_is_in_the_break_room_clip_and_not_in_the_records(self):
+        frames = self.card("Break Room 2").body
+        for line in ("1 · Mr. Hale", "2 · Agnes", "3 · Bertram", "4 · Clement"):
+            self.assertIn(line, frames)
+        self.assertNotIn("speaker ·", frames)  # the chart says who is seat 4, not where seat 4 is: the records say where
+        records = telemetry("records.log")
+        self.assertIn('seat=4 position="chair by the speaker"', records)
+        self.assertNotIn("assigned=", records)
+        for line in (l for l in records.splitlines() if " seating " in l):
+            self.assertNotRegex(line.lower(), r"agnes|bertram|clement|hale")
+
+    def test_the_seat_sensors_name_nobody(self):
+        lines = [l for l in telemetry("system.log").splitlines() if "source=seat-sensor" in l]
+        self.assertTrue(lines)
+        for line in lines:
+            self.assertRegex(line, r"room=break-room-2 seat=[1-4] state=(occupied|vacant)")
+            self.assertNotRegex(line.lower(), r"agnes|bertram|clement|hale|employee|badge|speaker|window|door")
+        seat4 = [l.split()[0][11:] + " " + l.split("state=")[1].split()[0] for l in lines if "seat=4" in l]
+        self.assertEqual(seat4, ["02:59:56 occupied", "03:00:52 vacant", "03:06:50 occupied", "03:07:02 vacant"])
+        # chair 4 is empty at 03:01:20, when the camera shows only the cable and the napkin on it, and through the whole outage
+        self.assertLess("03:00:52", "03:01:20")
+        self.assertIn("seat=4 state=occupied ingested_at=", "\n".join(l for l in lines if "T03:06:50" in l))
+
+    def test_the_decoys_and_mirrored_tells_are_there(self):
+        self.assertIn("HE HAS TO STOP. THE ELEVATOR.", self.card("Agnes at home").body)
+        self.assertIn("fire-evacuation plan", self.card("Agnes at home").body)
+        self.assertNotIn("fire-evacuation plan", self.card("Clement at home").body)
+        self.assertIn("Discretion appreciated. R. Hale", self.card("Bertram at home").body)
+        self.assertIn("torn waffle-iron receipt", self.card("Bertram at home").body)
+        self.assertIn("I told Mr. Hale about Agnes's notes", self.card("Bertram").body)
+        self.assertNotIn("And who to stop", CONTENT.reveal.cards[0].body + self.card("Agnes").body)
+        self.assertIn("one thing inside", self.card("Clement at home").body)
+        self.assertIn("Tell me about the folder.", self.card("Clement at home").body)
+        self.assertIn("Port Quiet Gazette · Letters", CONTENT.outside_world.body)
+        for title in ("T-A · Agnes · 03:30", "T-B · Bertram · 03:40"):
+            self.assertIn("pauses for two beats", self.card(title).body)
+        for title, line in (("T-A · Agnes · 03:30", "There was shouting."), ("T-B · Bertram · 03:40", "Somebody was shouting.")):
+            self.assertIn(line, self.card(title).body)
+        self.assertNotIn("pauses", self.card("T-C · Clement · 03:20").body)
+
+    def test_telemetry_still_never_holds_the_yarn_or_the_chart(self):
+        everything = "\n".join(telemetry(n) for n in ("records.log", "ambient-mic.log", "chat.log", "system.log",
+                                                       "door-and-badge-events.log"))
+        self.assertNotRegex(everything, r"(?i)yarn|thread|napkin|seating chart|sticky note|receipt|letterhead|lighthouse")
 
 
 class FullPathTest(unittest.TestCase):

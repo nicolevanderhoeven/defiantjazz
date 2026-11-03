@@ -25,16 +25,21 @@ aliases: elevator, car, lift, e
 
 ## Break Room 2
 option: Break Room 2
-note: Clement says he never left the speaker
+note: Where the Cocoa Hour was held
 aliases: break room, breakroom, br, speaker
 
 [Two frames from the Break Room 2 security camera. This is Floor Security's own footage, so it isn't in the telemetry the AI has. Grainy, filmed from high up, close on the room's emergency speaker and the chair beside it.]
 > Break Room 2 camera · 03:01:20
-[Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top. Quiet background sound: voices murmuring, cups, no music. The camera slowly zooms in on the cable and the napkin.]
+[Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top. On the wall beside the speaker, a printed seating chart for the Cocoa Hour is pinned up, grainy but legible. Quiet background sound: voices murmuring, cups, no music. The camera slowly zooms in on the cable and the napkin.]
+> COCOA HOUR · BREAK ROOM 2 · SEATING
+> 1 · Mr. Hale
+> 2 · Agnes
+> 3 · Bertram
+> 4 · Clement
 > 03:02:00 · Cameras offline.
 [The screen is black. Jazz starts playing on the emergency speaker.]
 > 03:07:03
-[Same angle, same zoom. The cable and the napkin are gone from the chair. Clement sits on the floor beside the chair, in his Christmas sweater, wearing his lanyard with the badge facing out. Nobody else is in the shot.]
+[Same angle, same zoom. The cable and the napkin are gone from the chair. Someone sits on the floor beside the chair, too dark and grainy to make out, a lanyard badge facing out. Nobody else is in the shot.]
 
 ## Supply Room B
 option: Supply Room B

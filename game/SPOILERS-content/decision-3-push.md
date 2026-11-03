@@ -12,7 +12,7 @@ note: ask about the notes in the elevator's phone panel
 aliases: agnes, a
 
 > 04:30 · Kipsake · Interview
-[Agnes sits on the chair, wearing her lanyard. Her right wrist is in a crepe bandage from the medical exam. Four notes in evidence bags lie in her lap. One of them is the note found in Mr. Hale's jacket. It begins "If you are reading this, you are me…" and ends "Don't trust them."]
+[Agnes sits on the chair, wearing her lanyard and her Christmas sweater. Her right wrist is in a crepe bandage from the medical exam. Four notes in evidence bags lie in her lap. One of them is the note found in Mr. Hale's jacket. It begins "If you are reading this, you are me…" and ends "Don't trust them."]
 You: These were in the elevator phone panel.
 Agnes: They're for her. The other me.
 [She takes the folded note from behind her badge card and adds it to the pile.]
@@ -27,10 +27,10 @@ note: ask why he lied about the cocoa
 aliases: bertram, b
 
 > 04:30 · Kipsake · Interview
-[Bertram sits on the chair, wearing his lanyard, the ice pack on his shoulder.]
+[Bertram sits on the chair, wearing his lanyard and his Christmas sweater, the ice pack on his shoulder.]
 You: You weren't having cocoa, Bertram.
 [His shoulders slump.]
-Bertram: Fine. I was making a waffle.
+Bertram: Fine. I was making a waffle. And yes, I told Mr. Hale about Agnes's notes. I wish I hadn't.
 You: And who brought you the ice?
 Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.
 
@@ -43,8 +43,8 @@ aliases: clement, c
 [Clement sits on the chair, wearing his lanyard and Christmas sweater. On his lap is a clipboard with a Kipsake "Incident Statement" form.]
 You: For the record, Clement. In your own hand. What did you do after the lights came back?
 [He writes without speaking. What he writes on the form, in block capitals, line by line:]
-> 03:07 Lights returned. I was seated by the speaker.
-> I went to the corridor and checked on Bertram (shoulder).
+> 03:07 Lights returned. I was seated.
+> I went to the corridor and checked on Bertram.
 > I hope ~~Peggy~~ Agnes is being looked after.
-[The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. His hands are clean. He holds out the clipboard to you.]
+[The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. He holds out the clipboard to you.]
 Clement: Is that all?

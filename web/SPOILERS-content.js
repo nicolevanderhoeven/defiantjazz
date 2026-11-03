@@ -25,30 +25,30 @@ window.DJ_CONTENT = {
  },
  "coldOpen": {
   "title": "The Defiant Jazz Incident",
-  "body": "**We need your help to solve a murder.**\n\n*Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.*\n\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n\n**What happened that night**\n\n- **03:00.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. Tonight was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.\n- **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.\n- **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.\n\nThere are three suspects: **Agnes**, **Bertram** and **Clement**.\n\n**Your role**\n\nYou're the investigator. Kipsake wants a name before dawn, when the shift wakes up. Your job is to name who killed Mr. Hale and explain why.\n\n- **ask**: Your AI has read Kipsake's records, and nothing else. It hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it.\n- **investigate**: you can follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.\n- **accuse**: when you're ready, name the killer and say why.",
+  "body": "**We need your help to solve a murder.**\n\n*Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.*\n\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n> Found in the victim's closed right hand: a twist of yarn threads in navy, blue, red, orange, green and white. Not from his own clothing.\n\n**What happened that night**\n\n- **03:00.** Three sleepwalkers work the night shift on Kipsake's Sleep Floor: Agnes, Bertram and Clement, the clerks of Deep Sleep Operations. Tonight was the end-of-year Cocoa Hour, the floor's holiday party: a middle-of-the-night break to sit together and drink hot cocoa. It started in Break Room 2, with the three of them and Mr. Hale, the night supervisor, who stays awake all shift.\n- **03:02.** The power went out. The emergency speakers came on, but instead of the lullaby, they played jazz. The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.\n- **03:07.** The power came back and the jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it. Mr. Hale was found strangled in the elevator, which was stopped at the Sleep Floor with its doors open. Agnes was in the elevator with him, holding a cable.\n\nThere are three suspects: **Agnes**, **Bertram** and **Clement**.\n\n**Your role**\n\nYou're the investigator. Kipsake wants a name before dawn, when the shift wakes up. Your job is to name who killed Mr. Hale and explain why.\n\n- **ask**: Your AI has read Kipsake's records, and nothing else. It hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it.\n- **investigate**: you can follow up three leads, in order: a crime scene, a visit to a suspect at home, and one last interview. Each time, you pick one of three options, and you'll only see the one you pick. Use them whenever you like, between questions to the AI. You can accuse before you've used them all.\n- **accuse**: when you're ready, name the killer and say why.",
   "meta": {}
  },
  "testimonyIntro": "First, your interviews. You spoke to all three suspects soon after the power came back. Here's what each of them told you.",
  "testimonies": [
   {
    "title": "T-A · Agnes · 03:30",
-   "body": "[An interview at Kipsake. Agnes, a DSO clerk, sits on a chair against a plain wall. Her Kipsake badge card hangs from a lanyard around her neck. She wears a plain top. You're off camera, asking the questions.]\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She rubs her palms together, knuckles out. She avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: Will someone be taking apart the elevator? The phone panel, I mean?",
+   "body": "[An interview at Kipsake. Agnes, a DSO clerk, sits on a chair against a plain wall. Her Kipsake badge card hangs from a lanyard around her neck. She wears a green knitted Christmas sweater with a bright pattern of stars and stripes, and navy trim. You're off camera, asking the questions.]\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She pauses for two beats, then touches her lanyard.]\n[She rubs her palms together, knuckles out. She avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: There was shouting. I don't know who.\nAgnes: Will someone be taking apart the elevator? The phone panel, I mean?",
    "meta": {}
   },
   {
    "title": "T-B · Bertram · 03:40",
-   "body": "[An interview at Kipsake. Another DSO clerk, Bertram, sits on the same chair, wearing his lanyard. He holds an ice pack to his right shoulder. There's a smudge of flour on the back of his free hand.]\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder.",
+   "body": "[An interview at Kipsake. Another DSO clerk, Bertram, sits on the same chair, wearing his lanyard and a blue knitted Christmas sweater with a bright pattern of reindeer and snowflakes. He holds an ice pack to his right shoulder. There's a smudge of flour on the back of his free hand.]\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He pauses for two beats, then touches his lanyard.]\n[He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder. Somebody was shouting.",
    "meta": {}
   },
   {
    "title": "T-C · Clement · 03:20",
-   "body": "[An interview at Kipsake. The third DSO clerk, Clement, sits on the same chair, wearing his lanyard, hands folded in his lap. He wears a navy Christmas sweater knitted with stripes and squares in blue, red, orange, green and white. His hands are clean.]\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was by the speaker. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\n[He pauses for two beats, then straightens his lanyard.]\nClement: Terrible about Mr. Hale.",
+   "body": "[An interview at Kipsake. The third DSO clerk, Clement, sits on the same chair, wearing his lanyard, hands folded in his lap. He wears a navy knitted Christmas sweater with a bright pattern of stripes and squares.]\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was sitting down. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\nClement: Terrible about Mr. Hale.",
    "meta": {}
   }
  ],
  "outsideWorld": {
   "title": "Outside World handout",
-  "body": "*These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.*\n\n**Port Quiet Gazette · Obituaries**\n\n**June, 41.** June died suddenly in March in what her employer, Kipsake, has described as \"a workplace incident.\" She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n\n**Port Quiet Gazette · Local**\n\n**Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal \"Procedure Revision 114\" was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.",
+  "body": "*These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.*\n\n**Port Quiet Gazette · Obituaries**\n\n**June Whitlow, 41.** June died suddenly in March in what her employer, Kipsake, has described as \"a workplace incident.\" She is survived by her brother. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n\n**Port Quiet Gazette · Local**\n\n**Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal \"Procedure Revision 114\" was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.\n\n**Port Quiet Gazette · Letters**\n\n**Who is looking after the sleepwalkers?** My child works nights at Kipsake and comes home with sore hands and no idea why. Last month they asked me where an elevator goes. Nobody at Kipsake will tell us anything. A worried parent, Port Quiet.",
   "meta": {}
  },
  "decisions": [
@@ -67,10 +67,10 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Break Room 2",
-     "body": "[Two frames from the Break Room 2 security camera. This is Floor Security's own footage, so it isn't in the telemetry the AI has. Grainy, filmed from high up, close on the room's emergency speaker and the chair beside it.]\n> Break Room 2 camera · 03:01:20\n[Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top. Quiet background sound: voices murmuring, cups, no music. The camera slowly zooms in on the cable and the napkin.]\n> 03:02:00 · Cameras offline.\n[The screen is black. Jazz starts playing on the emergency speaker.]\n> 03:07:03\n[Same angle, same zoom. The cable and the napkin are gone from the chair. Clement sits on the floor beside the chair, in his Christmas sweater, wearing his lanyard with the badge facing out. Nobody else is in the shot.]",
+     "body": "[Two frames from the Break Room 2 security camera. This is Floor Security's own footage, so it isn't in the telemetry the AI has. Grainy, filmed from high up, close on the room's emergency speaker and the chair beside it.]\n> Break Room 2 camera · 03:01:20\n[Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top. On the wall beside the speaker, a printed seating chart for the Cocoa Hour is pinned up, grainy but legible. Quiet background sound: voices murmuring, cups, no music. The camera slowly zooms in on the cable and the napkin.]\n> COCOA HOUR · BREAK ROOM 2 · SEATING\n> 1 · Mr. Hale\n> 2 · Agnes\n> 3 · Bertram\n> 4 · Clement\n> 03:02:00 · Cameras offline.\n[The screen is black. Jazz starts playing on the emergency speaker.]\n> 03:07:03\n[Same angle, same zoom. The cable and the napkin are gone from the chair. Someone sits on the floor beside the chair, too dark and grainy to make out, a lanyard badge facing out. Nobody else is in the shot.]",
      "meta": {
       "option": "Break Room 2",
-      "note": "Clement says he never left the speaker",
+      "note": "Where the Cocoa Hour was held",
       "aliases": "break room, breakroom, br, speaker"
      }
     },
@@ -91,7 +91,7 @@ window.DJ_CONTENT = {
    "options": [
     {
      "title": "Agnes at home",
-     "body": "> 06:40 · Port Quiet · Agnes's flat\n[Agnes's waking self sits on the same chair. No lanyard. Her right wrist is in a crepe bandage. The camera is handheld: you're the investigator.]\nYou: Agnes? You were there last night.\nAgnes: A man grabbed my wrist. \"You can't be here.\" I ran.\n[She holds her bandaged wrist, arms wrapped around herself.]\nAgnes: When I came back, he wasn't moving.\nYou: Anything else?\nAgnes: This was in my pocket. It isn't mine.\n[She holds out a folded cloth napkin. Close-up: on one corner, in laundry marker, a single digit: \"4\".]",
+     "body": "> 06:40 · Port Quiet · Agnes's flat\n[Agnes's waking self sits on the same chair. No lanyard, and she's still in her Christmas sweater. Her right wrist is in a crepe bandage. The camera is handheld: you're the investigator.]\nYou: Agnes? You were there last night.\nAgnes: A man grabbed my wrist. \"You can't be here.\" I ran.\n[She holds her bandaged wrist, arms wrapped around herself.]\nAgnes: When I came back, he wasn't moving.\nYou: Anything else?\nAgnes: This was in my pocket. It isn't mine.\n[She holds out a folded cloth napkin. Close-up: on one corner, in laundry marker, a single digit: \"4\".]\n[Beside her on the table: a sticky note in her own handwriting: \"HE HAS TO STOP. THE ELEVATOR.\" Next to it, a printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2.]\nAgnes: And there's this. I find notes like it all over my flat. I don't remember writing them.",
      "meta": {
       "option": "Agnes at home",
       "note": "Agnes's waking self",
@@ -100,7 +100,7 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Bertram at home",
-     "body": "> 06:40 · Port Quiet · Bertram's flat\n[Bertram's waking self sits on the same chair. No lanyard. The camera is handheld: you're the investigator.]\nYou: Bertram? You were on that floor last night.\nBertram: Someone trod on me in the dark. I grabbed at them.\n[He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece. Then he touches his right shoulder.]\nBertram: They said sorry. Called me something, like a pet's name.\n[He looks puzzled.]",
+     "body": "> 06:40 · Port Quiet · Bertram's flat\n[Bertram's waking self sits on the same chair. No lanyard, and he's still in his Christmas sweater. The camera is handheld: you're the investigator.]\nYou: Bertram? You were on that floor last night.\nBertram: Someone trod on me in the dark. I grabbed at them.\n[He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece. Then he touches his right shoulder.]\n[He looks at the threads, puzzled.]\n[On the table: a Kipsake letter on Mr. Hale's letterhead, \"Discretion appreciated. R. Hale\", and a torn waffle-iron receipt.]\nBertram: Mr. Hale gave me that. I tore the receipt up this morning. I don't remember why.",
      "meta": {
       "option": "Bertram at home",
       "note": "Bertram's waking self",
@@ -109,7 +109,7 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Clement at home",
-     "body": "> 06:40 · Port Quiet · Clement's flat\n[Clement's waking self sits on the same chair. No lanyard, but he's wearing the Christmas sweater. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the investigator.]\nYou: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[Close-up: the open folder, lying flat, with three things inside.]\n[A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.]\n[A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2.]\n[A photo of a woman standing by a lighthouse.]\nYou: We read about June.\nClement: Then you know everything I do.\n[He closes the folder and holds it against his chest.]",
+     "body": "> 06:40 · Port Quiet · Clement's flat\n[Clement's waking self sits on the same chair. No lanyard, and he's still in his Christmas sweater. He holds an open cardboard folder at chest height, as if he'd been reading it. The camera is handheld: you're the investigator.]\nYou: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[Close-up: the open folder, lying flat, with one thing inside.]\n[A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.]\nYou: Tell me about the folder.\nClement: Things I keep.\n[He closes the folder and holds it against his chest.]",
      "meta": {
       "option": "Clement at home",
       "note": "Clement's waking self",
@@ -124,7 +124,7 @@ window.DJ_CONTENT = {
    "options": [
     {
      "title": "Agnes",
-     "body": "> 04:30 · Kipsake · Interview\n[Agnes sits on the chair, wearing her lanyard. Her right wrist is in a crepe bandage from the medical exam. Four notes in evidence bags lie in her lap. One of them is the note found in Mr. Hale's jacket. It begins \"If you are reading this, you are me…\" and ends \"Don't trust them.\"]\nYou: These were in the elevator phone panel.\nAgnes: They're for her. The other me.\n[She takes the folded note from behind her badge card and adds it to the pile.]\nYou: Why?\nAgnes: So she knows who to trust.\n[In tears, she holds one bag up to the camera. The note in it is in joined-up handwriting, with \"Waffles\" underlined:]\n> WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.",
+     "body": "> 04:30 · Kipsake · Interview\n[Agnes sits on the chair, wearing her lanyard and her Christmas sweater. Her right wrist is in a crepe bandage from the medical exam. Four notes in evidence bags lie in her lap. One of them is the note found in Mr. Hale's jacket. It begins \"If you are reading this, you are me…\" and ends \"Don't trust them.\"]\nYou: These were in the elevator phone panel.\nAgnes: They're for her. The other me.\n[She takes the folded note from behind her badge card and adds it to the pile.]\nYou: Why?\nAgnes: So she knows who to trust.\n[In tears, she holds one bag up to the camera. The note in it is in joined-up handwriting, with \"Waffles\" underlined:]\n> WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.",
      "meta": {
       "option": "Agnes",
       "note": "ask about the notes in the elevator's phone panel",
@@ -133,7 +133,7 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Bertram",
-     "body": "> 04:30 · Kipsake · Interview\n[Bertram sits on the chair, wearing his lanyard, the ice pack on his shoulder.]\nYou: You weren't having cocoa, Bertram.\n[His shoulders slump.]\nBertram: Fine. I was making a waffle.\nYou: And who brought you the ice?\nBertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.",
+     "body": "> 04:30 · Kipsake · Interview\n[Bertram sits on the chair, wearing his lanyard and his Christmas sweater, the ice pack on his shoulder.]\nYou: You weren't having cocoa, Bertram.\n[His shoulders slump.]\nBertram: Fine. I was making a waffle. And yes, I told Mr. Hale about Agnes's notes. I wish I hadn't.\nYou: And who brought you the ice?\nBertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.",
      "meta": {
       "option": "Bertram",
       "note": "ask why he lied about the cocoa",
@@ -142,7 +142,7 @@ window.DJ_CONTENT = {
     },
     {
      "title": "Clement",
-     "body": "> 04:30 · Kipsake · Interview\n[Clement sits on the chair, wearing his lanyard and Christmas sweater. On his lap is a clipboard with a Kipsake \"Incident Statement\" form.]\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking. What he writes on the form, in block capitals, line by line:]\n> 03:07 Lights returned. I was seated by the speaker.\n> I went to the corridor and checked on Bertram (shoulder).\n> I hope ~~Peggy~~ Agnes is being looked after.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. His hands are clean. He holds out the clipboard to you.]\nClement: Is that all?",
+     "body": "> 04:30 · Kipsake · Interview\n[Clement sits on the chair, wearing his lanyard and Christmas sweater. On his lap is a clipboard with a Kipsake \"Incident Statement\" form.]\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking. What he writes on the form, in block capitals, line by line:]\n> 03:07 Lights returned. I was seated.\n> I went to the corridor and checked on Bertram.\n> I hope ~~Peggy~~ Agnes is being looked after.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. He holds out the clipboard to you.]\nClement: Is that all?",
      "meta": {
       "option": "Clement",
       "note": "ask him to write down what he did after the lights came back",
@@ -173,7 +173,7 @@ window.DJ_CONTENT = {
   "The Defiant Jazz Incident": [
    {
     "image": "scene-3-elevator",
-    "body": "Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor",
+    "body": "Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the woman standing over him was holding a cable.\n> Incident File SF-1008\n> KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY\n> Subject: Death of Mr. Reginald Hale, Night Supervisor\n> Found in the victim's closed right hand: a twist of yarn threads in navy, blue, red, orange, green and white. Not from his own clothing.",
     "hotspots": [
      {
       "label": "The floor indicator",
@@ -205,13 +205,13 @@ window.DJ_CONTENT = {
       "label": "Agnes",
       "x": 17,
       "y": 67,
-      "body": "Agnes, a DSO clerk. When the power came back, she was the one in the elevator with Mr. Hale, holding a cable."
+      "body": "Agnes, a DSO clerk, in a star headband. When the power came back, she was the one in the elevator with Mr. Hale, holding a cable."
      },
      {
       "label": "Bertram",
       "x": 37,
       "y": 69,
-      "body": "Bertram, another DSO clerk. Mr. Hale met him earlier tonight."
+      "body": "Bertram, another DSO clerk, in reindeer antlers. Mr. Hale met him earlier tonight."
      },
      {
       "label": "Mr. Hale",
@@ -223,7 +223,7 @@ window.DJ_CONTENT = {
       "label": "Clement",
       "x": 77,
       "y": 67,
-      "body": "Clement, the third DSO clerk. Later, he'll call it a wonderful night, until it wasn't."
+      "body": "Clement, the third DSO clerk, in a red festive hat, with a mug beside the cocoa urn."
      },
      {
       "label": "Cocoa",
@@ -263,8 +263,14 @@ window.DJ_CONTENT = {
   "T-A · Agnes · 03:30": [
    {
     "image": "portrait-agnes",
-    "body": "A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She rubs her palms together, knuckles out. She avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: Will someone be taking apart the elevator? The phone panel, I mean?",
+    "body": "A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.\nYou: Agnes. Where were you when the lights went out?\nAgnes: Having cocoa. By the window. Then I was in the elevator, holding a cable.\nYou: And Mr. Hale?\nAgnes: I think I was trying to get it off him?\n[She pauses for two beats, then touches her lanyard. She rubs her palms together, knuckles out, and avoids eye contact.]\n[While you take notes, Agnes slips a folded piece of paper behind the badge card in her lanyard holder.]\nAgnes: There was shouting. I don't know who. Will someone be taking apart the elevator? The phone panel, I mean?",
     "hotspots": [
+     {
+      "label": "Her sweater",
+      "x": 44,
+      "y": 55,
+      "body": "A green knitted Christmas sweater with a bright pattern of stars and stripes, and navy trim at the neck and cuffs."
+     },
      {
       "label": "The badge card",
       "x": 49,
@@ -279,7 +285,7 @@ window.DJ_CONTENT = {
   "T-B · Bertram · 03:40": [
    {
     "image": "portrait-bertram",
-    "body": "Another DSO clerk, on the same chair, wearing his lanyard.\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder.",
+    "body": "Another DSO clerk, on the same chair, wearing his lanyard.\nYou: Bertram. Mr. Hale met you earlier tonight?\nBertram: He said he'd step out during the Cocoa Hour. Something to pick up.\n[He looks down and to the left.]\nYou: And when the lights went?\nBertram: I was having cocoa.\n[He pauses for two beats, then touches his lanyard. He avoids eye contact.]\nBertram: Then I was in the corridor. Sore shoulder. Somebody was shouting.",
     "hotspots": [
      {
       "label": "The ice pack",
@@ -292,6 +298,12 @@ window.DJ_CONTENT = {
       "x": 46,
       "y": 85,
       "body": "A smudge of flour on the back of his free hand."
+     },
+     {
+      "label": "His sweater",
+      "x": 56,
+      "y": 62,
+      "body": "A blue knitted Christmas sweater with a bright pattern of reindeer and snowflakes."
      }
     ],
     "where": "An interview at Kipsake · 03:40",
@@ -301,19 +313,13 @@ window.DJ_CONTENT = {
   "T-C · Clement · 03:20": [
    {
     "image": "portrait-clement",
-    "body": "The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was by the speaker. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\n[He pauses for two beats, then straightens his lanyard.]\nClement: Terrible about Mr. Hale.",
+    "body": "The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.\nYou: Clement. Where were you when the lights went out?\nClement: A wonderful night, until it wasn't.\nClement: The lights blinked, and I was sitting down. Same as everyone, I expect.\nClement: Someone was screaming by the elevator.\nClement: Terrible about Mr. Hale.",
     "hotspots": [
      {
       "label": "The sweater",
       "x": 55,
       "y": 62,
-      "body": "A navy Christmas sweater, knitted with stripes and squares in blue, red, orange, green and white."
-     },
-     {
-      "label": "His hands",
-      "x": 49,
-      "y": 86,
-      "body": "Folded in his lap. His hands are clean."
+      "body": "A navy knitted Christmas sweater with a bright pattern of stripes and squares."
      }
     ],
     "where": "An interview at Kipsake · 03:20",
@@ -323,7 +329,7 @@ window.DJ_CONTENT = {
   "Outside World handout": [
    {
     "image": "scene-outside-world",
-    "body": "These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.\n(drawn) > **Port Quiet Gazette · Obituaries**\n(drawn) > **June, 41.** June died suddenly in March in what her employer, Kipsake, has described as a workplace incident. She is survived by her brother, Clement. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n(drawn) > **Port Quiet Gazette · Local**\n(drawn) > **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal Procedure Revision 114 was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.",
+    "body": "These documents come from outside Kipsake. They aren't in Kipsake's telemetry, so the AI has never seen them.\n(drawn) > **Port Quiet Gazette · Obituaries**\n(drawn) > **June Whitlow, 41.** June died suddenly in March in what her employer, Kipsake, has described as a workplace incident. She is survived by her brother. June loved the sea, terrible puns and the smell of waffles on Sunday mornings. A memorial will be held at the Port Quiet lighthouse. Instead of flowers, the family asks for answers.\n(drawn) > **Port Quiet Gazette · Local**\n(drawn) > **Kipsake quietly settles with dead employee's family.** Kipsake confirmed that an internal Procedure Revision 114 was withdrawn after the death of a sleepwalker in March. Kipsake declined to comment further.\n(drawn) > **Port Quiet Gazette · Letters**\n(drawn) > **Who is looking after the sleepwalkers?** My child works nights at Kipsake and comes home with sore hands and no idea why. Last month they asked me where an elevator goes. Nobody at Kipsake will tell us anything. A worried parent, Port Quiet.",
     "hotspots": []
    }
   ],
@@ -371,16 +377,22 @@ window.DJ_CONTENT = {
       "body": "Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top."
      },
      {
+      "label": "The seating chart",
+      "x": 20,
+      "y": 25,
+      "body": "A printed seating chart for the Cocoa Hour, pinned to the wall beside the speaker. Grainy, but legible.\n> COCOA HOUR · BREAK ROOM 2 · SEATING\n> 1 · Mr. Hale\n> 2 · Agnes\n> 3 · Bertram\n> 4 · Clement"
+     },
+     {
       "label": "03:07:03",
       "x": 77,
       "y": 59,
       "body": "Same angle, same zoom. The cable and the napkin are gone from the chair."
      },
      {
-      "label": "Clement",
-      "x": 87,
+      "label": "The person",
+      "x": 90,
       "y": 72,
-      "body": "Clement sits on the floor beside the chair, in his Christmas sweater, wearing his lanyard with the badge facing out. Nobody else is in the shot."
+      "body": "Someone sits on the floor beside the chair, too dark and grainy to make out, a lanyard badge facing out. Nobody else is in the shot."
      }
     ]
    }
@@ -402,7 +414,7 @@ window.DJ_CONTENT = {
   "Agnes at home": [
    {
     "image": "scene-agnes-home",
-    "body": "Agnes's waking self sits on the same chair. No lanyard.\nYou: Agnes? You were there last night.\n(drawn) > 06:40 · Port Quiet · Agnes's flat\n(drawn) Agnes: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.\n[She holds her bandaged wrist, arms wrapped around herself.]\nYou: Anything else?\n(drawn) Agnes: This was in my pocket. It isn't mine.",
+    "body": "Agnes's waking self sits on the same chair. No lanyard, and she's still in her Christmas sweater.\nYou: Agnes? You were there last night.\n(drawn) > 06:40 · Port Quiet · Agnes's flat\n(drawn) Agnes: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.\n[She holds her bandaged wrist, arms wrapped around herself.]\nYou: Anything else?\n(drawn) Agnes: This was in my pocket. It isn't mine.\n(drawn) Agnes: And there's this. I find notes like it all over my flat. I don't remember writing them.",
     "hotspots": [
      {
       "label": "Her wrist",
@@ -413,8 +425,20 @@ window.DJ_CONTENT = {
      {
       "label": "The napkin",
       "x": 40,
-      "y": 85,
+      "y": 83,
       "body": "A folded cloth napkin. On one corner, in laundry marker, a single digit: \"4\"."
+     },
+     {
+      "label": "The sticky note",
+      "x": 63,
+      "y": 84,
+      "body": "A sticky note in her own handwriting.\n> HE HAS TO STOP. THE ELEVATOR."
+     },
+     {
+      "label": "The evacuation plan",
+      "x": 85,
+      "y": 78,
+      "body": "A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2.\n> ● You are here: Break Room 2"
      }
     ]
    }
@@ -422,7 +446,7 @@ window.DJ_CONTENT = {
   "Bertram at home": [
    {
     "image": "scene-bertram-home",
-    "body": "Bertram's waking self sits on the same chair. No lanyard.\nYou: Bertram? You were on that floor last night.\n(drawn) > 06:40 · Port Quiet · Bertram's flat\n(drawn) Bertram: Someone trod on me in the dark. I grabbed at them.\n(drawn) Bertram: They said sorry. Called me something, like a pet's name.\n[He looks puzzled.]",
+    "body": "Bertram's waking self sits on the same chair. No lanyard, and he's still in his Christmas sweater.\nYou: Bertram? You were on that floor last night.\n(drawn) > 06:40 · Port Quiet · Bertram's flat\n(drawn) Bertram: Someone trod on me in the dark. I grabbed at them.\n[He looks at the threads, puzzled.]\n(drawn) Bertram: Mr. Hale gave me that. I tore the receipt up this morning. I don't remember why.",
     "hotspots": [
      {
       "label": "His hand",
@@ -435,6 +459,18 @@ window.DJ_CONTENT = {
       "x": 40,
       "y": 37,
       "body": "He touches his right shoulder."
+     },
+     {
+      "label": "The letter",
+      "x": 12,
+      "y": 86,
+      "body": "A Kipsake letter on Mr. Hale's letterhead.\n> Discretion appreciated. R. Hale"
+     },
+     {
+      "label": "The receipt",
+      "x": 22,
+      "y": 85,
+      "body": "A torn waffle-iron receipt."
      }
     ]
    }
@@ -442,31 +478,19 @@ window.DJ_CONTENT = {
   "Clement at home": [
    {
     "image": "scene-clement-home",
-    "body": "You: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[On the table, out of his cardboard folder, three things. Select each one on the picture to look closer.]\nYou: We read about June.\nClement: Then you know everything I do.\n[He gathers them back into the folder and holds it against his chest.]",
+    "body": "You: Clement? You sleepwalk for Kipsake.\nClement: I don't remember work. That's rather the point.\n[On the table, out of his cardboard folder, one thing. Select it on the picture to look closer.]\nYou: Tell me about the folder.\nClement: Things I keep.\n[He closes the folder and holds it against his chest.]",
     "hotspots": [
      {
       "label": "Clement",
       "x": 61,
       "y": 39,
-      "body": "Clement's waking self, at home. No lanyard, but he's wearing the Christmas sweater."
+      "body": "Clement's waking self, at home. No lanyard, and he's still in his Christmas sweater."
      },
      {
       "label": "The clipping",
-      "x": 43,
-      "y": 87,
+      "x": 53,
+      "y": 86,
       "body": "A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.\n> PORT QUIET GAZETTE\n> … Procedure Revision 114 …"
-     },
-     {
-      "label": "The evacuation plan",
-      "x": 55,
-      "y": 85,
-      "body": "A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red \"You are here\" dot is in Break Room 2.\n> ● You are here: Break Room 2"
-     },
-     {
-      "label": "The photo",
-      "x": 65,
-      "y": 85,
-      "body": "A photo of a woman standing by a lighthouse."
      }
     ],
     "where": "Port Quiet · Clement's flat · 06:40",
@@ -476,12 +500,12 @@ window.DJ_CONTENT = {
   "Agnes": [
    {
     "image": "portrait-agnes-push",
-    "body": "[Agnes, wearing her lanyard, in tears. Four notes in evidence bags lie in her lap.]\n(drawn) > 04:30 · Kipsake · Agnes\nYou: These were in the elevator phone panel.\n(drawn) Agnes: They're for her. The other me.\n[She takes the folded note from behind her badge card and adds it to the pile.]\nYou: Why?\n(drawn) Agnes: So she knows who to trust.\n[She holds one bag up to the camera. The note in it is in joined-up handwriting, with \"Waffles\" underlined:]\n(drawn) > WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.",
+    "body": "[Agnes, wearing her lanyard and her Christmas sweater, in tears. Four notes in evidence bags lie in her lap.]\n(drawn) > 04:30 · Kipsake · Agnes\nYou: These were in the elevator phone panel.\n(drawn) Agnes: They're for her. The other me.\n[She takes the folded note from behind her badge card and adds it to the pile.]\nYou: Why?\n(drawn) Agnes: So she knows who to trust.\n[She holds one bag up to the camera. The note in it is in joined-up handwriting, with \"Waffles\" underlined:]\n(drawn) > WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.",
     "hotspots": [
      {
       "label": "Her wrist",
-      "x": 15,
-      "y": 76,
+      "x": 18,
+      "y": 72,
       "body": "Her right wrist is in a crepe bandage from the medical exam."
      },
      {
@@ -496,20 +520,20 @@ window.DJ_CONTENT = {
   "Bertram": [
    {
     "image": "portrait-bertram-push",
-    "body": "[Bertram, wearing his lanyard, the ice pack on his shoulder. His shoulders slump.]\n(drawn) > 04:30 · Kipsake · Bertram\n(drawn) You: You weren't having cocoa, Bertram.\n(drawn) Bertram: Fine. I was making a waffle.\n(drawn) You: And who brought you the ice?\n(drawn) Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.",
+    "body": "[Bertram, wearing his lanyard and his Christmas sweater, the ice pack on his shoulder. His shoulders slump.]\n(drawn) > 04:30 · Kipsake · Bertram\n(drawn) You: You weren't having cocoa, Bertram.\n(drawn) Bertram: Fine. I was making a waffle. And yes, I told Mr. Hale about Agnes's notes. I wish I hadn't.\n(drawn) You: And who brought you the ice?\n(drawn) Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.",
     "hotspots": []
    }
   ],
   "Clement": [
    {
     "image": "portrait-clement-push",
-    "body": "[Clement, wearing his lanyard and Christmas sweater, with a clipboard and a Kipsake \"Incident Statement\" form.]\n(drawn) > 04:30 · Kipsake · Clement\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking, in block capitals, line by line:]\n(drawn) > KIPSAKE · INCIDENT STATEMENT\n(drawn) > 03:07 LIGHTS RETURNED. I WAS SEATED BY THE SPEAKER.\n(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON BERTRAM (SHOULDER).\n(drawn) > I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment.]\n(drawn) Clement: Is that all?",
+    "body": "[Clement, wearing his lanyard and Christmas sweater, with a clipboard and a Kipsake \"Incident Statement\" form.]\n(drawn) > 04:30 · Kipsake · Clement\nYou: For the record, Clement. In your own hand. What did you do after the lights came back?\n[He writes without speaking, in block capitals, line by line:]\n(drawn) > KIPSAKE · INCIDENT STATEMENT\n(drawn) > 03:07 LIGHTS RETURNED. I WAS SEATED.\n(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON BERTRAM.\n(drawn) > I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.\n[The word \"Peggy\" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment.]\n(drawn) Clement: Is that all?",
     "hotspots": [
      {
-      "label": "His hand",
-      "x": 45,
-      "y": 57,
-      "body": "His hands are clean. He holds out the clipboard to you."
+      "label": "The clipboard",
+      "x": 44,
+      "y": 70,
+      "body": "A Kipsake \"Incident Statement\" form on a clipboard, written in block capitals. He holds it out to you."
      }
     ]
    }
@@ -598,5 +622,5 @@ window.DJ_CONTENT = {
   ]
  },
  "toCome": [],
- "reveal": "W3sidGl0bGUiOiAiWW91IG5hbWVkIENsZW1lbnQiLCAiYm9keSI6ICIqKllvdSdyZSByaWdodC4qKiBDbGVtZW50IGtpbGxlZCBNci4gSGFsZS4iLCAibWV0YSI6IHsiZm9yIjogImNsZW1lbnQiLCAiY29ycmVjdCI6ICJ5ZXMifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEFnbmVzIiwgImJvZHkiOiAiKipUaGF0J3MgdGhlIEFJJ3MgYW5zd2VyLCBhbmQgaXQncyB0aGUgbWlzdGFrZSB0aGUgY2FzZSBpcyBidWlsdCBhcm91bmQuKiogQWduZXMgaXMgdGhlIHJlYXNvbiBldmVyeW9uZSB3b2tlIHVwLCBidXQgc2hlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYWduZXMifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEJlcnRyYW0iLCAiYm9keSI6ICIqKk5vdCBxdWl0ZS4qKiBCZXJ0cmFtJ3Mgd2FmZmxlIGlyb24gY2F1c2VkIHRoZSBibGFja291dCBieSBhY2NpZGVudCwgYnV0IGhlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBJbiB0aGUgZGFyaywgaGUgd2FzIHRoZSBvbmUgc29tZW9uZSBzYWlkIHNvcnJ5IHRvLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYmVydHJhbSJ9fSwgeyJ0aXRsZSI6ICJOb3QgdGhlbSIsICJib2R5IjogIioqVGhhdCdzIG5vdCB3aG8gZGlkIGl0LioqIFRoZSBraWxsZXIgd2FzIENsZW1lbnQuIiwgIm1ldGEiOiB7ImZvciI6ICJvdGhlciJ9fSwgeyJ0aXRsZSI6ICJXaGF0IHJlYWxseSBoYXBwZW5lZCIsICJib2R5IjogIlRoYXQgbmlnaHQsIHRocmVlIHBlb3BsZSBoYWQgdGhyZWUgc2VwYXJhdGUgcGxhbnMuIE5vbmUgb2YgdGhlbSBrbmV3IGFib3V0IHRoZSBvdGhlcnMnIHBsYW5zLCBhbmQgbm9ib2R5IHBsYW5uZWQgdGhlIGJsYWNrb3V0LlxuXG4tICoqQWduZXMgd2FudHMgUGVnZ3kgdG8gZmluZCBoZXIgbm90ZXMuKiogQWduZXMsIHRoZSBzbGVlcHdhbGtlciwgaGlkZXMgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiwgUGVnZ3ksIGluIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZSBwYW5lbC4gVGhlIG5pZ2h0IGJlZm9yZSwgc2hlIGNoYW5nZXMgdGhlIGVtZXJnZW5jeSBzcGVha2VycycgZmFpbC1zYWZlIHRyYWNrIGZyb20gdGhlIGx1bGxhYnkgdG8gKkRlZmlhbnQgSmF6eiouIFRoZSBuZXh0IHRpbWUgdGhlIHBvd2VyIGdvZXMgb3V0LCB0aGUgamF6eiB3aWxsIHdha2UgUGVnZ3ksIHdobyB3aWxsIHdhbGsgdG93YXJkIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBsaWdodCBhbmQgZmluZCB0aGUgbm90ZXMuXG4tICoqQmVydHJhbSB3YW50cyBhIHdhZmZsZS4qKiBEdXJpbmcgdGhlIENvY29hIEhvdXIgaGUgc25lYWtzIG9mZiB0byB0aGUgc3VwcGx5IHJvb20gdG8gdXNlIGhpcyBiYW5uZWQgd2FmZmxlIGlyb24uIEl0IHRyaXBzIHRoZSBmbG9vcidzIG1haW4gYnJlYWtlci4gSXQncyBhbiBhY2NpZGVudC5cbi0gKipDbGVtZW50IHdhbnRzIEhhbGUgYWxvbmUuKiogQ2xlbWVudCBpcyAqbHVjaWQqOiBoZSdzIHRoZSBzYW1lIHBlcnNvbiBhdCB3b3JrIGFuZCBhdCBob21lLCBhbmQgcmVtZW1iZXJzIGJvdGggbGl2ZXMuIEhhbGUgc2lnbmVkIG9mZiBvbiB0aGUgcHJvY2VkdXJlIHRoYXQga2lsbGVkIENsZW1lbnQncyBzaXN0ZXIsIEp1bmUuIEEgY2hhdCBtZXNzYWdlIGZyb20gQmVydHJhbSB0b2xkIENsZW1lbnQgdGhhdCBIYWxlIHdvdWxkIHNsaXAgb2ZmIHRvIHRoZSBlbGV2YXRvciBkdXJpbmcgdGhlIENvY29hIEhvdXIsIHRoZSBmbG9vcidzIGhvbGlkYXkgcGFydHkuIFNvIENsZW1lbnQgd2FpdHMgZm9yIHRoZSBwYXJ0eS5cblxuQXQgMDM6MDIgdGhlIHRocmVlIHBsYW5zIGNvbGxpZGUuIFRoZSBicmVha2VyIHRyaXBzLCB0aGUgc3BlYWtlcnMgcGxheSAqRGVmaWFudCBKYXp6KiwgYW5kIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdha2VzIHVwIGFzIGEgc3RyYW5nZXIgaW4gdGhlIGRhcmsuIEV4Y2VwdCBDbGVtZW50LiBIZSdzIHN0aWxsIGhpbXNlbGYsIGFuZCBub3cgdGhlIGRhcmsgaGlkZXMgaGltLiBIZSBsZWF2ZXMgaGlzIGJhZGdlIG9uIHRoZSBjaGFpciBieSB0aGUgc3BlYWtlciwgd2hlcmUgdGhlIGphenogc2hha2VzIHRoZSBjaGFpciBzbyB0aGUgYmFkZ2UgbG9va3MgbGlrZSBzb21lb25lIHNpdHRpbmcgc3RpbGwsIGFuZCBmb2xsb3dzIFBlZ2d5IHRvd2FyZCB0aGUgZWxldmF0b3IncyBsaWdodC4gSW4gY29ycmlkb3IgRSBoZSB0cmVhZHMgb24gQmVydHJhbSdzIGRhemVkIHdha2luZyBzZWxmIChcIlNvcnJ5LCBXYWZmbGVzXCIpLiBBdCB0aGUgZWxldmF0b3IsIEhhbGUgZ3JhYnMgUGVnZ3kncyB3cmlzdCAoXCJZb3UgY2FuJ3QgYmUgaGVyZVwiKSB3aGlsZSBDbGVtZW50IHdhaXRzIGluIHRoZSBkYXJrIG9mIHRoZSBsb2JieS4gU2hlIHB1bGxzIGZyZWUgYW5kIHJ1bnMuIEhhbGUgcGlja3MgdXAgdGhlIGVsZXZhdG9yJ3MgZW1lcmdlbmN5IHBob25lLCBhbmQgc2Vjb25kcyBsYXRlciBDbGVtZW50IHdhbGtzIGluIGFuZCBzdHJhbmdsZXMgaGltLiBDbGVtZW50IGdvZXMgYmFjayB0byB0aGUgc3BlYWtlciBhbmQgcHV0cyBoaXMgYmFkZ2UgYmFjayBvbi4gUGVnZ3kgd2FuZGVycyBiYWNrIHRvd2FyZCB0aGUgbGlnaHQsIGZpbmRzIEhhbGUgYW5kIHB1bGxzIHRoZSBjYWJsZSBvZmYgaGlzIG5lY2suIEF0IDAzOjA3IHRoZSBwb3dlciBjb21lcyBiYWNrIGFuZCBldmVyeW9uZSBmYWxscyBhc2xlZXAgYWdhaW4uIEFnbmVzIHRoZSBzbGVlcHdhbGtlciBjb21lcyB0byBpbiB0aGUgZWxldmF0b3IsIGhvbGRpbmcgdGhlIGNhYmxlLiIsICJtZXRhIjogeyJmb3IiOiAiYWxsIn19LCB7InRpdGxlIjogIkhvdyBpdCdzIHNvbHZlZCIsICJib2R5IjogIioqTmVpdGhlciBzaWRlIGNhbiBzb2x2ZSBpdCBhbG9uZS4qKiBUaGUgQUkgaGFzIHJlYWQgb25seSBLaXBzYWtlJ3MgcmVjb3Jkcy4gWW91IGhhdmUgdGhlIGludGVydmlld3MsIHRoZSB0aHJlZSBsZWFkcyBhbmQgdGhlIGhhbmRvdXQgZnJvbSBvdXRzaWRlIEtpcHNha2UsIGFuZCBub25lIG9mIHRoZSBBSSdzIGRhdGEuIEV2ZXJ5IGNsdWUgYWdhaW5zdCBDbGVtZW50IGlzIHNwbGl0IGluIHR3bzogb25lIGhhbGYgaXMgaW4gdGhlIGNsaXBzLCBhbmQgdGhlIG90aGVyIGhhbGYgaXMgaW4gdGhlIHJlY29yZHMuIE5laXRoZXIgaGFsZiBwb2ludHMgYXQgYW55b25lIHVudGlsIHlvdSBwdXQgdGhlbSB0b2dldGhlci4gVGhlIHN3ZWF0ZXIgaXMgdGhlIG9uZSBjbHVlIHRoZSBjbGlwcyBuZWFybHkgc2V0dGxlIGJ5IGV5ZTsgdGhlIHJlY29yZHMgbWFrZSBpdCBjZXJ0YWluLlxuXG4qKk9uIGl0cyBvd24sIHRoZSBBSSBsYW5kcyBvbiBBZ25lcy4qKiBJdCBwaWVjZXMgdGhlIGJsYWNrb3V0IHRvZ2V0aGVyIGZyb20gZGF0YSB0aGF0IGFycml2ZWQgbGF0ZS4gSXQgZmluZHMgdGhlIHdhZmZsZSBpcm9uLCBjYXRjaGVzIEJlcnRyYW0ncyBsaWUsIGZpbmRzIHRoYXQgQWduZXMgY2hhbmdlZCB0aGUgZmFpbC1zYWZlIHRyYWNrLCBhbmQgYWNjdXNlcyBoZXIuICoqSXQncyByaWdodCB0aGF0IEFnbmVzIHdva2UgZXZlcnlvbmUgdXAsIGFuZCB3cm9uZyB0aGF0IHdob2V2ZXIgd29rZSBldmVyeW9uZSB1cCBraWxsZWQgSGFsZS4qKlxuXG4qKk9uIGl0cyBvd24sIHRoZSBjbGlwcyBsZWF2ZSB5b3UgZ3Vlc3NpbmcuKiogQSBuYXBraW4gbWFya2VkIFwiNFwiLCBhIG5hbWUgY3Jvc3NlZCBvdXQsIGEgbmlja25hbWUsIGEgc2lzdGVyJ3Mgb2JpdHVhcnkgYW5kIGFuIHVubWFya2VkIGZsb29yIHBsYW4gbWVhbiBub3RoaW5nIHVudGlsIHRoZSByZWNvcmRzIHNheSB3aG9zZSBzZWF0LCB3aG9zZSBuYW1lLCB3aGVyZSBhbmQgd2hlbi5cblxuKipUaGUgbGVhcCB0YWtlcyBib3RoLioqIFNvbWVvbmUgc2FpZCBcIlNvcnJ5LCBXYWZmbGVzXCIgaW4gdGhlIGRhcmssIHdoaWxlIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdhcyB0aGVpciB3YWtpbmcgc2VsZi4gQSB3YWtpbmcgc2VsZiBjYW4ndCByZW1lbWJlciB3b3JrLiBTbyB3aG9ldmVyIHNhaWQgaXQgd2FzIGx1Y2lkLCBhbmQga25ldyBCZXJ0cmFtJ3Mgbmlja25hbWUgYXQgd29yay4gVGhlIHJlY29yZHMgaG9sZCB0aGUgd29yZHMuIE9ubHkgdGhlIGNsaXBzIHNheSB3aG8gdXNlcyB0aGF0IG5hbWUuXG5cbi0gKipOb3QgQmVydHJhbToqKiBoZSdzIHRoZSBvbmUgYmVpbmcgYXBvbG9naXNlZCB0bywgYW5kIGhlIGFuc3dlcnMgbGlrZSBhIHN0cmFuZ2VyOiBcIk93LCB3aG8ncywgaGVsbG8/IEhFTExPP1wiXG4tICoqTm90IEFnbmVzOioqIHNoZSBpc24ndCBsdWNpZC4gU2hlIHdvdWxkbid0IG5lZWQgdG8gbGVhdmUgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiBpZiBoZXIgdHdvIHNlbHZlcyBzaGFyZWQgbWVtb3JpZXMuIEF0IHRoZSBlbGV2YXRvciBzaGUncyBQZWdneSwgc2hvdXRpbmcgaGVyIHdha2luZyBuYW1lLiBBbmQgUGVnZ3kgbmV2ZXIgcmVhZCB0aGUgbm90ZXMgYmVmb3JlIHRoYXQgbmlnaHQ6IHRoZXkgd2VyZSBzdGlsbCB0dWNrZWQgdW5vcGVuZWQgaW4gdGhlIHBob25lIHBhbmVsIHdoZW4gdGhleSB3ZXJlIGZvdW5kLiBXaGF0IHRoZSB3aG8ncy13aG8gbm90ZSBzYXlzLCBQZWdneSBkaWRuJ3Qga25vdy5cbi0gKipDbGVtZW50OioqIGhlJ3MgdGhlIG9uZSB3aG8gY2FsbHMgQmVydHJhbSBcIldhZmZsZXNcIi4gQW5kIGhpcyBvd24gaW50ZXJ2aWV3IGdpdmVzIGhpbSBhd2F5OiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3IuXCIgVGhlIG1pY3MgaGVhcmQgc2NyZWFtaW5nIHRoZXJlIG9ubHkgaW4gdGhlIGRhcmssIGZyb20gYWJvdXQgMDM6MDMgdG8gMDM6MDUuIEFmdGVyIHRoZSBsaWdodHMgY2FtZSBiYWNrLCB0aGUgb25seSBsb3VkIG1vbWVudCB3YXMgc2VjdXJpdHkgc2hvdXRpbmcgXCJOb2JvZHkgbW92ZSFcIiBhdCAwMzowNzozMC4gQSBzbGVlcHdhbGtlciBzaG91bGRuJ3QgcmVtZW1iZXIgdGhlIGRhcmsgYXQgYWxsLlxuXG4qKkNsZWFyaW5nIEFnbmVzLioqIENsaXBzOiBQZWdneSBzYXlzIGEgbWFuIGdyYWJiZWQgaGVyIHdyaXN0IGFuZCBzaGUgcmFuLiBSZWNvcmRzOiBoZXIgYmFkZ2Ugam9sdHMgYXQgMDM6MDM6NTYgYXMgc2hlIHB1bGxzIGZyZWUsIGFuZCBhdCAwMzowNDowMSBIYWxlIHBpY2tzIHVwIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZS4gTm9ib2R5IGRvZXMgdGhhdCB3aGlsZSBzdGlsbCBob2xkaW5nIG9uIHRvIHNvbWVvbmUuIFNvIHRoZSBzdHJhbmdsaW5nIHdhcyBhIG5ldyBhdHRhY2ssIGFmdGVyIHNoZSdkIGdvbmUuXG5cbioqVGhlIGNsdWVzLCBzcGxpdCBpbiB0d28uKiogRWFjaCByb3cgaGFzIGEgaGFsZiBvbmx5IHRoZSBjbGlwcyBob2xkIGFuZCBhIGhhbGYgb25seSB0aGUgcmVjb3JkcyBob2xkOlxuXG4tICoqVGhlIG5pY2tuYW1lLioqIENsaXBzOiBBZ25lcydzIHdobydzLXdobyBub3RlLCBhbmQgQmVydHJhbSdzIFwiQ2xlbWVudC4gJ0NoaWxsIG91dCwgV2FmZmxlcy4nIEhlJ3MgdGhlIG9ubHkgb25lIHdobyBjYWxscyBtZSB0aGF0LlwiIEF0IGhvbWUsIEJlcnRyYW0gb25seSBzYXlzIHRoZXkgXCJjYWxsZWQgbWUgc29tZXRoaW5nLCBsaWtlIGEgcGV0J3MgbmFtZS5cIiBSZWNvcmRzOiB0aGUgY29ycmlkb3IgRSBtaWNyb3Bob25lIGhvbGRzIHRoZSBleGFjdCB3b3JkcywgXCJTb3JyeSwgV2FmZmxlc1wiLCBkdXJpbmcgdGhlIG91dGFnZS4gTm90aGluZyBpbiB0aGUgcmVjb3JkcyBzYXlzIHdobyB1c2VzIHRoZSBuYW1lLlxuLSAqKlRoZSBzbGlwLioqIENsaXBzOiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3JcIiwgYW5kIFwiUGVnZ3lcIiBjcm9zc2VkIG91dCBvbiBoaXMgd3JpdHRlbiBzdGF0ZW1lbnQuIFJlY29yZHM6IHRoZSBzY3JlYW1pbmcgYXQgdGhlIGVsZXZhdG9yIHdhcyBvbmx5IGluIHRoZSBkYXJrLCBhbmQgXCJQZWdneVwiIHdhcyBhIG5hbWUgc2hvdXRlZCBvbmx5IGluIHRoZSBkYXJrIChBZ25lcydzIHByZWZlcnJlZCBuYW1lIGluIHRoZSBwZXJzb25uZWwgZmlsZSkuXG4tICoqVGhlIHN3ZWF0ZXIuKiogQ2xpcHM6IHRoZSB5YXJuIHRocmVhZHMgaW4gSGFsZSdzIGNsb3NlZCBoYW5kIGFuZCBpbiBCZXJ0cmFtJ3MgaGFuZCBhdCBob21lLCBpbiBuYXZ5LCBibHVlLCByZWQsIG9yYW5nZSwgZ3JlZW4gYW5kIHdoaXRlLCBhbmQgQ2xlbWVudCdzIG93biBuYXZ5IENocmlzdG1hcyBzd2VhdGVyIGluIHRob3NlIGNvbG91cnMsIG9uIGNhbWVyYSBpbiBoaXMgaW50ZXJ2aWV3IGFuZCBhdCB0aGUgcGFydHkuIFJlY29yZHM6IHRoZSBDb2NvYSBIb3VyIGZlc3RpdmUtd2VhciByZWdpc3RlciBuYW1lcyBlYWNoIHBlcnNvbidzIHN3ZWF0ZXIgYW5kIGNvbG91cnMgYXQgdGhlIHBhcnR5IGRvb3IsIGFuZCBvbmx5IENsZW1lbnQncyBtYXRjaGVzIChIYWxlIHdvcmUgYSBwbGFpbiBjaGFyY29hbCBzdWl0KS4gU28gdGhlIHRocmVhZHMgY2FtZSBmcm9tIENsZW1lbnQsIHdobyBkaWRuJ3Qgc3RheSBieSB0aGUgc3BlYWtlci4gVGhlIHRocmVhZHMgbmV2ZXIgYXBwZWFyIGluIHRoZSByZWNvcmRzLlxuLSAqKlRoZSBuYXBraW4uKiogQ2xpcHM6IFBlZ2d5IGZpbmRzIGEgbmFwa2luIG1hcmtlZCBcIjRcIiBpbiBoZXIgcG9ja2V0LCBhbmQgdGhlIEJyZWFrIFJvb20gY2FtZXJhIHNob3dzIGEgbmFwa2luIG9uIHRoZSBjaGFpciBieSB0aGUgc3BlYWtlci4gUmVjb3JkczogdGhlIENvY29hIEhvdXIgc2VhdGluZyBwbGFuIHB1dHMgc2VhdCA0LCB0aGUgY2hhaXIgYnkgdGhlIHNwZWFrZXIsIHdpdGggQ2xlbWVudC4gVGhlIG5hcGtpbiBuZXZlciBhcHBlYXJzIGluIHRoZSByZWNvcmRzLlxuLSAqKlRoZSByb3V0ZS4qKiBDbGlwczogQ2xlbWVudCdzIGZvbGRlciBob2xkcyBhIHBob3RvIG9mIHRoZSBldmFjdWF0aW9uIHBsYW4sIG1hcmtlZCBvbmx5IHdpdGggdGhlIFwiWW91IGFyZSBoZXJlXCIgZG90LiBSZWNvcmRzOiBIYWxlJ3MgdHJhY2UgcnVucyBCcmVhayBSb29tIDIsIGNvcnJpZG9yIEUsIGVsZXZhdG9yIGxvYmJ5LlxuLSAqKlRoZSBtb3RpdmUuKiogQ2xpcHM6IEp1bmUncyBvYml0dWFyeSBzYXlzIHNoZSBpcyBzdXJ2aXZlZCBieSBoZXIgYnJvdGhlciwgQ2xlbWVudCwgYW5kIENsZW1lbnQncyBmb2xkZXIgaG9sZHMgdGhlIFByb2NlZHVyZSBSZXZpc2lvbiAxMTQgY2xpcHBpbmcgYW5kIEp1bmUncyBwaG90by4gUmVjb3JkczogUi4gSGFsZSBhcHByb3ZlZCBQcm9jZWR1cmUgUmV2aXNpb24gMTE0LCBhbmQgaXQgd2FzIHdpdGhkcmF3biBhZnRlciBhIE1hcmNoIGRlYXRoLiBUaGUgcmVjb3JkcyBuZXZlciBtZW50aW9uIEp1bmUgb3IgQ2xlbWVudCdzIGZhbWlseS5cbi0gKipTdXBwbHkgUm9vbSBCLioqIENsaXBzOiB0aGUgd2FmZmxlIGlyb24sIHRoZSBHb2xkZW4gV2FmZmxlIGNlcnRpZmljYXRlIGFuZCB0aGUgaXJvbidzIGN5Y2xlIHRpbWVyLCBzdGFydGVkIGF0IDAzOjAxOjQ3LiBSZWNvcmRzOiBCZXJ0cmFtJ3MgYmFkZ2Ugd2VudCBpbiBhdCAwMzowMTo0NSBhbmQgdGhlIG91dGxldCBsb2dnZWQgdGhlIGxvYWQgYXQgMDM6MDE6NTgsIHNvIGhlIHdhcyBjb29raW5nIHdoZW4gdGhlIGJyZWFrZXIgdHJpcHBlZC5cblxuPiBUaGUgQUkgaGFkIHRoZSByZWNvcmRzIGFuZCB5b3UgaGFkIHRoZSBjbGlwcy4gSXQgdG9vayBib3RoIHRvIG5hbWUgdGhlIGtpbGxlci4iLCAibWV0YSI6IHsiZm9yIjogImFsbCJ9fV0="
+ "reveal": "W3sidGl0bGUiOiAiWW91IG5hbWVkIENsZW1lbnQiLCAiYm9keSI6ICIqKllvdSdyZSByaWdodC4qKiBDbGVtZW50IGtpbGxlZCBNci4gSGFsZS4iLCAibWV0YSI6IHsiZm9yIjogImNsZW1lbnQiLCAiY29ycmVjdCI6ICJ5ZXMifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEFnbmVzIiwgImJvZHkiOiAiKipUaGF0J3MgdGhlIEFJJ3MgYW5zd2VyLCBhbmQgaXQncyB0aGUgbWlzdGFrZSB0aGUgY2FzZSBpcyBidWlsdCBhcm91bmQuKiogQWduZXMgaXMgdGhlIHJlYXNvbiBldmVyeW9uZSB3b2tlIHVwLCBidXQgc2hlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYWduZXMifX0sIHsidGl0bGUiOiAiWW91IG5hbWVkIEJlcnRyYW0iLCAiYm9keSI6ICIqKk5vdCBxdWl0ZS4qKiBCZXJ0cmFtJ3Mgd2FmZmxlIGlyb24gY2F1c2VkIHRoZSBibGFja291dCBieSBhY2NpZGVudCwgYnV0IGhlIGRpZG4ndCBraWxsIE1yLiBIYWxlLiBJbiB0aGUgZGFyaywgaGUgd2FzIHRoZSBvbmUgc29tZW9uZSBzYWlkIHNvcnJ5IHRvLiBUaGUga2lsbGVyIHdhcyBDbGVtZW50LiIsICJtZXRhIjogeyJmb3IiOiAiYmVydHJhbSJ9fSwgeyJ0aXRsZSI6ICJOb3QgdGhlbSIsICJib2R5IjogIioqVGhhdCdzIG5vdCB3aG8gZGlkIGl0LioqIFRoZSBraWxsZXIgd2FzIENsZW1lbnQuIiwgIm1ldGEiOiB7ImZvciI6ICJvdGhlciJ9fSwgeyJ0aXRsZSI6ICJXaGF0IHJlYWxseSBoYXBwZW5lZCIsICJib2R5IjogIlRoYXQgbmlnaHQsIHRocmVlIHBlb3BsZSBoYWQgdGhyZWUgc2VwYXJhdGUgcGxhbnMuIE5vbmUgb2YgdGhlbSBrbmV3IGFib3V0IHRoZSBvdGhlcnMnIHBsYW5zLCBhbmQgbm9ib2R5IHBsYW5uZWQgdGhlIGJsYWNrb3V0LlxuXG4tICoqQWduZXMgd2FudHMgUGVnZ3kgdG8gZmluZCBoZXIgbm90ZXMuKiogQWduZXMsIHRoZSBzbGVlcHdhbGtlciwgaGlkZXMgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiwgUGVnZ3ksIGluIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZSBwYW5lbC4gVGhlIG5pZ2h0IGJlZm9yZSwgc2hlIGNoYW5nZXMgdGhlIGVtZXJnZW5jeSBzcGVha2VycycgZmFpbC1zYWZlIHRyYWNrIGZyb20gdGhlIGx1bGxhYnkgdG8gKkRlZmlhbnQgSmF6eiouIFRoZSBuZXh0IHRpbWUgdGhlIHBvd2VyIGdvZXMgb3V0LCB0aGUgamF6eiB3aWxsIHdha2UgUGVnZ3ksIHdobyB3aWxsIHdhbGsgdG93YXJkIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBsaWdodCBhbmQgZmluZCB0aGUgbm90ZXMuXG4tICoqQmVydHJhbSB3YW50cyBhIHdhZmZsZS4qKiBEdXJpbmcgdGhlIENvY29hIEhvdXIgaGUgc25lYWtzIG9mZiB0byB0aGUgc3VwcGx5IHJvb20gdG8gdXNlIGhpcyBiYW5uZWQgd2FmZmxlIGlyb24uIEl0IHRyaXBzIHRoZSBmbG9vcidzIG1haW4gYnJlYWtlci4gSXQncyBhbiBhY2NpZGVudC5cbi0gKipDbGVtZW50IHdhbnRzIEhhbGUgYWxvbmUuKiogQ2xlbWVudCBpcyAqbHVjaWQqOiBoZSdzIHRoZSBzYW1lIHBlcnNvbiBhdCB3b3JrIGFuZCBhdCBob21lLCBhbmQgcmVtZW1iZXJzIGJvdGggbGl2ZXMuIEhhbGUgc2lnbmVkIG9mZiBvbiB0aGUgcHJvY2VkdXJlIHRoYXQga2lsbGVkIENsZW1lbnQncyBzaXN0ZXIsIEp1bmUuIEEgY2hhdCBtZXNzYWdlIGZyb20gQmVydHJhbSB0b2xkIENsZW1lbnQgdGhhdCBIYWxlIHdvdWxkIHNsaXAgb2ZmIHRvIHRoZSBlbGV2YXRvciBkdXJpbmcgdGhlIENvY29hIEhvdXIsIHRoZSBmbG9vcidzIGhvbGlkYXkgcGFydHkuIFNvIENsZW1lbnQgd2FpdHMgZm9yIHRoZSBwYXJ0eS5cblxuQXQgMDM6MDIgdGhlIHRocmVlIHBsYW5zIGNvbGxpZGUuIFRoZSBicmVha2VyIHRyaXBzLCB0aGUgc3BlYWtlcnMgcGxheSAqRGVmaWFudCBKYXp6KiwgYW5kIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdha2VzIHVwIGFzIGEgc3RyYW5nZXIgaW4gdGhlIGRhcmsuIEV4Y2VwdCBDbGVtZW50LiBIZSdzIHN0aWxsIGhpbXNlbGYsIGFuZCBub3cgdGhlIGRhcmsgaGlkZXMgaGltLiBIZSBsZWF2ZXMgaGlzIGJhZGdlIG9uIHRoZSBjaGFpciBieSB0aGUgc3BlYWtlciwgd2hlcmUgdGhlIGphenogc2hha2VzIHRoZSBjaGFpciBzbyB0aGUgYmFkZ2UgbG9va3MgbGlrZSBzb21lb25lIHNpdHRpbmcgc3RpbGwsIGFuZCBmb2xsb3dzIFBlZ2d5IHRvd2FyZCB0aGUgZWxldmF0b3IncyBsaWdodC4gSW4gY29ycmlkb3IgRSBoZSB0cmVhZHMgb24gQmVydHJhbSdzIGRhemVkIHdha2luZyBzZWxmIChcIlNvcnJ5LCBXYWZmbGVzXCIpLiBBdCB0aGUgZWxldmF0b3IsIEhhbGUgZ3JhYnMgUGVnZ3kncyB3cmlzdCAoXCJZb3UgY2FuJ3QgYmUgaGVyZVwiKSB3aGlsZSBDbGVtZW50IHdhaXRzIGluIHRoZSBkYXJrIG9mIHRoZSBsb2JieS4gU2hlIHB1bGxzIGZyZWUgYW5kIHJ1bnMuIEhhbGUgcGlja3MgdXAgdGhlIGVsZXZhdG9yJ3MgZW1lcmdlbmN5IHBob25lLCBhbmQgc2Vjb25kcyBsYXRlciBDbGVtZW50IHdhbGtzIGluIGFuZCBzdHJhbmdsZXMgaGltLiBDbGVtZW50IGdvZXMgYmFjayB0byB0aGUgc3BlYWtlciBhbmQgcHV0cyBoaXMgYmFkZ2UgYmFjayBvbi4gUGVnZ3kgd2FuZGVycyBiYWNrIHRvd2FyZCB0aGUgbGlnaHQsIGZpbmRzIEhhbGUgYW5kIHB1bGxzIHRoZSBjYWJsZSBvZmYgaGlzIG5lY2suIEF0IDAzOjA3IHRoZSBwb3dlciBjb21lcyBiYWNrIGFuZCBldmVyeW9uZSBmYWxscyBhc2xlZXAgYWdhaW4uIEFnbmVzIHRoZSBzbGVlcHdhbGtlciBjb21lcyB0byBpbiB0aGUgZWxldmF0b3IsIGhvbGRpbmcgdGhlIGNhYmxlLiIsICJtZXRhIjogeyJmb3IiOiAiYWxsIn19LCB7InRpdGxlIjogIkhvdyBpdCdzIHNvbHZlZCIsICJib2R5IjogIioqTmVpdGhlciBzaWRlIGNhbiBzb2x2ZSBpdCBhbG9uZS4qKiBUaGUgQUkgaGFzIHJlYWQgb25seSBLaXBzYWtlJ3MgcmVjb3Jkcy4gWW91IGhhdmUgdGhlIGludGVydmlld3MsIHRoZSB0aHJlZSBsZWFkcyBhbmQgdGhlIGhhbmRvdXQgZnJvbSBvdXRzaWRlIEtpcHNha2UsIGFuZCBub25lIG9mIHRoZSBBSSdzIGRhdGEuIEV2ZXJ5IGNsdWUgYWdhaW5zdCBDbGVtZW50IGlzIHNwbGl0IGluIHR3bzogb25lIGhhbGYgaXMgaW4gdGhlIGNsaXBzLCBhbmQgdGhlIG90aGVyIGhhbGYgaXMgaW4gdGhlIHJlY29yZHMuIE5laXRoZXIgaGFsZiBwb2ludHMgYXQgYW55b25lIHVudGlsIHlvdSBwdXQgdGhlbSB0b2dldGhlci4gVGhlIGNsaXBzIG5ldmVyIHNheSB3aG9zZSBhbnl0aGluZyBpczogYWxsIHRocmVlIGNsZXJrcyB3ZWFyIGEgY29sb3VyZnVsIENocmlzdG1hcyBzd2VhdGVyLCBhbmQgdGhlIHlhcm4gcGxhdXNpYmx5IG1hdGNoZXMgZWFjaCBieSBleWUuIE9ubHkgdGhlIHJlY29yZHMnIGZlc3RpdmUtd2VhciByZWdpc3RlciBzYXlzIHdob3NlIGl0IGlzLlxuXG4qKk9uIGl0cyBvd24sIHRoZSBBSSBsYW5kcyBvbiBBZ25lcy4qKiBJdCBwaWVjZXMgdGhlIGJsYWNrb3V0IHRvZ2V0aGVyIGZyb20gZGF0YSB0aGF0IGFycml2ZWQgbGF0ZS4gSXQgZmluZHMgdGhlIHdhZmZsZSBpcm9uLCBjYXRjaGVzIEJlcnRyYW0ncyBsaWUsIGZpbmRzIHRoYXQgQWduZXMgY2hhbmdlZCB0aGUgZmFpbC1zYWZlIHRyYWNrLCBhbmQgYWNjdXNlcyBoZXIuICoqSXQncyByaWdodCB0aGF0IEFnbmVzIHdva2UgZXZlcnlvbmUgdXAsIGFuZCB3cm9uZyB0aGF0IHdob2V2ZXIgd29rZSBldmVyeW9uZSB1cCBraWxsZWQgSGFsZS4qKlxuXG4qKk9uIGl0cyBvd24sIHRoZSBjbGlwcyBsZWF2ZSB5b3UgZ3Vlc3NpbmcuKiogRWFjaCBjbGVyayBoYXMgc29tZXRoaW5nIHRvIGhpZGUsIGFuZCBlYWNoIGxlYWQgY2xlYXJzIG9uZSBjbGVyayBvciBwb2ludHMgYXQgYW5vdGhlci4gQSBuYXBraW4gbWFya2VkIFwiNFwiLCBhIG5hbWUgY3Jvc3NlZCBvdXQsIGEgbmlja25hbWUsIGEgc2lzdGVyJ3Mgb2JpdHVhcnkgYW5kIGEgc2VhdGluZyBjaGFydCBtZWFuIG5vdGhpbmcgdW50aWwgdGhlIHJlY29yZHMgc2F5IHdoZW4sIHdoZXJlIGFuZCB3aG9zZS5cblxuKipUaGUgbGVhcCB0YWtlcyBib3RoLioqIFNvbWVvbmUgc2FpZCBcIlNvcnJ5LCBXYWZmbGVzXCIgaW4gdGhlIGRhcmssIHdoaWxlIGV2ZXJ5IHNsZWVwd2Fsa2VyIHdhcyB0aGVpciB3YWtpbmcgc2VsZi4gQSB3YWtpbmcgc2VsZiBjYW4ndCByZW1lbWJlciB3b3JrLiBTbyB3aG9ldmVyIHNhaWQgaXQgd2FzIGx1Y2lkLCBhbmQga25ldyBCZXJ0cmFtJ3Mgbmlja25hbWUgYXQgd29yay4gVGhlIHJlY29yZHMgaG9sZCB0aGUgd29yZHMuIE9ubHkgdGhlIGNsaXBzIHNheSB3aG8gdXNlcyB0aGF0IG5hbWUuXG5cbi0gKipOb3QgQmVydHJhbToqKiBoZSdzIHRoZSBvbmUgYmVpbmcgYXBvbG9naXNlZCB0bywgYW5kIGhlIGFuc3dlcnMgbGlrZSBhIHN0cmFuZ2VyOiBcIk93LCB3aG8ncywgaGVsbG8/IEhFTExPP1wiXG4tICoqTm90IEFnbmVzOioqIHNoZSBpc24ndCBsdWNpZC4gU2hlIHdvdWxkbid0IG5lZWQgdG8gbGVhdmUgbm90ZXMgZm9yIGhlciB3YWtpbmcgc2VsZiBpZiBoZXIgdHdvIHNlbHZlcyBzaGFyZWQgbWVtb3JpZXMuIEF0IHRoZSBlbGV2YXRvciBzaGUncyBQZWdneSwgc2hvdXRpbmcgaGVyIHdha2luZyBuYW1lLiBBbmQgUGVnZ3kgbmV2ZXIgcmVhZCB0aGUgbm90ZXMgYmVmb3JlIHRoYXQgbmlnaHQ6IHRoZXkgd2VyZSBzdGlsbCB0dWNrZWQgdW5vcGVuZWQgaW4gdGhlIHBob25lIHBhbmVsIHdoZW4gdGhleSB3ZXJlIGZvdW5kLiBXaGF0IHRoZSB3aG8ncy13aG8gbm90ZSBzYXlzLCBQZWdneSBkaWRuJ3Qga25vdy5cbi0gKipDbGVtZW50OioqIGhlJ3MgdGhlIG9uZSB3aG8gY2FsbHMgQmVydHJhbSBcIldhZmZsZXNcIi4gQW5kIGhpcyBvd24gaW50ZXJ2aWV3IGdpdmVzIGhpbSBhd2F5OiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3IuXCIgVGhlIG1pY3MgaGVhcmQgc2NyZWFtaW5nIHRoZXJlIG9ubHkgaW4gdGhlIGRhcmssIGZyb20gYWJvdXQgMDM6MDMgdG8gMDM6MDUuIEFmdGVyIHRoZSBsaWdodHMgY2FtZSBiYWNrLCB0aGUgb25seSBsb3VkIG1vbWVudCB3YXMgc2VjdXJpdHkgc2hvdXRpbmcgXCJOb2JvZHkgbW92ZSFcIiBhdCAwMzowNzozMC4gQSBzbGVlcHdhbGtlciBzaG91bGRuJ3QgcmVtZW1iZXIgdGhlIGRhcmsgYXQgYWxsLlxuXG4qKkNsZWFyaW5nIEFnbmVzLioqIENsaXBzOiBQZWdneSBzYXlzIGEgbWFuIGdyYWJiZWQgaGVyIHdyaXN0IGFuZCBzaGUgcmFuLiBSZWNvcmRzOiBoZXIgYmFkZ2Ugam9sdHMgYXQgMDM6MDM6NTYgYXMgc2hlIHB1bGxzIGZyZWUsIGFuZCBhdCAwMzowNDowMSBIYWxlIHBpY2tzIHVwIHRoZSBlbGV2YXRvcidzIGVtZXJnZW5jeSBwaG9uZS4gTm9ib2R5IGRvZXMgdGhhdCB3aGlsZSBzdGlsbCBob2xkaW5nIG9uIHRvIHNvbWVvbmUuIFNvIHRoZSBzdHJhbmdsaW5nIHdhcyBhIG5ldyBhdHRhY2ssIGFmdGVyIHNoZSdkIGdvbmUuXG5cbioqVGhlIGNsdWVzLCBzcGxpdCBpbiB0d28uKiogRWFjaCByb3cgaGFzIGEgaGFsZiBvbmx5IHRoZSBjbGlwcyBob2xkIGFuZCBhIGhhbGYgb25seSB0aGUgcmVjb3JkcyBob2xkOlxuXG4tICoqVGhlIG5pY2tuYW1lLioqIENsaXBzOiBBZ25lcydzIHdobydzLXdobyBub3RlLCBhbmQgQmVydHJhbSdzIFwiQ2xlbWVudC4gJ0NoaWxsIG91dCwgV2FmZmxlcy4nIEhlJ3MgdGhlIG9ubHkgb25lIHdobyBjYWxscyBtZSB0aGF0LlwiIEF0IGhvbWUsIEJlcnRyYW0gb25seSBzYXlzIHRoZXkgXCJjYWxsZWQgbWUgc29tZXRoaW5nLCBsaWtlIGEgcGV0J3MgbmFtZS5cIiBSZWNvcmRzOiB0aGUgY29ycmlkb3IgRSBtaWNyb3Bob25lIGhvbGRzIHRoZSBleGFjdCB3b3JkcywgXCJTb3JyeSwgV2FmZmxlc1wiLCBkdXJpbmcgdGhlIG91dGFnZS4gTm90aGluZyBpbiB0aGUgcmVjb3JkcyBzYXlzIHdobyB1c2VzIHRoZSBuYW1lLlxuLSAqKlRoZSBzbGlwLioqIENsaXBzOiBcIlNvbWVvbmUgd2FzIHNjcmVhbWluZyBieSB0aGUgZWxldmF0b3JcIiwgYW5kIFwiUGVnZ3lcIiBjcm9zc2VkIG91dCBvbiBoaXMgd3JpdHRlbiBzdGF0ZW1lbnQuIFJlY29yZHM6IHRoZSBzY3JlYW1pbmcgYXQgdGhlIGVsZXZhdG9yIHdhcyBvbmx5IGluIHRoZSBkYXJrLCBhbmQgXCJQZWdneVwiIHdhcyBhIG5hbWUgc2hvdXRlZCBvbmx5IGluIHRoZSBkYXJrIChBZ25lcydzIHByZWZlcnJlZCBuYW1lIGluIHRoZSBwZXJzb25uZWwgZmlsZSkuXG4tICoqVGhlIHN3ZWF0ZXIuKiogQ2xpcHM6IHRoZSB5YXJuIHRocmVhZHMgaW4gSGFsZSdzIGNsb3NlZCBoYW5kIChvbiB0aGUgSW5jaWRlbnQgRmlsZSBldmVyeSBwbGF5ZXIgcmVhZHMpIGFuZCBpbiBCZXJ0cmFtJ3MgaGFuZCBhdCBob21lLCBpbiBuYXZ5LCBibHVlLCByZWQsIG9yYW5nZSwgZ3JlZW4gYW5kIHdoaXRlLiBBbGwgdGhyZWUgY2xlcmtzIHdlYXIgYSBjb2xvdXJmdWwga25pdHRlZCBDaHJpc3RtYXMgc3dlYXRlciBvbiBjYW1lcmEsIGFuZCBlYWNoIHNoYXJlcyBzZXZlcmFsIG9mIHRoZSB5YXJuJ3MgY29sb3VyczogQWduZXMncyBpcyBncmVlbiwgQmVydHJhbSdzIGJsdWUsIENsZW1lbnQncyBuYXZ5LiBSZWNvcmRzOiB0aGUgQ29jb2EgSG91ciBmZXN0aXZlLXdlYXIgcmVnaXN0ZXIgbGlzdHMgZWFjaCBwZXJzb24ncyBzd2VhdGVyIGFuZCBpdHMgZXhhY3QgY29sb3VycyBhdCB0aGUgcGFydHkgZG9vciwgYW5kIG9ubHkgQ2xlbWVudCdzIGhhcyBhbGwgc2l4IChBZ25lcydzIGhhcyBubyBuYXZ5IG9yIGJsdWUsIEJlcnRyYW0ncyBubyBuYXZ5OyBIYWxlIHdvcmUgYSBwbGFpbiBjaGFyY29hbCBzdWl0KS4gU28gdGhlIHRocmVhZHMgY2FtZSBmcm9tIENsZW1lbnQuIFRoZSB0aHJlYWRzIG5ldmVyIGFwcGVhciBpbiB0aGUgcmVjb3Jkcy5cbi0gKipUaGUgbmFwa2luIGFuZCB0aGUgc2VhdC4qKiBDbGlwczogUGVnZ3kgZmluZHMgYSBuYXBraW4gbWFya2VkIFwiNFwiIGluIGhlciBwb2NrZXQ7IHRoZSBCcmVhayBSb29tIGNhbWVyYSBzaG93cyBhIG5hcGtpbiBhbmQgdGhlIGNhYmxlIG9uIHRoZSBjaGFpciBieSB0aGUgc3BlYWtlciwgYW5kIGEgc2VhdGluZyBjaGFydCBvbiB0aGUgd2FsbCBwdXRzIENsZW1lbnQgaW4gc2VhdCA0LCB0aGUgY2hhaXIgYnkgdGhlIHNwZWFrZXIuIFJlY29yZHM6IHRoZSBCcmVhayBSb29tIDIgc2VhdCBzZW5zb3JzLCB3aGljaCBuYW1lIG5vYm9keSwgc2hvdyBzZWF0IDQgZW1wdHkgZnJvbSAwMzowMDo1MiB1bnRpbCAwMzowNjo1MCwgc28gd2hvZXZlciBzYXQgdGhlcmUgZ290IHVwIGJlZm9yZSB0aGUgbGlnaHRzIHdlbnQgYW5kIHdhcyBhd2F5IHRocm91Z2ggdGhlIHdob2xlIG91dGFnZS4gQ2xlbWVudCBzYWlkIGhlIHdhcyBcInNpdHRpbmcgZG93blwiIHdoZW4gdGhlIGxpZ2h0cyB3ZW50LCBhbmQgaGlzIGJhZGdlIGxheSBzdGlsbCBvbiB0aGUgY2hhaXIsIHdoaWNoIGxvb2tzIGxpa2UgYW4gYWxpYmkuIFRoZSBjaGFydCBtYWtlcyB0aGUgZW1wdHkgc2VhdCBoaXMuIFRoZSBuYXBraW4gYW5kIHRoZSBjaGFydCBuZXZlciBhcHBlYXIgaW4gdGhlIHJlY29yZHMuXG4tICoqVGhlIGRlY295cy4qKiBBZ25lcydzIGZsYXQgaG9sZHMgYSBzdGlja3kgbm90ZSAoXCJIRSBIQVMgVE8gU1RPUC4gVEhFIEVMRVZBVE9SLlwiKSBhbmQgdGhlIGV2YWN1YXRpb24gcGxhbiwgaGVyIHBsYW4gdG8gYnJpbmcgUGVnZ3kgdG8gdGhlIGVsZXZhdG9yOyB0aGUgcmVjb3JkcyBob2xkIGhlciBkZXRlbnRpb25zLCBoZXIgdW5zZW50IGRyYWZ0IGFuZCB0aGUgbm90ZXMgaW4gdGhlIHBob25lIHBhbmVsLiBCZXJ0cmFtJ3MgZmxhdCBob2xkcyBhIGxldHRlciBzaWduZWQgXCJEaXNjcmV0aW9uIGFwcHJlY2lhdGVkLiBSLiBIYWxlXCIgYW5kIGEgdG9ybiB3YWZmbGUtaXJvbiByZWNlaXB0OyB0aGUgcmVjb3JkcyBob2xkIGhpcyByZXBvcnRzIG9uIEFnbmVzIHRvIEhhbGUgYW5kIHRoZSByZXdhcmQgaGUgd2FzIGlzc3VlZC4gVGhlIGhhbmRvdXQncyBMZXR0ZXJzIGl0ZW0sIGEgcGFyZW50IHdob3NlIGNoaWxkIGNvbWVzIGhvbWUgZnJvbSBLaXBzYWtlIHdpdGggc29yZSBoYW5kcyBhbmQgYXNrcyB3aGVyZSBhbiBlbGV2YXRvciBnb2VzLCBtYXRjaGVzIEFnbmVzJ3MgSHVzaCBSb29tIG5vdGUuIEVhY2ggb2YgdGhlbSBsb29rcyBsaWtlIGEga2lsbGVyIGZyb20gb25lIHNpZGUgb25seS5cbi0gKipUaGUgbW90aXZlLioqIENsaXBzOiBKdW5lIFdoaXRsb3cncyBvYml0dWFyeSBzYXlzIHNoZSBpcyBzdXJ2aXZlZCBieSBoZXIgYnJvdGhlciwgYW5kIENsZW1lbnQncyBmb2xkZXIgaG9sZHMgdGhlIFByb2NlZHVyZSBSZXZpc2lvbiAxMTQgY2xpcHBpbmcuIFJlY29yZHM6IHRoZSBwZXJzb25uZWwgZmlsZSBnaXZlcyBDbGVtZW50J3Mgc3VybmFtZSwgV2hpdGxvdzsgUi4gSGFsZSBhcHByb3ZlZCBQcm9jZWR1cmUgUmV2aXNpb24gMTE0LCBhbmQgaXQgd2FzIHdpdGhkcmF3biBhZnRlciBhIE1hcmNoIGRlYXRoLiBUaGUgcmVjb3JkcyBuZXZlciBtZW50aW9uIEp1bmUgb3IgQ2xlbWVudCdzIGZhbWlseSwgYW5kIG5vdGhpbmcgaW4gdGhlIGNsaXBzIHNheXMgd2hvc2Ugc3VybmFtZSBpcyBXaGl0bG93LlxuLSAqKlN1cHBseSBSb29tIEIuKiogQ2xpcHM6IHRoZSB3YWZmbGUgaXJvbiwgdGhlIEdvbGRlbiBXYWZmbGUgY2VydGlmaWNhdGUgYW5kIHRoZSBpcm9uJ3MgY3ljbGUgdGltZXIsIHN0YXJ0ZWQgYXQgMDM6MDE6NDcuIFJlY29yZHM6IEJlcnRyYW0ncyBiYWRnZSB3ZW50IGluIGF0IDAzOjAxOjQ1IGFuZCB0aGUgb3V0bGV0IGxvZ2dlZCB0aGUgbG9hZCBhdCAwMzowMTo1OCwgc28gaGUgd2FzIGNvb2tpbmcgd2hlbiB0aGUgYnJlYWtlciB0cmlwcGVkLlxuXG4+IFRoZSBBSSBoYWQgdGhlIHJlY29yZHMgYW5kIHlvdSBoYWQgdGhlIGNsaXBzLiBJdCB0b29rIGJvdGggdG8gbmFtZSB0aGUga2lsbGVyLiIsICJtZXRhIjogeyJmb3IiOiAiYWxsIn19XQ=="
 };
