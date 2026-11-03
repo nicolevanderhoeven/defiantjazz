@@ -292,7 +292,8 @@ class SceneTextTest(unittest.TestCase):
         self.assertIn("The letter", self.hotspots("Bertram at home"))
         self.assertIn("The receipt", self.hotspots("Bertram at home"))
         folder = self.hotspots("Clement at home")
-        self.assertEqual(sorted(folder), ["Clement", "The clipping"])
+        self.assertEqual(sorted(folder), ["Clement", "The note"])
+        self.assertIn("— B.", folder["The note"])
 
     def test_the_redrawn_pictures_are_there(self):
         for name in ("scene-break-room", "scene-power-cut", "portrait-agnes", "portrait-bertram", "portrait-agnes-push",

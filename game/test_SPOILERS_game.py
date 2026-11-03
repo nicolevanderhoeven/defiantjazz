@@ -40,6 +40,7 @@ SENTINELS = [
     "COCOA HOUR · BREAK ROOM 2 · SEATING",
     "4 · Clement",
     "Tell me about the folder",
+    "Tell him about A. and the elevator",
     "cycle timer: started 03:01:47",
     "Clement killed Mr. Hale",
     "It took a human to know which question to ask",
@@ -244,6 +245,12 @@ class ClueRedesignTest(unittest.TestCase):
         self.assertIn("I told Mr. Hale about Agnes's notes", self.card("Bertram").body)
         self.assertNotIn("And who to stop", CONTENT.reveal.cards[0].body + self.card("Agnes").body)
         self.assertIn("one thing inside", self.card("Clement at home").body)
+        # the folder's one item points at Bertram: a scrap in his handwriting, true to the records and the 21:15 1:1
+        folder = self.card("Clement at home").body
+        self.assertIn("21:15 H. Tell him about A. and the elevator. — B.", folder)
+        self.assertNotIn("Procedure Revision 114", folder)
+        self.assertIn("supervisor-feedback submitted_by=bertram to=hale", telemetry("records.log"))
+        self.assertIn('calendar owner=hale title="1:1 Bertram"', telemetry("records.log"))
         self.assertIn("Tell me about the folder.", self.card("Clement at home").body)
         self.assertIn("Port Quiet Gazette · Letters", CONTENT.outside_world.body)
         for title in ("T-A · Agnes · 03:30", "T-B · Bertram · 03:40"):

@@ -47,7 +47,8 @@ aliases: clement, c
 You: Clement? You sleepwalk for Kipsake.
 Clement: I don't remember work. That's rather the point.
 [Close-up: the open folder, lying flat, with one thing inside.]
-[A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.]
+[A scrap of paper torn from a Kipsake notepad, in rounded handwriting.]
+> 21:15 H. Tell him about A. and the elevator. — B.
 You: Tell me about the folder.
 Clement: Things I keep.
 [He closes the folder and holds it against his chest.]

@@ -331,7 +331,7 @@ A torn waffle-iron receipt.
 
 ## Clement at home
 card: Clement at home
-source: bdfa238b
+source: a20e27d1
 image: scene-clement-home
 where: Port Quiet · Clement's flat · 06:40
 headline: Clement
@@ -346,11 +346,10 @@ Clement: Things I keep.
 at: 61, 39
 Clement's waking self, at home. No lanyard, and he's still in his Christmas sweater.
 
-## The clipping
-at: 53, 86
-A clipping from the local paper, the Port Quiet Gazette, about Procedure Revision 114.
-> PORT QUIET GAZETTE
-> … Procedure Revision 114 …
+## The note
+at: 52, 86
+A scrap of paper torn from a Kipsake notepad, in rounded handwriting.
+> 21:15 H. Tell him about A. and the elevator. — B.
 
 
 ## Agnes pushed
