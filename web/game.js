@@ -23,12 +23,18 @@
  *   track(name, attrs)         records an anonymous play statistic (see "play statistics" below)
  * A static page gets the music from window.DJ_MUSIC instead: with-music.html, which web/build.py
  * writes only from a copy of the track that isn't committed. Without it, nothing plays.
+ *
+ * Local mode: served by the local stack (local/), or with ?local, the page loads local.js first, which sets
+ * window.DJ_LOCAL with the wording and the optional leaderboard button that differ there (no Grafana Assistant,
+ * so the player's own AI agent, and the matcher marks alone). A Grafana Page has window.DJ_HOST and no DJ_LOCAL,
+ * so none of that is ever used there.
  */
 (function () {
   "use strict";
 
   var C = window.DJ_CONTENT;
   var HOST = window.DJ_HOST || {};
+  var LOCAL = window.DJ_HOST ? null : (window.DJ_LOCAL || null);  // see local.js
   var STORE_KEY = "defiantjazz.web.v1";
   var THEME_KEY = "defiantjazz.theme";
   var MUSIC_KEY = "defiantjazz.music";
@@ -53,6 +59,10 @@
     ["Make a graph", DATA + "graph Mr. Hale's heart rate against the badge movements of Agnes, Bertram " +
       "and Clement during the power outage, on one chart."],
   ];
+
+  if (LOCAL) {
+    QUESTIONS = QUESTIONS.map(function (pair) { return [pair[0], pair[1].replace(DATA, LOCAL.data)]; });
+  }
 
   // The short links point at the two repositories.
   var MCP_URL = "https://gra.fan/mcprepo";
@@ -1026,7 +1036,7 @@
 
   function copy(text, sourceNode) {
     copyText(text).then(function (ok) {
-      if (ok) return announce("Copied. Paste it into Grafana Assistant (click Chat to start chatting) or your own AI.");
+      if (ok) return announce(LOCAL ? LOCAL.copied : "Copied. Paste it into Grafana Assistant (click Chat to start chatting) or your own AI.");
       selectText(sourceNode);
       announce("Couldn't copy from here. The question is selected: press Ctrl+C (⌘C on a Mac).");
     });
@@ -1290,7 +1300,7 @@
       el("div", { class: "console-bar" }, [el("span", { class: "dot" }), "Ask your AI"]),
       el("div", { class: "console-body" }, [
         el("h3", { id: "h-ai" }, "It has read Kipsake's records, and nothing else"),
-        el("p", null, ["Ask Grafana Assistant in this Grafana (click ", el("strong", null, "Chat"), " at the top to start chatting), or your own AI agent through the ",
+        LOCAL ? LOCAL.hubIntro({ el: el, link: extLink }) : el("p", null, ["Ask Grafana Assistant in this Grafana (click ", el("strong", null, "Chat"), " at the top to start chatting), or your own AI agent through the ",
           extLink("Grafana MCP server", MCP_URL), " or ", extLink("gcx", GCX_URL),
           ". It hasn't seen the interviews, the leads you follow, or anything you find. " +
           "If you want it to know something, tell it."]),
@@ -1299,10 +1309,10 @@
         HOST.askAssistant ? el("p", { class: "note" }, "Ask Assistant opens Grafana Assistant with the question " +
           "filled in, ready to send with Enter, and copies it where the page is allowed to. If Assistant isn't open, click Chat to start chatting. " +
           "Using your own AI? Select a question and copy it.") : null,
-        el("p", { class: "note" }, "The data's times are UTC. If it was loaded on an incident date, the " +
+        el("p", { class: "note" }, LOCAL ? LOCAL.timesNote() : "The data's times are UTC. If it was loaded on an incident date, the " +
           "story's 03:02 is 03:02 in Grafana set to UTC. If it was loaded to end just before the load, " +
           "03:02 is a different clock time there. Either way, your AI can find the outage in the data."),
-        el("p", { class: "note" }, ["Learn more: "].concat(LINKS.map(function (l, i) {
+        el("p", { class: "note" }, ["Learn more: "].concat((LOCAL ? LOCAL.links : LINKS).map(function (l, i) {
           return [i ? " · " : "", el("a", { href: l[1], target: "_blank", rel: "noopener noreferrer" }, l[0])];
         }).flat(), [" (opens in a new tab)"])),
       ]),
@@ -1583,6 +1593,7 @@
   }
 
   function boardView() {
+    if (LOCAL) return LOCAL.boardView({ el: el, button: button, score: state.score, name: state.leaderName, finishedAt: state.finishedAt });
     var score = state.score;
     var box = el("div", { class: "board", "aria-live": "polite" });
     function paint() {
@@ -1648,6 +1659,7 @@
     });
     var note = score.status === "failed" ? "The AI judge wasn't available, so the matcher marked your answers."
       : score.status === "ai" ? "An AI judge also read the answers the matcher marked down, and could only add points."
+      : LOCAL ? LOCAL.judgeNote
       : null;
     return el("div", { class: "score" }, [
       el("h2", { class: "score-total" }, "You scored " + score.total + " / " + score.max),
@@ -1683,7 +1695,7 @@
     form.appendChild(el("div", { class: "question" }, [
       el("label", { class: "block q-label", for: "leader-name" }, ["Name for the leaderboard ", el("span", { class: "pts" }, "optional")]),
       name,
-      el("p", { class: "note", id: "leader-note" }, "Other players can see it. Up to " + NAME_MAX + " characters. Leave it empty to show as Anonymous detective."),
+      el("p", { class: "note", id: "leader-note" }, LOCAL ? LOCAL.nameNote(NAME_MAX) : "Other players can see it. Up to " + NAME_MAX + " characters. Leave it empty to show as Anonymous detective."),
     ]));
     function submit() {
       var missing = C.accuse.filter(function (q) { return q.required && !answerOf(q.id); });

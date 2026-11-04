@@ -1,0 +1,26 @@
+# The game server for the local stack. The nginx image fills in the ${...} values from the environment
+# (docker-compose.yml) when it starts.
+server {
+  listen 8080;
+  server_name _;
+  root /usr/share/nginx/html;
+  index index.html;
+  server_tokens off;
+
+  # What tells the game it's running locally, and where Grafana, the MCP server and the optional
+  # leaderboard are. index.html loads it before game.js. Without this file (a static server), the
+  # game plays as it does everywhere else, unless the address has ?local.
+  location = /local-config.js {
+    default_type application/javascript;
+    add_header Cache-Control "no-store";
+    return 200 'window.DJ_LOCAL_CONFIG = {"grafanaUrl": "${DJ_GRAFANA_URL}", "mcpUrl": "${DJ_MCP_URL}", "dashboardUrl": "${DJ_DASHBOARD_URL}", "leaderboardUrl": "${DJ_LEADERBOARD_URL}"};\n';
+  }
+
+  location / {
+    add_header Cache-Control "no-cache";
+    # The page's policy allows no connections. With a leaderboard URL, it may connect to that origin only.
+    sub_filter_once on;
+    sub_filter "connect-src 'none'" "connect-src ${DJ_CONNECT_SRC}";
+    try_files $uri $uri/index.html =404;
+  }
+}

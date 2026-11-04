@@ -483,6 +483,79 @@ def check_cloud_logs(sent, oldest, newest, attempts=6, wait=5):
     return stored
 
 
+# ---------------------------------------------------------------- local stack: readiness and "already loaded"
+def local_bases(env=None):
+    """Where the local stack's query and readiness APIs are: (loki, prometheus, tempo), without a trailing slash.
+    LOCAL_LOKI_URL, LOCAL_PROMETHEUS_URL and LOCAL_TEMPO_URL, or the ones the OTLP addresses point at."""
+    env = os.environ if env is None else env
+    loki = env.get("LOCAL_LOKI_URL") or env.get("LOCAL_LOKI_OTLP", "http://localhost:3100/otlp/v1/logs").split("/otlp/")[0]
+    prom = env.get("LOCAL_PROMETHEUS_URL") or env.get(
+        "LOCAL_PROMETHEUS_OTLP", "http://localhost:9090/api/v1/otlp/v1/metrics").split("/api/v1/otlp")[0]
+    tempo = env.get("LOCAL_TEMPO_URL")
+    if not tempo:
+        parts = urllib.parse.urlsplit(env.get("LOCAL_TEMPO_OTLP", "http://localhost:4318/v1/traces"))
+        tempo = f"{parts.scheme}://{parts.hostname}:3200"
+    return loki.rstrip("/"), prom.rstrip("/"), tempo.rstrip("/")
+
+
+def http_get(url, timeout=10):
+    """(status, body text) of a GET, or (0, reason) when it can't connect."""
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as resp:
+            return resp.status, resp.read().decode(errors="replace")
+    except urllib.error.HTTPError as e:
+        return e.code, e.read().decode(errors="replace")
+    except (urllib.error.URLError, OSError) as e:
+        return 0, str(getattr(e, "reason", e))
+
+
+def wait_until_ready(bases, seconds, sleep=time.sleep, clock=time.monotonic):
+    """Wait up to `seconds` for Loki, Prometheus and Tempo to say they're ready. Returns the names still not ready."""
+    paths = {"loki": "/ready", "prometheus": "/-/ready", "tempo": "/ready"}
+    waiting = dict(zip(paths, bases))
+    deadline = clock() + seconds
+    while True:
+        for name in list(waiting):
+            status, _ = http_get(waiting[name] + paths[name])
+            if status == 200:
+                del waiting[name]
+        if not waiting or clock() >= deadline:
+            return sorted(waiting)
+        sleep(2)
+
+
+def loaded_signals(bases, namespace, now=None):
+    """The signals the local stack already holds this case's data for, marked by the case_run attribute every
+    load puts on every signal. A stack that can't be asked is treated as empty."""
+    loki, prom, tempo = bases
+    now = now or datetime.now(timezone.utc)
+    found = set()
+    start = int((now - timedelta(days=1500)).timestamp() * 1e9)
+    query = urllib.parse.urlencode({"query": f'{{service_namespace="{namespace}"}} | case_run!=""', "limit": 1,
+                                    "start": start, "end": int((now + timedelta(days=2)).timestamp() * 1e9)})
+    status, body = http_get(f"{loki}/loki/api/v1/query_range?{query}")
+    try:
+        if status == 200 and json.loads(body)["data"]["result"]:
+            found.add("logs")
+    except (ValueError, KeyError, TypeError):
+        pass
+    query = urllib.parse.urlencode({"match[]": f'{{service_namespace="{namespace}"}}'})
+    status, body = http_get(f"{prom}/api/v1/label/case_run/values?{query}")
+    try:
+        if status == 200 and json.loads(body)["data"]:
+            found.add("metrics")
+    except (ValueError, KeyError, TypeError):
+        pass
+    query = urllib.parse.urlencode({"q": f'{{ resource.service.namespace = "{namespace}" && resource.case_run != "" }}', "limit": 1})
+    status, body = http_get(f"{tempo}/api/search?{query}")
+    try:
+        if status == 200 and json.loads(body).get("traces"):
+            found.add("traces")
+    except (ValueError, KeyError, TypeError):
+        pass
+    return found
+
+
 # ---------------------------------------------------------------- links
 DASHBOARD_PATH = "/d/defiantjazz-game/the-defiant-jazz-incident"  # web/dashboard-example.json
 
@@ -534,6 +607,10 @@ def main():
     ap.add_argument("--cloud-log-hours", metavar="HOURS",
                     help=f"cloud only: send logs from the last HOURS (env DJ_CLOUD_LOG_HOURS; default {CLOUD_LOG_HOURS:g}); "
                          "Grafana Cloud rejects lines more than 7 days old")
+    ap.add_argument("--wait", type=float, metavar="SECONDS", default=0,
+                    help="local only: wait up to this long for Loki, Prometheus and Tempo to be ready before loading")
+    ap.add_argument("--skip-if-loaded", action="store_true",
+                    help="local only: leave out each signal the stack already holds this case's data for (case_run is set)")
     ap.add_argument("--namespace", default=NAMESPACE,
                     help="service.namespace for every signal (use a new one to load a second copy into the same stack)")
     args = ap.parse_args()
@@ -566,6 +643,21 @@ def main():
 
     sender = Sender(urls, auth, args.dry_run)
     wanted = [s.strip() for s in args.signals.split(",")]
+    if (args.wait or args.skip_if_loaded) and args.target != "local":
+        sys.exit("--wait and --skip-if-loaded are for --target local.")
+    if args.wait and not args.dry_run:
+        bases = local_bases()
+        not_ready = wait_until_ready(bases, args.wait)
+        if not_ready:
+            sys.exit(f"Not ready after {args.wait:g} s: {', '.join(not_ready)}. Is the local stack running (docker compose up -d)?")
+    if args.skip_if_loaded and not args.dry_run:
+        have = loaded_signals(local_bases(), args.namespace)
+        for signal in [w for w in wanted if w in have]:
+            print(f"{signal}: already loaded (case_run is set), skipping")
+        wanted = [w for w in wanted if w not in have]
+        if not wanted:
+            print("The case is already loaded. Nothing to do.")
+            return
     future_limit = now + timedelta(minutes=5)
     readers = {"logs": (read_logs, logs_request, lambda r: r[0]),
                "metrics": (read_metrics, metrics_request, lambda r: r[0]),

@@ -1289,7 +1289,7 @@
       "id": 7,
       "type": "table",
       "title": "Leaderboard",
-      "description": "Each player once, by their best score out of 10, best first. Ties go to whoever finished earlier. The name is the optional one the player chose.",
+      "description": "Each player once, by their best score out of 10, best first. Ties go to whoever finished earlier. The name is the optional one the player chose. Players who played the local, open-source version of the game and chose to add their score are marked played locally: their score can't be checked.",
       "datasource": {
         "type": "loki",
         "uid": "${loki}"
@@ -1307,7 +1307,7 @@
             "type": "loki",
             "uid": "${loki}"
           },
-          "expr": "count by (user_id, event_data_name, event_data_score, event_data_max, timestamp)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"accusation_scored\" [$__range]))",
+          "expr": "count by (user_id, event_data_name, event_data_score, event_data_max, event_data_source, timestamp)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=~\"user_storage|local_storage\" | user_id!~\"$exclude\" | event_name=\"accusation_scored\" [$__range]))",
           "legendFormat": "scores",
           "queryType": "instant",
           "instant": true,
@@ -1332,6 +1332,35 @@
               {
                 "id": "noValue",
                 "value": "Anonymous detective"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Played"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "local": {
+                        "text": "played locally",
+                        "color": "blue",
+                        "index": 0
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
               }
             ]
           }
@@ -1410,6 +1439,12 @@
                   "first"
                 ],
                 "operation": "aggregate"
+              },
+              "event_data_source": {
+                "aggregations": [
+                  "firstNotNull"
+                ],
+                "operation": "aggregate"
               }
             }
           }
@@ -1475,12 +1510,14 @@
               "#": 0,
               "event_data_name (firstNotNull)": 1,
               "event_data_score (first)": 2,
-              "timestamp (first)": 3
+              "timestamp (first)": 3,
+              "event_data_source (firstNotNull)": 4
             },
             "renameByName": {
               "event_data_name (firstNotNull)": "Detective",
               "event_data_score (first)": "Score (of 10)",
-              "timestamp (first)": "Finished"
+              "timestamp (first)": "Finished",
+              "event_data_source (firstNotNull)": "Played"
             }
           }
         }

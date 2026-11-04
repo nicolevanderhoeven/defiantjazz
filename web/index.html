@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Static page: no network requests at runtime. Links that leave the game open in a new tab. -->
+<!-- Static page: no network requests at runtime (the local stack's server may allow one origin for the optional leaderboard button). Links that leave the game open in a new tab. -->
 <meta http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="color-scheme" content="dark light">
@@ -11,6 +11,9 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
 <script src="theme.js"></script>
+<!-- Local mode (see local.js): only on in the local stack's server or with ?local. Elsewhere these do nothing. -->
+<script src="local-config.js"></script>
+<script src="local.js"></script>
 </head>
 <body>
 <header class="topbar">

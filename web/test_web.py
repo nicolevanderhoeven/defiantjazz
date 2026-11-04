@@ -972,7 +972,11 @@ class StatisticsDashboardTest(unittest.TestCase):
             for target in panel["targets"]:
                 expr = target["expr"]
                 self.assertIn('browser_name!="Chrome Headless"', expr)
-                self.assertIn('user_attr_player_id_source="user_storage"', expr)
+                # Only the leaderboard also takes players who added their score from the local game (see local.js).
+                if panel["title"] == "Leaderboard":
+                    self.assertIn('user_attr_player_id_source=~"user_storage|local_storage"', expr)
+                else:
+                    self.assertIn('user_attr_player_id_source="user_storage"', expr)
                 self.assertIn('user_id!~"$exclude"', expr)
                 self.assertIn('event_domain="defiant-jazz"', expr)
                 for event in re.findall(r'event_name="([a-z_]+)"', expr):
@@ -988,6 +992,11 @@ class StatisticsDashboardTest(unittest.TestCase):
         self.assertEqual(sorts[0]["options"]["sort"], [{"field": "event_data_score", "desc": True}, {"field": "timestamp"}])
         group = next(t for t in board["transformations"] if t["id"] == "groupBy")
         self.assertEqual(group["options"]["fields"]["user_id"]["operation"], "groupby")
+        # Scores added from the local game (source=local) are marked "played locally", because nothing checks them.
+        self.assertIn("event_data_source", board["targets"][0]["expr"])
+        self.assertIn("event_data_source", group["options"]["fields"])
+        badge = next(o for o in board["fieldConfig"]["overrides"] if o["matcher"]["options"] == "Played")
+        self.assertIn("played locally", json.dumps(badge))
 
 
 def plain(text):
@@ -1319,3 +1328,155 @@ class ScoredAccusationPageTest(unittest.TestCase):
         # Without a collector there are no statistics, so nothing to read back either.
         bare = build.page_files(faro_template(), CONTENT)
         self.assertNotIn("src/track.ts", bare)
+
+
+class LocalModeTest(unittest.TestCase):
+    """Local mode (web/local.js) is for the open-source stack in local/. The Grafana Page never has it, so the Page's
+    wording is the same as it was before it existed, and the local wording lives only in local.js."""
+
+    # The Page's own sentences, one per place where local mode has its own. Each is the else branch of a `LOCAL ?` hook
+    # in game.js, so the Page build still gets exactly these words.
+    PAGE_HOOKS = [
+        'if (ok) return announce(LOCAL ? LOCAL.copied : "Copied. Paste it into Grafana Assistant (click Chat to start chatting) or your own AI.");',
+        'LOCAL ? LOCAL.hubIntro({ el: el, link: extLink }) : el("p", null, ["Ask Grafana Assistant in this Grafana (click ", el("strong", null, "Chat"), " at the top to start chatting), or your own AI agent through the ",',
+        'extLink("Grafana MCP server", MCP_URL), " or ", extLink("gcx", GCX_URL),',
+        '". It hasn\'t seen the interviews, the leads you follow, or anything you find. " +',
+        '"If you want it to know something, tell it."]),',
+        'el("p", { class: "note" }, LOCAL ? LOCAL.timesNote() : "The data\'s times are UTC. If it was loaded on an incident date, the " +',
+        '"story\'s 03:02 is 03:02 in Grafana set to UTC. If it was loaded to end just before the load, " +',
+        '"03:02 is a different clock time there. Either way, your AI can find the outage in the data."),',
+        'el("p", { class: "note" }, ["Learn more: "].concat((LOCAL ? LOCAL.links : LINKS).map(function (l, i) {',
+        ': LOCAL ? LOCAL.judgeNote',
+        'if (LOCAL) return LOCAL.boardView({ el: el, button: button, score: state.score, name: state.leaderName, finishedAt: state.finishedAt });',
+        'LOCAL ? LOCAL.nameNote(NAME_MAX) : "Other players can see it. Up to " + NAME_MAX + " characters. Leave it empty to show as Anonymous detective."),',
+    ]
+    # Wording only local mode may show.
+    LOCAL_ONLY = ["claude mcp add --transport http", "the matcher is the judge", "Add my score to the public leaderboard",
+                  "played locally", "Nothing leaves your machine", "case-bundle.md", "data source UIDs are loki, prometheus and tempo"]
+
+    def test_the_page_keeps_its_wording(self):
+        game = read("game.js")
+        for line in self.PAGE_HOOKS:
+            self.assertIn(line, game)
+        # Every use of local mode in game.js is one of the hooks above (or its setup), and there are no others.
+        uses = [l.strip() for l in game.splitlines() if re.search(r"\bLOCAL\b", l) and not l.strip().startswith(("*", "//"))]
+        known = ('var LOCAL = window.DJ_HOST ? null : (window.DJ_LOCAL || null);  // see local.js', "if (LOCAL) {",
+                 "QUESTIONS = QUESTIONS.map(function (pair) { return [pair[0], pair[1].replace(DATA, LOCAL.data)]; });")
+        for use in uses:
+            self.assertTrue(use in known or any(use in hook or hook in use for hook in self.PAGE_HOOKS), "unexpected use of local mode: " + use)
+        # The Page's example questions and links are untouched, and still name Assistant.
+        self.assertIn('var DATA = "Using the Kipsake data in this stack from the last 30 days', game)
+        self.assertIn('["Grafana Assistant", "https://grafana.com/docs/grafana-cloud/machine-learning/assistant/"],', game)
+
+    def test_local_wording_is_only_in_local_mode(self):
+        game, local = read("game.js"), read("local.js")
+        for phrase in self.LOCAL_ONLY:
+            self.assertIn(phrase, local)
+            self.assertNotIn(phrase, game)
+        # And the Page's Assistant wording isn't in local.js's own explanation of how to ask (it names Assistant only to say it isn't there).
+        for phrase in ("click Chat", "Ask Assistant", "Ask Grafana Assistant in this Grafana"):
+            self.assertNotIn(phrase, local)
+
+    def test_a_page_is_never_local(self):
+        game, local = read("game.js"), read("local.js")
+        self.assertIn("var LOCAL = window.DJ_HOST ? null :", game)
+        self.assertRegex(local, r'if \(window\.DJ_HOST\) return;\s+var cfg = window\.DJ_LOCAL_CONFIG;')
+        # ...and only a page that says so (the local server's config, or ?local) is local at all.
+        self.assertIn("if (!cfg) return;", local)
+        self.assertIn("window.DJ_LOCAL_CONFIG = null;", read("local-config.js"))
+        # The Page's files are the game's, not local mode's.
+        files = build.page_files(fake_template(), CONTENT)
+        text = json.dumps(files)
+        for name in ("local.js", "local-config.js"):
+            self.assertNotIn(name, files)
+        for marker in ("DJ_LOCAL_CONFIG", "faroBody", "claude mcp add", "played locally"):
+            self.assertNotIn(marker, text)
+        markup = files["src/markup.ts"]
+        self.assertNotIn("local", markup.replace("localStorage", ""))
+
+    def test_the_page_loads_local_mode_before_the_game(self):
+        page = read("index.html")
+        head = page.split("</head>", 1)[0]
+        self.assertLess(head.index('<script src="local-config.js">'), head.index('<script src="local.js">'))
+        self.assertLess(page.index('<script src="local.js">'), page.index('<script src="game.js">'))
+        self.assertIn("connect-src 'none'", page)   # the local server loosens it for the leaderboard only, and only when asked to
+
+    def test_the_only_request_is_the_opt_in_post(self):
+        local = read("local.js")
+        self.assertNotRegex(local, r"XMLHttpRequest|WebSocket|EventSource|sendBeacon|import\(")
+        self.assertEqual(len(re.findall(r"\bfetch\(", local)), 1)
+        submit = local.split("function submit(", 1)[1].split("\n  }\n", 1)[0]
+        self.assertIn('method: "POST"', submit)
+        self.assertIn('credentials: "omit"', submit)
+        # Only the button calls it, and the button isn't there without a collector.
+        self.assertEqual(len(re.findall(r"\bsubmit\(", local)), 2)   # its definition and the button's click
+        self.assertIn("if (!LEADERBOARD) return box;", local)
+        click = local.split('send = h.button("Add my score to the public leaderboard", function () {', 1)[1].split("}, \"btn-primary\");", 1)[0]
+        self.assertIn("submit(attrs, h.finishedAt)", click)
+        self.assertEqual(len(re.findall(r"\bsubmit\(", local.split("function boardView", 1)[1].split("send = h.button", 1)[0])), 0)
+        # It's off unless local-config.js names an https collector (or http://localhost, for testing).
+        self.assertIn('var LEADERBOARD = /^(https:\\/\\/|http:\\/\\/(localhost|127\\.0\\.0\\.1)(:\\d+)?\\/)', local)
+        # Nobody's answers are handed to local mode at all.
+        board_call = [l for l in read("game.js").splitlines() if "LOCAL.boardView(" in l][0]
+        self.assertNotIn("answers", board_call)
+        self.assertNotRegex(local, r"h\.answers|state\.answers|\.answers\b")
+
+    def test_the_opt_in_sends_what_the_page_records_and_marks_it_local(self):
+        local = read("local.js")
+        ids = re.search(r"var QUESTION_IDS = \[([^\]]*)\];", local).group(1)
+        ids = re.findall(r'"(\w+)"', ids)
+        sent = {"score", "max", "judge", "name"} | set(ids)
+        self.assertEqual(sent, set(build.TRACK_EVENTS["accusation_scored"]))
+        self.assertIn('attrs.source = "local";', local)
+        self.assertIn('domain: DOMAIN', local)
+        self.assertIn('var DOMAIN = "%s";' % build.FARO_DOMAIN, local)
+        self.assertIn('name: DOMAIN, version: "local-web"', local)
+        self.assertIn('player_id_source: "local_storage"', local)
+
+    @unittest.skipUnless(shutil.which("node"), "needs node")
+    def test_the_opt_in_payload_in_node(self):
+        script = r"""
+        const fs = require('fs'), vm = require('vm');
+        const store = {};
+        const sent = [];
+        const box = { window: {}, location: { search: '?local', origin: 'http://localhost:8080', pathname: '/' },
+          document: { createDocumentFragment() { return {}; } },
+          localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+          crypto: { getRandomValues(a) { a.fill(7); return a; } }, Date, JSON, Object, String, Number, Array, Uint8Array,
+          fetch: (url, init) => { sent.push([url, init]); return Promise.resolve({ ok: true }); } };
+        box.window = box; box.window.DJ_LOCAL_CONFIG = { leaderboardUrl: 'https://collector.example/collect/key' };
+        vm.runInNewContext(fs.readFileSync(process.argv[1], 'utf8'), box);
+        const L = box.DJ_LOCAL;
+        const score = { total: 7, max: 10, rows: ['killer','why','jazz','blackout','waffles','seat','elevator']
+          .map((id, i) => ({ id, points: [3,1,1,0,1,1,0][i], max: 3, by: i === 1 ? 'ai' : 'matcher' })) };
+        const attrs = L._payload(score, 'Ada');
+        const body = L._faroBody(attrs, Date.parse('2026-11-04T10:00:00Z'));
+        console.log(JSON.stringify({ attrs, body, url: L.leaderboardUrl }));
+        """
+        out = subprocess.run(["node", "-e", script, os.path.join(HERE, "local.js")], capture_output=True, text=True, check=True).stdout
+        got = json.loads(out)
+        self.assertEqual(got["attrs"], {"score": "7", "max": "10", "judge": "ai", "name": "Ada", "killer": "3", "why": "1",
+                                        "jazz": "1", "blackout": "0", "waffles": "1", "seat": "1", "elevator": "0", "source": "local"})
+        event = got["body"]["events"][0]
+        self.assertEqual((event["name"], event["domain"], event["timestamp"]), ("accusation_scored", "defiant-jazz", "2026-11-04T10:00:00.000Z"))
+        self.assertEqual(event["attributes"]["source"], "local")
+        self.assertEqual(got["body"]["meta"]["app"]["name"], "defiant-jazz")
+        self.assertEqual(got["body"]["meta"]["user"]["attributes"], {"player_id_source": "local_storage"})
+        self.assertEqual(got["url"], "https://collector.example/collect/key")
+        self.assertNotIn("answer", out.lower().replace("answers", ""))
+
+    @unittest.skipUnless(shutil.which("node"), "needs node")
+    def test_it_is_off_without_a_page_that_says_so(self):
+        script = r"""
+        const fs = require('fs'), vm = require('vm');
+        function run(win, search) {
+          const box = { location: { search, origin: 'http://localhost', pathname: '/' }, document: {}, localStorage: {}, crypto: {} };
+          Object.assign(box, win); box.window = box;
+          vm.runInNewContext(fs.readFileSync(process.argv[1], 'utf8'), box);
+          return !!box.DJ_LOCAL;
+        }
+        console.log(JSON.stringify([run({}, ''), run({ DJ_LOCAL_CONFIG: null }, ''), run({}, '?local'), run({ DJ_LOCAL_CONFIG: {} }, ''),
+          run({ DJ_HOST: {}, DJ_LOCAL_CONFIG: {} }, '?local'), run({}, '?locally=1')]));
+        """
+        out = subprocess.run(["node", "-e", script, os.path.join(HERE, "local.js")], capture_output=True, text=True, check=True).stdout
+        self.assertEqual(json.loads(out), [False, False, True, True, False, False])

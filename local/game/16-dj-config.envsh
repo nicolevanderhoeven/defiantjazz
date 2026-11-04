@@ -1,0 +1,15 @@
+# Sourced by the nginx image's entrypoint before it renders default.conf.template.
+# The game's Content-Security-Policy allows no network requests at all (connect-src 'none'). The one thing that
+# loosens it is the optional leaderboard submission: with DJ_LEADERBOARD_URL set (https://, or http://localhost
+# for testing), it may connect to that URL's origin.
+if [ -n "${DJ_LEADERBOARD_URL:-}" ]; then
+  DJ_CONNECT_SRC="$(printf '%s' "$DJ_LEADERBOARD_URL" | grep -Eo '^(https://[^/]+|http://(localhost|127\.0\.0\.1)(:[0-9]+)?)' | head -n 1)"
+  if [ -z "$DJ_CONNECT_SRC" ]; then
+    echo "DJ_LEADERBOARD_URL should be an https:// URL (or http://localhost for testing). The leaderboard button is off." >&2
+    DJ_LEADERBOARD_URL=""
+    DJ_CONNECT_SRC="'none'"
+  fi
+else
+  DJ_CONNECT_SRC="'none'"
+fi
+export DJ_LEADERBOARD_URL DJ_CONNECT_SRC

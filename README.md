@@ -11,6 +11,23 @@ This repo contains the telemetry and the tools to load it into Grafana: Loki for
 >
 > Everything else is safe to read: `CASE-BRIEF.md`, `telemetry/`, `loader/`, `local/` and `game/ai-evidence/` hold only what an investigator is given, never the solution. The rest of `web/` is spoiler-free too.
 
+## Play it locally, fully open source
+
+The whole game runs on your own machine, from open-source parts only: Loki, Prometheus, Tempo, Grafana, the Grafana MCP server and the game's web server, started together by Docker Compose. Nothing in it connects to Grafana Cloud. You bring your own AI agent (and its API key, if it needs one).
+
+1. Clone this repository.
+2. Start everything: `cd local && docker compose up -d`. The first start pulls the images and builds the small loader; the case is loaded within about two minutes (`docker compose ps -a` shows the `loader` as `Exited (0)`). You need Docker with Compose, and nothing else: no Python.
+3. Connect your AI agent to the Grafana MCP server at `http://localhost:8000/mcp`, for example `claude mcp add --transport http grafana-local http://localhost:8000/mcp` (or use [`gcx`](#gcx-on-the-local-stack-cli-alternative)). Then open the game at <http://localhost:8080>.
+
+The game shows example questions to give your agent, which investigates the case in Grafana at <http://localhost:3000>. Anyone on your machine can look around there without signing in. Sign in as `admin` / `admin` to change things. Every port is bound to `127.0.0.1`, so nothing is reachable from your network.
+
+> [!WARNING]
+> **Start your agent outside this repo's folder.** An agent with file access can read the spoiler files, and it doesn't need them: the MCP server gives it the telemetry. No MCP-capable agent? Paste [`game/ai-evidence/case-bundle.md`](game/ai-evidence/case-bundle.md) into any chatbot instead, with nothing to install.
+
+`docker compose down` stops the stack and keeps the case, and `docker compose down -v` also wipes it (the next `up` loads it again). [Loading into a local stack](#loading-into-a-local-stack) has the details, including moving a port that's already taken.
+
+**One optional exception, off unless you turn it on:** at the end, the game can offer to add your score to the public leaderboard. Nothing is sent unless you click that button, and it only shows once a collector address is set in `local/.env` (`DJ_LEADERBOARD_URL`, see [`local/.env.example`](local/.env.example)). It sends your score, the points for each question, your chosen name and a random player id, never your answers, and the leaderboard marks it "played locally". Until a collector is set, nothing in the stack talks to Grafana Cloud.
+
 ## Play the game
 
 A text adventure for running locally. You watch the testimonies and choose what to investigate, while an AI that sees only the telemetry answers your questions. You need Python 3, plus any AI you like.
@@ -50,7 +67,7 @@ The same game as a static web page, made to embed in a Grafana dashboard panel n
 python3 -m http.server 8080 --bind 127.0.0.1 --directory web
 ```
 
-Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embedding it in a dashboard with the example dashboard, and building it as a Grafana Page with Grafana Assistant beside it. It has no spoilers.
+Then open <http://localhost:8080/>. The [local stack](#play-it-locally-fully-open-source) serves the same page itself, in a local mode that points at your own AI agent instead of Grafana Assistant (add `?local` to the address to see that mode from any static server). [`web/README.md`](web/README.md) covers embedding it in a dashboard with the example dashboard, and building it as a Grafana Page with Grafana Assistant beside it. It has no spoilers.
 
 > [!WARNING]
 > **`web/SPOILERS-content.js` contains spoilers.** It's built from `game/SPOILERS-content/` and includes the solution, so don't open it if you want to play.
@@ -69,7 +86,7 @@ Then open <http://localhost:8080/>. [`web/README.md`](web/README.md) covers embe
 | `telemetry/ambient-mic.log` | Ambient compliance-microphone transcripts, 03:02 to 03:10 (buffered during the outage, live after it) |
 | `telemetry/records.log` | Personnel, detention, Hush Room, supervisor feedback, perks, keystroke drafts, calendar, Cocoa Hour seats and festive wear, procedure revisions |
 | `loader/` | `load.py` sends everything over OTLP; `test_load.py` checks its time shift |
-| `local/` | Docker Compose stack: Loki, Prometheus, Tempo, Grafana (with Grafana Assistant) and the Grafana MCP server |
+| `local/` | The open-source Docker Compose stack: Loki, Prometheus, Tempo, Grafana, the Grafana MCP server, a loader that loads the case and the game's web server. Grafana Assistant is an optional profile |
 
 That's about 4,300 lines across the four people on the Sleep Floor's night shift and 14 weeks of nights. Query it rather than reading it end to end.
 
@@ -117,20 +134,40 @@ To find out what was really stored, set the optional `GRAFANA_LOKI_URL`, `GRAFAN
 ## Loading into a local stack
 
 ```sh
-cd local && docker compose up -d && cd ..
-python3 -m pip install -r loader/requirements.txt
-python3 loader/load.py --target local
+cd local && docker compose up -d
 ```
 
-Grafana 13.2 runs at <http://localhost:3000>, and the Loki, Prometheus and Tempo data sources are already provisioned. Every port is bound to `127.0.0.1`, so nothing is reachable from your network.
+That starts Loki 3.7, Prometheus 3, Tempo 2, Grafana 13.3, the Grafana MCP server and the game, and a one-shot `loader` loads the case into the three stores (with `--incident-date latest`, so you get the full 14 weeks of history) and exits. It waits for the stores to be ready, and it skips any signal that's already loaded, so repeating `up` is safe. Watch it with `docker compose logs -f loader`.
 
-**Sign-in:** the default is **admin / admin**. To use your own password, copy `local/.env.example` to `local/.env` (git-ignored) before the first `docker compose up`. Grafana only reads it when its data volume is created. To change the password later, run:
+| What | Where |
+|---|---|
+| The game | <http://localhost:8080> |
+| Grafana (Viewer without signing in, `admin` / `admin` to change things) | <http://localhost:3000> |
+| Grafana MCP server (read-only) | <http://localhost:8000/mcp> |
+| Loki, Prometheus, Tempo | `localhost:3100`, `localhost:9090`, `localhost:3200` (and OTLP on `4318`) |
+
+Every port is bound to `127.0.0.1`, so nothing is reachable from your network. If a port is already in use on your machine, move it in `local/.env` (copy [`local/.env.example`](local/.env.example)) with `DJ_GAME_PORT`, `DJ_GRAFANA_PORT`, `DJ_MCP_PORT`, `DJ_LOKI_PORT`, `DJ_PROMETHEUS_PORT`, `DJ_TEMPO_PORT` or `DJ_OTLP_PORT`. The game and its links follow, but the home dashboard's text assumes the default ports.
+
+Grafana's home dashboard, **Kipsake Sleep Floor**, links to the game, the MCP endpoint and the data sources (`loki`, `prometheus` and `tempo`, already provisioned), so <http://localhost:3000> explains itself.
+
+**Nothing phones home.** Grafana's usage reports, update checks and news feed are off, so are Loki's and Tempo's usage reports and the MCP server's usage statistics, and Grafana doesn't download any plugins on start-up. The default stack never calls Grafana Cloud.
+
+**Sign-in:** anyone on your machine gets the Viewer role without signing in, which is enough to use Explore. The admin login is **admin / admin**. To use your own password, copy `local/.env.example` to `local/.env` (git-ignored) before the first `docker compose up`. Grafana only reads it when its data volume is created. To change the password later, run:
 
 ```sh
 docker compose exec grafana grafana cli admin reset-admin-password '<new password>'
 ```
 
-Recreating the containers (for example after editing `docker-compose.yml`) clears Loki, Prometheus and Tempo, so run the loader again afterwards. Grafana's own data, including the Assistant connection, lives in the `grafana-data` volume and survives.
+**Restarting.** Loki, Prometheus, Tempo and Grafana keep their data in Docker volumes. `docker compose down` followed by `docker compose up -d` keeps the case, and the loader notices it's there and does nothing. `docker compose down -v` deletes the volumes, and the next `up` loads the case again from scratch. If the data is gone but the volumes aren't (for example after you removed only one of them), the loader loads whichever signals are missing.
+
+**Loading by hand.** To load the case again, or into a different stack, run the loader from the host. It needs Python 3 and the loader's two dependencies, and the stack's OTLP ports:
+
+```sh
+python3 -m pip install -r loader/requirements.txt
+python3 loader/load.py --target local
+```
+
+If you load the same stack more than once, filter on `case_run` to see one load.
 
 **Dates.** The raw files are dated around one canonical incident night: the blackout is at 03:02 on Thursday 2026-10-08. The local stack accepts the full history, so it can keep the story's times of day:
 
@@ -138,19 +175,23 @@ Recreating the containers (for example after editing `docker-compose.yml`) clear
 python3 loader/load.py --target local --incident-date latest
 ```
 
-`--incident-date` moves every date by whole weeks so the incident falls on the Thursday you name (`YYYY-MM-DD`), or with `latest` on the most recent Thursday whose data has all happened. Times of day and weekdays stay the story's own, so the blackout is at 03:02 UTC on a Thursday. You can also set it with `DJ_INCIDENT_DATE`. A date that isn't a Thursday is refused, unless you add `--any-weekday`. Set Grafana's time zone to UTC (the example dashboard already is) so the times on screen match the story's. Add `--no-shift` to keep the original 2026 dates instead.
+`--incident-date` moves every date by whole weeks so the incident falls on the Thursday you name (`YYYY-MM-DD`), or with `latest` on the most recent Thursday whose data has all happened. Times of day and weekdays stay the story's own, so the blackout is at 03:02 UTC on a Thursday. You can also set it with `DJ_INCIDENT_DATE`. A date that isn't a Thursday is refused, unless you add `--any-weekday`. Set Grafana's time zone to UTC (the home dashboard already is) so the times on screen match the story's. Add `--no-shift` to keep the original 2026 dates instead.
 
-Every signal carries the load's incident date as the resource attribute `case_run` (a label on the local stack's metrics). If you load the data into the same stack more than once, filter on `case_run` to see one load.
+Every signal carries the load's incident date as the resource attribute `case_run` (a label on the local stack's metrics).
 
-### Grafana Assistant on the local stack
+### Optional: Grafana Assistant (needs Grafana Cloud)
 
-The Grafana Assistant plugin (`grafana-assistant-app`) is preinstalled. Assistant still runs its AI backend in Grafana Cloud, so connect it once to a Grafana Cloud stack where Assistant is enabled. A free account works.
+Everything above is open source and works without Grafana Cloud. Grafana Assistant is the one part that doesn't: it runs its AI backend in Grafana Cloud. If you want it anyway, start the optional `assistant` profile, which adds a second Grafana with the Assistant plugin installed at <http://localhost:3001> (the same data sources, a separate volume), and connect it once to a Grafana Cloud stack where Assistant is enabled. A free account works.
 
-1. Sign in to <http://localhost:3000>.
-2. Open **Administration > Plugins and data > Plugins > Grafana Assistant > Connection**, or go straight to <http://localhost:3000/plugins/grafana-assistant-app>.
+```sh
+cd local && docker compose --profile assistant up -d
+```
+
+1. Sign in to <http://localhost:3001> as `admin` / `admin` (Assistant doesn't support anonymous access).
+2. Open **Administration > Plugins and data > Plugins > Grafana Assistant > Connection**, or go straight to <http://localhost:3001/plugins/grafana-assistant-app>.
 3. Click **Connect to Grafana Cloud** and approve the connection.
 
-Your telemetry stays in the local stack. Prompts and the query context Assistant needs are sent to Grafana Cloud, and usage counts against the connected stack. The connection is stored in the `grafana-data` Docker volume, so it survives restarts. `docker compose down -v` removes it.
+Your telemetry stays in the local stack. Prompts and the query context Assistant needs are sent to Grafana Cloud, and usage counts against the connected stack. The connection is stored in the `grafana-assistant-data` volume, so it survives restarts. `docker compose down -v` removes it. Move the port with `DJ_ASSISTANT_PORT`.
 
 Some Assistant features, such as Investigations, aren't available on self-managed Grafana. See the [self-managed Assistant docs](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/self-managed/).
 
@@ -160,10 +201,11 @@ The stack also runs the open-source [Grafana MCP server](https://gra.fan/mcprepo
 
 - **Endpoint:** `http://localhost:8000/mcp` (streamable HTTP), reachable only from this machine.
 - **Read-only:** write tools are disabled, so agents can query Loki, Prometheus and Tempo, but can't change anything in Grafana.
-- **Sign-in:** it uses the Grafana admin login from `local/.env`.
+- **Sign-in:** it uses the Grafana admin login from `local/.env` (admin / admin by default) to read Grafana.
 - **Usage statistics:** turned off.
+- **Port:** `8000`, or `DJ_MCP_PORT`.
 
-Add it to Claude Code with:
+Start your agent outside this repo's folder, so it can't read the spoiler files. Add the server to Claude Code with:
 
 ```sh
 claude mcp add --transport http grafana-local http://localhost:8000/mcp
@@ -224,6 +266,8 @@ Commands for Grafana Cloud products, such as `gcx assistant` and SLOs, don't wor
 --incident-end ISO       pin the time that 2026-10-08T03:50:00Z maps to (default: now)
 --cloud-log-hours HOURS  cloud only: hours of logs to send (default 167; env DJ_CLOUD_LOG_HOURS)
 --dry-run                build and validate every payload without sending
+--wait SECONDS           local only: wait up to this long for Loki, Prometheus and Tempo to be ready
+--skip-if-loaded         local only: skip each signal that already has this case's data (case_run is set)
 ```
 
 ## Investigating

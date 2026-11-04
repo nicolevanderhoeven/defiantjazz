@@ -17,6 +17,15 @@ python3 -m http.server 8080 --bind 127.0.0.1 --directory web
 
 Then open <http://localhost:8080/>. Opening `web/index.html` straight from disk works too.
 
+## Local mode (the open-source stack)
+
+The `local/` Docker Compose stack serves this folder at <http://localhost:8080> and tells the game it's local (`local-config.js`, which that server writes; the committed file is the "not local" default). Add `?local` to the address to see the same mode from any static server. In local mode, [`local.js`](local.js) gives the game its own wording and nothing else changes:
+
+- There's no Grafana Assistant and no Chat button. The hub's "Ask your AI" box says to connect your own AI agent to the Grafana MCP server (or `gcx`), with the one-line `claude mcp add` command. Its example questions name the local data sources (Loki, Prometheus and Tempo, UIDs `loki`, `prometheus` and `tempo`) and the same `service_namespace="kipsake-sleep-floor"`.
+- There's no AI judge, so the matcher marks the answers alone, and the score screen says so.
+- The last verdict page shows the player's own score and a link to the local Grafana dashboard. If the stack's `DJ_LEADERBOARD_URL` is set, it also shows an optional **Add my score to the public leaderboard** button, with exactly what would be sent. Nothing is sent unless the player clicks it. It posts the same `accusation_scored` event the Grafana Page records (the points for each question, the total and the optional name, never the answers) to that Frontend Observability collector, with `source=local` and `player_id_source=local_storage`. The play statistics dashboard's Leaderboard panel counts these scores and marks them "played locally", because nothing can check a score from the player's own machine. The collector has to allow the game's origin (`http://localhost:8080` by default) for the browser to post to it. The button is off by default, and the server only loosens the page's Content-Security-Policy (`connect-src 'none'`) to that one origin when it's set.
+- A Grafana Page has `window.DJ_HOST`, so it is never in local mode, and the Page build doesn't include `local.js`. A test holds the Page's wording to what it was.
+
 ## Put it in a Grafana dashboard
 
 The game panel uses the community [Video panel](https://grafana.com/grafana/plugins/innius-video-panel/) (`innius-video-panel`) in iframe mode. It's the same setup as Spice Runner on Grafana Play.

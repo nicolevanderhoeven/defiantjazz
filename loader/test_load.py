@@ -302,5 +302,105 @@ class CloudLogs(unittest.TestCase):
             self.assertIn('case_run="$case_run"', expr)
 
 
+class LocalStack(unittest.TestCase):
+    """What the local stack's one-shot loader relies on: waiting for the backends, and not loading twice."""
+
+    BASES = ("http://loki:3100", "http://prometheus:9090", "http://tempo:3200")
+
+    def test_bases_follow_the_otlp_addresses(self):
+        self.assertEqual(load.local_bases({}), ("http://localhost:3100", "http://localhost:9090", "http://localhost:3200"))
+        env = {"LOCAL_LOKI_OTLP": "http://loki:3100/otlp/v1/logs", "LOCAL_TEMPO_OTLP": "http://tempo:4318/v1/traces",
+               "LOCAL_PROMETHEUS_OTLP": "http://prometheus:9090/api/v1/otlp/v1/metrics"}
+        self.assertEqual(load.local_bases(env), self.BASES)
+        self.assertEqual(load.local_bases({**env, "LOCAL_TEMPO_URL": "http://t:1/"})[2], "http://t:1")
+
+    def test_waits_until_all_three_are_ready(self):
+        ready_after = {"http://loki:3100/ready": 2, "http://prometheus:9090/-/ready": 0, "http://tempo:3200/ready": 1}
+        calls = []
+
+        def get(url, timeout=10):
+            calls.append(url)
+            ready_after[url] -= 1
+            return (200, "ready") if ready_after[url] < 0 else (503, "Ingester not ready")
+
+        now = [0.0]
+        with mock.patch.object(load, "http_get", get):
+            left = load.wait_until_ready(self.BASES, 60, sleep=lambda s: now.__setitem__(0, now[0] + s), clock=lambda: now[0])
+        self.assertEqual(left, [])
+        self.assertEqual(calls.count("http://loki:3100/ready"), 3)
+        self.assertEqual(calls.count("http://prometheus:9090/-/ready"), 1)   # not asked again once ready
+
+    def test_gives_up_and_names_what_is_not_ready(self):
+        now = [0.0]
+        with mock.patch.object(load, "http_get", lambda url, timeout=10: (0, "refused") if "tempo" in url else (200, "ok")):
+            left = load.wait_until_ready(self.BASES, 10, sleep=lambda s: now.__setitem__(0, now[0] + s), clock=lambda: now[0])
+        self.assertEqual(left, ["tempo"])
+
+    def answers(self, logs=False, metrics=False, traces=False):
+        def get(url, timeout=10):
+            if "loki/api/v1/query_range" in url:
+                self.assertIn("case_run", urllib_unquote(url))
+                return 200, json.dumps({"data": {"result": [{"values": [["1", "x"]]}] if logs else []}})
+            if "/api/v1/label/case_run/values" in url:
+                return 200, json.dumps({"status": "success", "data": ["2026-10-29"] if metrics else []})
+            if "/api/search" in url:
+                return 200, json.dumps({"traces": [{"traceID": "a"}] if traces else []})
+            self.fail(url)
+        return get
+
+    def test_it_knows_which_signals_are_loaded(self):
+        for have in ((), ("logs",), ("metrics", "traces"), ("logs", "metrics", "traces")):
+            with mock.patch.object(load, "http_get", self.answers(**{k: True for k in have})):
+                self.assertEqual(load.loaded_signals(self.BASES, load.NAMESPACE), set(have))
+
+    def test_an_unreachable_or_odd_answer_counts_as_not_loaded(self):
+        with mock.patch.object(load, "http_get", lambda url, timeout=10: (0, "refused")):
+            self.assertEqual(load.loaded_signals(self.BASES, load.NAMESPACE), set())
+        with mock.patch.object(load, "http_get", lambda url, timeout=10: (200, "<html>")):
+            self.assertEqual(load.loaded_signals(self.BASES, load.NAMESPACE), set())
+
+    def run_loader(self, *argv, have=()):
+        out = io.StringIO()
+        sent = []
+        with mock.patch.object(sys, "argv", ["load.py", "--target", "local", "--incident-date", "latest", *argv]), \
+                mock.patch.object(load, "load_env_file"), mock.patch.object(load, "wait_until_ready", return_value=[]), \
+                mock.patch.object(load, "loaded_signals", return_value=set(have)), \
+                mock.patch.object(load.Sender, "post", lambda self_, signal, message: sent.append(signal) or True), \
+                contextlib.redirect_stdout(out):
+            try:
+                load.main()
+                code = 0
+            except SystemExit as e:
+                code = e.code
+        return code, sent, out.getvalue()
+
+    def test_skip_if_loaded_leaves_out_what_is_there(self):
+        code, sent, out = self.run_loader("--skip-if-loaded", have=("logs", "traces"))
+        self.assertEqual((code, set(sent)), (0, {"metrics"}))
+        self.assertIn("logs: already loaded", out)
+        code, sent, out = self.run_loader("--skip-if-loaded", have=())
+        self.assertEqual(set(sent), {"logs", "metrics", "traces"})
+
+    def test_nothing_to_do_when_it_is_all_loaded(self):
+        code, sent, out = self.run_loader("--skip-if-loaded", "--wait", "5", have=("logs", "metrics", "traces"))
+        self.assertEqual((code, sent), (0, []))
+        self.assertIn("already loaded", out)
+
+    def test_without_the_flag_it_loads_regardless(self):
+        code, sent, out = self.run_loader(have=("logs", "metrics", "traces"))
+        self.assertEqual(set(sent), {"logs", "metrics", "traces"})
+
+    def test_wait_and_skip_are_for_the_local_target_only(self):
+        with mock.patch.object(sys, "argv", ["load.py", "--target", "cloud", "--dry-run", "--wait", "5"]), \
+                mock.patch.object(load, "load_env_file"), contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(SystemExit) as stop:
+                load.main()
+        self.assertIn("--target local", str(stop.exception.code))
+
+
+def urllib_unquote(url):
+    return load.urllib.parse.unquote_plus(url)
+
+
 if __name__ == "__main__":
     unittest.main()

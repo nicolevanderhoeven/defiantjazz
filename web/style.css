@@ -702,3 +702,8 @@ dialog .btn:not(.btn-danger) { background: transparent; border-color: var(--c-ch
 .board-table th, .board-table td { padding: 7px 10px; border-bottom: 1px solid var(--c-chip-line); text-align: left; overflow-wrap: anywhere; }
 .board-table th { color: var(--c-mint); font: 11px/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
 .board-table tr.me td { background: var(--c-chip); color: var(--c-peach); font-weight: 600; }
+
+/* Local mode: the optional "add my score to the public leaderboard" section (local.js). */
+.opt-in { margin-top: 18px; padding: 12px 14px; border: 1px solid var(--c-chip-line); border-left: 4px solid var(--c-mint); background: var(--c-chip); }
+.opt-in h3 { margin-top: 0; }
+.opt-in-list { margin: 8px 0; padding-left: 20px; }
