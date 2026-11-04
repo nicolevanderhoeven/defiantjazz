@@ -33,6 +33,7 @@ SENTINELS = [
     "navy knitted Christmas sweater",
     "a twist of five or six yarn threads",
     "a twist of yarn threads in navy, blue, red, orange, green and white",
+    "a twist of colourful yarn threads",
     "HE HAS TO STOP",
     "Discretion appreciated. R. Hale",
     "told Mr. Hale about Agnes's notes",
@@ -187,7 +188,7 @@ class ClueRedesignTest(unittest.TestCase):
         return next(c for c in every if c.title == title or c.meta.get("option") == title)
 
     def test_the_yarn_is_in_the_shared_opening(self):
-        self.assertIn("Found in the victim's closed right hand: a twist of yarn threads in navy, blue, red, orange, green and white.",
+        self.assertIn("Found in the victim's closed right hand: a twist of colourful yarn threads.",
                       CONTENT.cold_open.body)
 
     def test_all_three_clerks_still_wear_a_colourful_christmas_sweater(self):

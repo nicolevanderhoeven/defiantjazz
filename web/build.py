@@ -76,26 +76,59 @@ SCENES = (
 # they can be put back by naming them here.
 IMAGES = {
     "title-screen": (1536, 864),
-    "title-splash": (1536, 864),
     "flyer-kipsake": (800, 1200),
     "scene-break-room": (1200, 400),
+    # 03:02: a poster of the end state (small, for thumbnails), and the six columns that play
     "scene-power-cut": (1050, 700),
+    "power-lit-agnes": (350, 700),
+    "power-lit-bertram": (350, 700),
+    "power-lit-clement": (350, 700),
+    "power-dark-agnes": (350, 700),
+    "power-dark-bertram": (350, 700),
+    "power-dark-clement": (350, 700),
+    # 03:07: two frames of the elevator lobby camera
+    "scene-corridor-cctv": (1050, 700),
+    "scene-corridor-cctv-b": (1050, 700),
     "scene-3-elevator": (1086, 364),
+    # The first interviews, three frames each (the first is the one the buttons and tiles show)
     "portrait-agnes": (1200, 400),
+    "portrait-agnes-b": (1200, 400),
+    "portrait-agnes-c": (1200, 400),
     "portrait-bertram": (1200, 400),
+    "portrait-bertram-b": (1200, 400),
+    "portrait-bertram-c": (1200, 400),
     "portrait-clement": (1200, 400),
+    "portrait-clement-b": (1200, 400),
+    "portrait-clement-c": (1200, 400),
     "scene-outside-world": (720, 1080),
     "scene-elevator-evidence": (1050, 700),
-    "scene-break-room-camera": (1050, 700),
+    # Break Room 2's camera: the 03:01:20 feed and the 03:07:03 feed
+    "scene-break-room-camera": (450, 600),
+    "scene-break-room-camera-b": (450, 600),
     "scene-supply-room": (1050, 700),
     "scene-agnes-home": (1050, 700),
+    "scene-agnes-home-b": (1050, 700),
+    "scene-agnes-home-c": (1050, 700),
     "scene-bertram-home": (1050, 700),
+    "scene-bertram-home-b": (1050, 700),
+    "scene-bertram-home-c": (1050, 700),
     "scene-clement-home": (1200, 400),
+    "scene-clement-home-b": (1200, 400),
+    "scene-clement-home-c": (1200, 400),
     "portrait-agnes-push": (1050, 700),
+    "portrait-agnes-push-b": (1050, 700),
+    "portrait-agnes-push-c": (1050, 700),
     "portrait-bertram-push": (1050, 700),
+    "portrait-bertram-push-b": (1050, 700),
+    "portrait-bertram-push-c": (1050, 700),
     "portrait-clement-push": (1050, 700),
+    "portrait-clement-push-b": (1050, 700),
+    "portrait-clement-push-c": (1050, 700),
     "scene-reveal": (1050, 700),
 }
+# How a panel's frames play (game.js has the timelines): "slides" cross-fades the panel's
+# 'frames:' one after another and ends on the last; the others are built for one panel each.
+ANIMATIONS = ("slides", "power-cut", "cctv-break-room", "cctv-corridor")
 # The title's key art goes with the title screen and the reveal's picture with the verdict, not
 # with a card. A panel may show them too.
 TITLE_ART = "title-screen"
@@ -181,8 +214,20 @@ def scene_art(cards=None, path=ART_PATH):
             if c.meta.get("style") not in (None, "role") or any(
                     c.meta.get(k) not in (None, "yes") for k in ("dim", "music")):
                 raise content.ContentError(f"{where}: 'style:' is role, and 'dim:' and 'music:' are yes")
+            frames = [f.strip() for f in c.meta.get("frames", "").split(",") if f.strip()]
+            for f in frames:
+                if f not in IMAGES:
+                    raise content.ContentError(f"{where}: no picture {f!r} in IMAGES in web/build.py (see 'frames:')")
+            if c.meta.get("animation", "slides") not in ANIMATIONS:
+                raise content.ContentError(f"{where}: 'animation:' is one of {', '.join(ANIMATIONS)}")
+            if (frames or "animation" in c.meta) and image == "none":
+                raise content.ContentError(f"{where}: 'frames:' and 'animation:' need a picture")
             current = {"image": None if image == "none" else image, "body": c.body, "hotspots": []}
             current.update({k: c.meta[k] for k in ("where", "headline", "sound", "style") if k in c.meta})
+            if frames:
+                current["frames"] = frames
+            if "animation" in c.meta:
+                current["animation"] = c.meta["animation"]
             current.update({k: True for k in ("dim", "music") if k in c.meta})
             panels.append(current)
             continue
@@ -193,7 +238,12 @@ def scene_art(cards=None, path=ART_PATH):
         x, y = (float(v) if "." in v else int(v) for v in at.groups())
         if not (0 <= x <= 100 and 0 <= y <= 100):
             raise content.ContentError(f"{where}: 'at:' is a percentage of the picture, 0 to 100")
-        current["hotspots"].append({"label": c.title, "x": x, "y": y, "body": c.body})
+        if c.meta.get("read") not in (None, "yes"):
+            raise content.ContentError(f"{where}: 'read:' is yes")
+        spot = {"label": c.title, "x": x, "y": y, "body": c.body}
+        if c.meta.get("read"):
+            spot["read"] = True
+        current["hotspots"].append(spot)
     missing = [c.title for c in by_title.values() if c.title not in art]
     if missing:
         raise content.ContentError(f"{os.path.relpath(path)}: no panels for {', '.join(missing)}")

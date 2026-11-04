@@ -27,7 +27,7 @@ Join our team of Dreamers in time for the holidays.
 > Incident File SF-1008
 > KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 > Subject: Death of Mr. Reginald Hale, Night Supervisor
-> Found in the victim's closed right hand: a twist of yarn threads in navy, blue, red, orange, green and white. Not from his own clothing.
+> Found in the victim's closed right hand: a twist of colourful yarn threads. Not from his own clothing.
 
 **What happened that night**
 

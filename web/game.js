@@ -68,6 +68,8 @@
   // placeholder the same shape. Alt text is empty: the story stays in the HTML, and words drawn
   // in a picture are in its panel's transcript.
   var TITLE_ART = "title-screen";
+  // The shape of a panel whose animation fills its own stage (not the shape of its first picture).
+  var STAGES = { "power-cut": [1050, 700], "cctv-break-room": [1050, 700] };
   var REVEAL_ART = "scene-reveal";
   var PORTRAITS = { agnes: "portrait-agnes", bertram: "portrait-bertram", clement: "portrait-clement" };
   var LEAD_ICONS = ["search", "home", "chat"];
@@ -392,6 +394,7 @@
   }
 
   function hotspot(h, i, image) {
+    if (h.read) return [readSpot(h, i, image)];
     var id = "spot" + (++spotIds);
     var text = cardBody(h.body);
     text.id = id;
@@ -433,6 +436,249 @@
   });
   window.addEventListener("resize", function () { if (openSpot) placeSpot(openSpot); });
 
+
+  // ---- notes to read ------------------------------------------------------------------
+  // A note, napkin or plan drawn in a picture is only a smudge of lines at the picture's size.
+  // Its marker ("read: yes" in scene-art.md) opens the paper enlarged and readable, and only when it's
+  // clicked or Entered: Escape, the Close button or a click outside closes it, and the arrow keys
+  // do nothing while it's open.
+  var reading = null; // { box, opener }
+
+  function closeRead(refocus) {
+    if (!reading) return;
+    var r = reading;
+    reading = null;
+    r.box.remove();
+    if (refocus && r.opener && r.opener.focus) r.opener.focus({ preventScroll: true });
+  }
+
+  function openRead(h, i, image, opener) {
+    closeRead(false);
+    hideSpot();
+    var clue = image + "." + (i + 1);
+    if (!openedClues[clue]) {
+      openedClues[clue] = true;
+      track("clue_opened", { clue: clue, label: h.label, chapter: chapterId(state.view) });
+    }
+    var close = button("Close", function () { closeRead(true); }, "btn-primary reader-close");
+    var box = el("div", { class: "reader", role: "dialog", "aria-modal": "true", "aria-label": h.label }, [
+      el("div", { class: "reader-sheet" }, [
+        el("p", { class: "reader-label" }, h.label),
+        cardBody(h.body),
+        el("div", { class: "reader-actions" }, close),
+      ]),
+    ]);
+    box.addEventListener("click", function (e) { if (e.target === box) closeRead(true); });
+    document.body.appendChild(box);
+    reading = { box: box, opener: opener };
+    close.focus({ preventScroll: true });
+  }
+
+  function readSpot(h, i, image) {
+    var b = el("button", {
+      type: "button", class: "hotspot hotspot-read", "aria-label": (i + 1) + ". " + h.label + " (opens the note to read)",
+      "aria-haspopup": "dialog",
+    }, String(i + 1));
+    b.style.left = h.x + "%";
+    b.style.top = h.y + "%";
+    b.addEventListener("click", function () { openRead(h, i, image, b); });
+    return b;
+  }
+
+  // ---- animation ---------------------------------------------------------------------
+  // A panel's pictures can play: "frames:" cross-fades the pictures one after another and ends on the last
+  // one, and a few panels have a timeline of their own (03:02 and the two security cameras). Every
+  // animation plays once and ends on its last frame, "Next" works at any time, and a click on the picture
+  // skips to the end. The picture keeps its shape, so nothing under it moves. With reduced motion set,
+  // there is no animation: the panel shows its end state straight away. The hotspots appear once it has played.
+  var timeline = [], clocks = [];
+
+  function later(fn, seconds) { timeline.push(setTimeout(fn, seconds * 1000)); }
+  function stopAnimations() {
+    timeline.forEach(clearTimeout);
+    clocks.forEach(clearInterval);
+    timeline = [];
+    clocks = [];
+  }
+  function reducedMotion() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+  function on(node, yes) { node.classList.toggle("on", yes !== false); }
+
+  // A camera's clock, as hh:mm:ss text: ticks forward from one stated time to another, stepMs apart
+  // (real time is 1000), then holds. Only the times the clip and the records state are shown.
+  function seconds(text) { var p = text.split(":").map(Number); return p[0] * 3600 + p[1] * 60 + p[2]; }
+  function stamp(n) {
+    function two(v) { return (v < 10 ? "0" : "") + v; }
+    return two(Math.floor(n / 3600) % 24) + ":" + two(Math.floor(n / 60) % 60) + ":" + two(n % 60);
+  }
+  function startClock(node, from, to, stepMs, whenDone) {
+    var now = seconds(from), end = seconds(to);
+    node.textContent = stamp(now);
+    if (now >= end) { if (whenDone) whenDone(); return null; }
+    var id = setInterval(function () {
+      now += 1;
+      node.textContent = stamp(now);
+      if (now >= end) {
+        clearInterval(id);
+        if (whenDone) whenDone();
+      }
+    }, stepMs);
+    clocks.push(id);
+    return id;
+  }
+
+  function cam(feedClass, name) {
+    var ts = el("span", { class: "cam-ts" });
+    return { ts: ts, node: el("div", { class: "cam-feed " + feedClass }, [
+      name ? picture(name) : null, ts, el("i", { class: "cam-rec" }),
+    ]) };
+  }
+
+  var ANIMS = {};
+
+  // Cross-fades frame.frames over the first picture, one at a time.
+  ANIMS.slides = function (pic, frame, calm) {
+    var imgs = frame.frames.map(function (n) {
+      var im = picture(n);
+      im.className = "anim-frame";
+      pic.appendChild(im);
+      return im;
+    });
+    return {
+      hold: 3.2,
+      play: function (when) {
+        imgs.forEach(function (im, i) { later(function () { on(im); }, 3.2 * (i + 1) - 0.4); });
+        later(when, 3.2 * imgs.length + 0.8);
+      },
+      end: function () { imgs.forEach(function (im) { on(im); }); },
+    };
+  };
+
+  // The lobby camera: two frames of the same view, its clock running over them.
+  ANIMS["cctv-corridor"] = function (pic, frame, calm) {
+    var slides = ANIMS.slides(pic, frame, calm);
+    var ts = el("span", { class: "cam-ts" });
+    pic.appendChild(el("div", { class: "cam-overlay" }, [
+      ts, el("i", { class: "cam-rec" }), el("span", { class: "cam-name" }, "CAM · ELEVATOR 1"),
+    ]));
+    ts.textContent = "03:07:01";
+    return {
+      play: function (when) {
+        slides.play(when);
+        startClock(ts, "03:07:01", "03:07:05", 1000);
+      },
+      end: function () {
+        slides.end();
+        ts.textContent = calm ? "03:07:01" : "03:07:05";
+      },
+    };
+  };
+
+  // 03:02: three frames of the lit room appear one at a time (the lullaby), then each is replaced, one at a time,
+  // by the same person in the dark, confused (the jazz).
+  var POWER_WHO = ["agnes", "bertram", "clement"];
+  ANIMS["power-cut"] = function (pic, frame, calm) {
+    var sound = pic.querySelector(".panel-sound");
+    var jazz = frame.sound || "";
+    var cols = POWER_WHO.map(function (who) {
+      var lit = picture("power-lit-" + who), dark = picture("power-dark-" + who);
+      lit.className = "anim-frame lit";
+      dark.className = "anim-frame dark";
+      return { node: el("div", { class: "power-col" }, [lit, dark]), lit: lit, dark: dark };
+    });
+    pic.appendChild(el("div", { class: "anim-stage" }, cols.map(function (c) { return c.node; })));
+    var jazzOn = false;
+    function startJazz() {
+      if (jazzOn) return;
+      jazzOn = true;
+      if (sound) sound.textContent = jazz;
+      var figure = pic.closest(".panel");
+      if (figure) figure.setAttribute("data-music", "yes");
+      music.follow(true);
+    }
+    if (sound) sound.textContent = calm ? jazz : "♪ The lullaby";
+    return {
+      play: function (when) {
+        cols.forEach(function (c, i) { later(function () { on(c.lit); }, 0.5 + 1.3 * i); });
+        later(function () { startJazz(); on(cols[0].dark); }, 5.6);
+        later(function () { on(cols[1].dark); }, 6.9);
+        later(function () { on(cols[2].dark); }, 8.2);
+        later(when, 9.4);
+      },
+      end: function () { cols.forEach(function (c) { on(c.lit); on(c.dark); }); startJazz(); },
+    };
+  };
+
+  // Break Room 2's camera: the 03:01:20 feed runs, its clock ticking forward to 03:02:00, when the cameras go
+  // offline; then the 03:07:03 feed comes up.
+  ANIMS["cctv-break-room"] = function (pic, frame, calm) {
+    var a = cam("cam-a", "scene-break-room-camera"), b = cam("cam-b", "scene-break-room-camera-b");
+    var veil = el("div", { class: "cam-veil" }, el("span", null, "CAMERAS OFFLINE"));
+    a.node.appendChild(veil);
+    b.node.classList.add("cam-dark");
+    var note = el("p", { class: "cam-note" }, "Voices. Cups. No music.");
+    var offline = el("p", { class: "cam-offline" }, "03:02:00 · CAMERAS OFFLINE · Jazz begins.");
+    pic.appendChild(el("div", { class: "anim-stage cams" }, [
+      el("p", { class: "cam-title" }, "BREAK ROOM 2 · SECURITY CAMERA"), a.node, b.node, note, offline,
+    ]));
+    a.ts.textContent = "03:01:20";
+    b.ts.textContent = "03:07:03";
+    var bClock = null;
+    function second() {
+      b.node.classList.remove("cam-dark");
+      if (calm) return;
+      clearInterval(bClock);
+      bClock = startClock(b.ts, "03:07:03", "03:07:05", 1000);
+    }
+    function first() {
+      a.ts.textContent = "03:02:00";
+      a.node.classList.add("cam-gone");
+      note.classList.add("gone");
+      offline.classList.add("on");
+    }
+    return {
+      play: function (when) {
+        later(function () { startClock(a.ts, "03:01:20", "03:02:00", 110, first); }, 0.8);
+        later(second, 7.0);
+        later(when, 7.6);
+      },
+      // Skipped early: the first feed's clock stops where the cameras went offline, the second one starts.
+      end: function (skipped) {
+        if (skipped) { first(); second(); }
+      },
+    };
+  };
+
+  // Called once the panel is built. Does nothing for a panel without frames or an animation.
+  function animate(pic, frame) {
+    var kind = frame.animation || (frame.frames ? "slides" : null);
+    if (!kind || !ANIMS[kind]) return;
+    if (!hasPicture(frame.image) || (frame.frames || []).some(function (n) { return !hasPicture(n); })) return;
+    var calm = reducedMotion();
+    var a = ANIMS[kind](pic, frame, calm);
+    var finished = false;
+    function finish(skipped) {
+      if (finished) return;
+      finished = true;
+      timeline.forEach(clearTimeout);
+      timeline = [];
+      if (skipped === true) { clocks.forEach(clearInterval); clocks = []; }
+      a.end(skipped === true);
+      pic.classList.remove("pic-playing");
+    }
+    if (calm) {
+      pic.classList.add("pic-calm");
+      finish(true);
+      return;
+    }
+    pic.classList.add("pic-playing");
+    pic.addEventListener("click", function (e) {
+      if (pic.classList.contains("pic-playing") && !e.target.closest(".hotspot")) finish(true);
+    });
+    a.play(function () { finish(false); });
+  }
+
   // ---- pictures and panels ------------------------------------------------------------
 
   function hasPicture(name) { return !!name && name in C.pictures && C.toCome.indexOf(name) < 0; }
@@ -450,6 +696,7 @@
   }
 
   function framesOf(c) { return C.art[c.title]; }
+  function lastFrame(c) { return framesOf(c).length - 1; }
 
   // A panel's text, less the lines marked "(drawn)": words the picture shows legibly. They
   // aren't repeated under it, but stay a click away, for a small screen or a screen reader;
@@ -487,7 +734,7 @@
   // the headline and what we hear over it, the hotspots on it, and its text under it.
   function panel(frame) {
     var name = frame.image;
-    var size = name ? C.pictures[name] : [1200, 400];
+    var size = (frame.animation && STAGES[frame.animation]) || (name ? C.pictures[name] : [1200, 400]);
     var pic = el("div", { class: "panel-pic" });
     pic.style.aspectRatio = size[0] + " / " + size[1];
     // The whole picture, never cropped: one taller than the 3:1 panels is narrower, to fit the screen.
@@ -506,6 +753,7 @@
     }
     if (frame.dim) pic.classList.add("panel-dim");
     if (frame.sound) pic.appendChild(el("p", { class: "panel-sound" }, frame.sound));
+    if (pictured) animate(pic, frame);
     var head = frame.where || frame.headline ? el("div", { class: "panel-head" }, [
       frame.where ? el("p", { class: "panel-where" }, frame.where) : null,
       frame.headline ? heading(frame.headline) : null,
@@ -513,7 +761,8 @@
     var text = null;
     if (frame.body) text = frame.style === "role" ? roleBody(frame.body) : panelText(frame, pictured);
     var quiet = text && text.classList.contains("sr-only");
-    return el("figure", { class: "panel" + (frame.style ? " panel-" + frame.style : ""), "data-music": frame.music || null }, [
+    return el("figure", { class: "panel" + (frame.style ? " panel-" + frame.style : ""), "data-music": frame.music && frame.animation !== "power-cut" ? frame.music : null,
+      "data-prime": frame.music && frame.animation === "power-cut" ? "yes" : null }, [
       // "Your role" has no picture: its headline sits over its tiles.
       el("div", { class: "panel-art" + (head ? " has-head" : "") }, [head, frame.style === "role" ? null : pic]),
       text ? el("figcaption", { class: quiet ? null : "panel-text" }, text) : null,
@@ -529,9 +778,13 @@
     var i = Math.min(Math.max(state.frame | 0, 0), frames.length - 1);
     var last = i === frames.length - 1;
     function to(n) { state.frame = n; save(); render(true); }
-    keyNav = function (step) {
+    // The arrow keys: through the panels, then on to what the last panel's main button does, or back to what
+    // came before the first. Never a choice, a lead or an accusation: only views that already step on and back.
+    keyNav = function (step, repeat) {
       var n = i + step;
       if (n >= 0 && n < frames.length) to(n);
+      else if (!repeat && step > 0 && opts.forward) opts.forward();
+      else if (!repeat && step < 0 && opts.backward) opts.backward();
     };
     var nav = i > 0 ? [iconButton("prev", "Previous panel", function () { to(i - 1); }, "btn-quiet-console")] : opts.back || [];
     var next = last ? opts.done || [] : [button([el("span", null, "Next panel"), icon("next")], function () { to(i + 1); }, "btn-primary btn-next")];
@@ -559,12 +812,24 @@
     ]);
   }
 
+  // Enter starts the game from the title (a focused button or link does what it does itself).
+  var titleStart = null;
+
   document.addEventListener("keydown", function (e) {
+    if (reading) {
+      // A note is open: Escape closes it, Tab stays on its Close button, and nothing else moves the game.
+      if (e.key === "Escape") { closeRead(true); e.preventDefault(); }
+      else if (e.key === "Tab") e.preventDefault();
+      return;
+    }
     if (e.key === "Escape" && openSpot) { hideSpot(); e.preventDefault(); return; }
-    if (!keyNav || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented || (dialog && dialog.open)) return;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented || (dialog && dialog.open)) return;
+    if (/^(INPUT|TEXTAREA|SELECT|BUTTON|A|SUMMARY)$/.test(e.target.tagName) && e.key === "Enter") return;
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
-    if (e.key === "ArrowRight") { keyNav(1); e.preventDefault(); }
-    else if (e.key === "ArrowLeft") { keyNav(-1); e.preventDefault(); }
+    if (e.key === "Enter" && titleStart && !e.repeat) { titleStart(); e.preventDefault(); return; }
+    if (!keyNav) return;
+    if (e.key === "ArrowRight") { keyNav(1, e.repeat); e.preventDefault(); }
+    else if (e.key === "ArrowLeft") { keyNav(-1, e.repeat); e.preventDefault(); }
   });
 
   // A text card (the verdict): a heading and the card's text, as written.
@@ -804,6 +1069,7 @@
 
   views.title = function () {
     var resume = state.chosen.length > 0;
+    titleStart = function () { go(resume ? "hub" : "advert"); };
     // The key art carries the title on its screen, so the lede and Start go under it.
     return el("section", { class: "title-view" }, el("div", { class: "title-art" }, [
       el("div", { class: "title-pic" }, [picture(TITLE_ART), titleLights()]),
@@ -812,7 +1078,8 @@
         el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
         el("div", { class: "actions" }, [
           button([el("span", null, resume ? "Continue" : "Start"), icon("next")],
-            function () { go(resume ? "hub" : "advert"); }, "btn-primary btn-next"),
+            titleStart, "btn-primary btn-next"),
+          el("span", { class: "key-hint", "aria-hidden": "true" }, [el("kbd", null, "Enter"), " to start"]),
         ]),
       ]),
     ]));
@@ -822,6 +1089,7 @@
     return player(C.advert, {
       label: "Cold open",
       done: [button([el("span", null, "Continue"), icon("next")], function () { go("cold"); }, "btn-primary btn-next")],
+      forward: function () { go("cold"); },
     });
   };
 
@@ -830,6 +1098,8 @@
       label: "Cold open",
       done: [button([el("span", null, "Start the interviews"), icon("next")],
         function () { go("statement", { step: 0 }); }, "btn-primary btn-next")],
+      forward: function () { go("statement", { step: 0 }); },
+      backward: function () { go("advert", { frame: lastFrame(C.advert) }); },
     });
   };
 
@@ -845,6 +1115,11 @@
         }, "btn-primary btn-next"),
       ],
       back: i > 0 ? [button("Previous interview", function () { go("statement", { step: i - 1 }); }, "btn-quiet-console")] : [],
+      forward: function () { if (last) go("hub"); else go("statement", { step: i + 1 }); },
+      backward: function () {
+        if (i > 0) go("statement", { step: i - 1, frame: lastFrame(C.testimonies[i - 1]) });
+        else go("cold", { frame: lastFrame(C.coldOpen) });
+      },
     });
   };
 
@@ -966,6 +1241,7 @@
       intro: "Before the next lead, a handout from outside Kipsake.",
       done: [button([el("span", null, "Continue to lead 2"), icon("next")],
         function () { go("lead", { picking: null }); }, "btn-primary btn-next")],
+      forward: function () { go("lead", { picking: null }); },
     });
   };
 
@@ -1031,6 +1307,7 @@
           : button("Accuse…", function () { go("accuse"); }, "btn-quiet-console"),
         button([el("span", null, "Back to the case"), icon("next")], function () { go("hub"); }, "btn-primary btn-next"),
       ],
+      forward: function () { go("hub"); },
     });
   };
 
@@ -1044,6 +1321,8 @@
           function () { go("card", { reviewing: i + 1 }); }, "btn-primary btn-next") : null,
       ],
       back: i > 0 ? [button("Previous card", function () { go("card", { reviewing: i - 1 }); }, "btn-quiet-console")] : [],
+      forward: i < items.length - 1 ? function () { go("card", { reviewing: i + 1 }); } : null,
+      backward: i > 0 ? function () { go("card", { reviewing: i - 1, frame: lastFrame(items[i - 1][1]) }); } : null,
       always: [button("Back to the case", function () { go("hub"); }, i < items.length - 1 ? "btn-quiet-console" : "btn-primary")],
     });
   };
@@ -1199,12 +1478,17 @@
 
   function render(moveFocus) {
     hideSpot();
+    closeRead(false);
+    stopAnimations();
     keyNav = null;
+    titleStart = null;
     var view = views[state.view] ? state.view : "title";
     if (view !== "title") titleTyped = false;
     main.replaceChildren(views[view]());
     trackView(view);
     music.follow(!!main.querySelector(".panel[data-music]"));
+    // A panel that starts its jazz part way through (03:02) readies the sound now, while the click that brought us here still counts.
+    if (main.querySelector(".panel[data-prime]")) music.prime();
     var started = view !== "title" || state.chosen.length > 0;
     restartBtn.hidden = !started;
     var showLeads = ["hub", "lead", "result", "card", "outside", "accuse", "confirm"].indexOf(view) >= 0;
@@ -1258,7 +1542,7 @@
   var music = (function () {
     var data = HOST.music || window.DJ_MUSIC;
     var Context = window.AudioContext || window.webkitAudioContext;
-    if (!data || !Context) return { follow: noop };
+    if (!data || !Context) return { follow: noop, prime: noop };
     var VOLUME = 0.45;
     var ctx = null, clip = null, voice = null, offset = 0;
     var muted = false, wanted = false;
@@ -1325,6 +1609,7 @@
     });
 
     return {
+      prime: setup,
       follow: function (on) {
         wanted = on;
         if (on) setup();

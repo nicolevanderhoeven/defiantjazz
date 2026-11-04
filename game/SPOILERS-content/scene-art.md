@@ -14,6 +14,12 @@ Each "## ..." card with "image:" is one panel. The panels of a story card follow
   music:    optional, "yes" plays the jazz while the panel shows, when the build has the track
             (web/README.md says how); otherwise nothing plays
   style:    optional, "role" (the list shows as three tiles)
+  frames:   optional, more pictures (names, comma-separated) that play after "image:": each fades in over the one
+            before, and the panel ends on the last. "image:" is the first frame (and what tiles show).
+  animation: optional, how the frames play: "slides" (the default with "frames:"), or one built for a single panel
+            in web/game.js: "power-cut" (03:02, the six picture columns), "cctv-break-room" (the two Break
+            Room 2 feeds and their clocks) or "cctv-corridor" (the lobby camera and its clock). Every animation
+            plays once, ends on its last frame, and shows that frame straight away with reduced motion.
 The panel's text goes under the picture, short: plain lines are captions, "[...]" lines say what's on
 screen, "Name: ..." lines are spoken, and "> ..." lines are paper or a screen, shown close up.
 A line that starts "(drawn) " is words the picture shows legibly: it isn't repeated under the picture,
@@ -27,6 +33,9 @@ picture at "at: x, y" (percent of the picture's width and height, from the top l
 title and text when hovered, focused or tapped. "> ..." lines show as a close-up of paper. Hotspot
 text comes from the story cards only, and never from the reveal. Placeholder panels have none: add
 them when the picture lands, by looking at it.
+"read: yes" under a hotspot's "at:" makes it a note to read: the picture draws the paper too small to read, and
+the marker opens the paper enlarged (Enter or a click; Escape closes it). Its "> ..." lines are the paper's
+words, exactly as the story card has them.
 -->
 
 # Scene art
@@ -46,7 +55,7 @@ image: flyer-kipsake
 
 ## The incident
 card: The Defiant Jazz Incident
-source: bde75a17
+source: e3d9d1cd
 image: scene-3-elevator
 where: Kipsake · Sleep Floor
 headline: We need your help to solve a murder.
@@ -54,7 +63,7 @@ Tonight, our night supervisor, Mr. Hale, was found dead in the elevator, and the
 > Incident File SF-1008
 > KIPSAKE · SLEEP FLOOR · OFFICE OF FLOOR SECURITY
 > Subject: Death of Mr. Reginald Hale, Night Supervisor
-> Found in the victim's closed right hand: a twist of yarn threads in navy, blue, red, orange, green and white. Not from his own clothing.
+> Found in the victim's closed right hand: a twist of colourful yarn threads. Not from his own clothing.
 
 ## The floor indicator
 at: 50, 9
@@ -97,6 +106,7 @@ The floor's holiday party: hot cocoa from the urn and a break to sit together.
 
 ## The power cut
 image: scene-power-cut
+animation: power-cut
 music: yes
 where: Sleep Floor · 03:02
 headline: The power went out.
@@ -105,7 +115,9 @@ The emergency speakers came on, but instead of the lullaby, they played jazz.
 The jazz woke everyone up. For five minutes, Agnes, Bertram and Clement were their ordinary waking selves, in the dark, somewhere they'd never seen.
 
 ## The power comes back
-image: title-splash
+image: scene-corridor-cctv
+frames: scene-corridor-cctv-b
+animation: cctv-corridor
 where: Sleep Floor · 03:07
 headline: The power came back.
 The jazz stopped. All three fell back asleep, and their sleepwalking selves remembered none of it.
@@ -125,6 +137,7 @@ You're the investigator. There are three suspects: **Agnes**, **Bertram** and **
 card: T-A · Agnes · 03:30
 source: 513ad0e8
 image: portrait-agnes
+frames: portrait-agnes-b, portrait-agnes-c
 where: An interview at Kipsake · 03:30
 headline: Agnes
 A DSO clerk, on a chair against a plain wall. You're off camera, asking the questions.
@@ -144,6 +157,7 @@ Her Kipsake badge card, on a lanyard around her neck. Tucked behind it in the ho
 card: T-B · Bertram · 03:40
 source: ff4f092d
 image: portrait-bertram
+frames: portrait-bertram-b, portrait-bertram-c
 where: An interview at Kipsake · 03:40
 headline: Bertram
 Another DSO clerk, on the same chair, wearing his lanyard.
@@ -160,16 +174,17 @@ at: 44, 38
 He holds an ice pack to his right shoulder.
 
 ## His hand
-at: 46, 85
+at: 47, 72
 A smudge of flour on the back of his free hand.
 
 ## Clement
 card: T-C · Clement · 03:20
 source: 1eca29b8
 image: portrait-clement
+frames: portrait-clement-b, portrait-clement-c
 where: An interview at Kipsake · 03:20
 headline: Clement
-The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap.
+The third DSO clerk, on the same chair, wearing his lanyard, hands folded in his lap. He looks straight at the camera.
 You: Clement. Where were you when the lights went out?
 Clement: The lights blinked, and I was sitting down. Same as everyone, I expect.
 Clement: Someone was screaming by the elevator.
@@ -218,6 +233,7 @@ Close-up of marker 3 in daylight, on a plain light surface: the twist of yarn th
 card: Break Room 2
 source: 56c477cd
 image: scene-break-room-camera
+animation: cctv-break-room
 [Two frames from the Break Room 2 security camera. This is Floor Security's own footage, so it isn't in the telemetry the AI has. Grainy, filmed from high up, close on the room's emergency speaker and the chair beside it. The camera slowly zooms in on the cable and the napkin.]
 (drawn) > BREAK ROOM 2 · SECURITY CAMERA
 (drawn) > 03:01:20 · Voices. Cups. No music.
@@ -225,11 +241,12 @@ image: scene-break-room-camera
 (drawn) > 03:07:03
 
 ## 03:01:20
-at: 21, 59
+at: 24, 56
 Nobody is in the shot. On the chair beside the speaker is a coiled grey cable, with a folded cloth napkin on top.
 
 ## The seating chart
-at: 20, 25
+at: 23, 28
+read: yes
 A printed seating chart for the Cocoa Hour, pinned to the wall beside the speaker. Grainy, but legible.
 > COCOA HOUR · BREAK ROOM 2 · SEATING
 > 1 · Mr. Hale
@@ -238,11 +255,11 @@ A printed seating chart for the Cocoa Hour, pinned to the wall beside the speake
 > 4 · Clement
 
 ## 03:07:03
-at: 77, 59
+at: 73, 56
 Same angle, same zoom. The cable and the napkin are gone from the chair.
 
 ## The person
-at: 90, 72
+at: 80, 66
 Someone sits on the floor beside the chair, too dark and grainy to make out, a lanyard badge facing out. Nobody else is in the shot.
 
 ## The waffle
@@ -262,70 +279,81 @@ An evidence bag holding a pale, half-cooked waffle.
 card: Agnes at home
 source: 378f9d1d
 image: scene-agnes-home
+frames: scene-agnes-home-b, scene-agnes-home-c
+where: Port Quiet · Agnes's flat · 06:40
 Agnes's waking self sits on the same chair. No lanyard, and she's still in her Christmas sweater.
 You: Agnes? You were there last night.
-(drawn) > 06:40 · Port Quiet · Agnes's flat
-(drawn) Agnes: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.
+Agnes: A man grabbed my wrist. 'You can't be here.' I ran. When I came back, he wasn't moving.
 [She holds her bandaged wrist, arms wrapped around herself.]
 You: Anything else?
-(drawn) Agnes: This was in my pocket. It isn't mine.
-(drawn) Agnes: And there's this. I find notes like it all over my flat. I don't remember writing them.
+Agnes: This was in my pocket. It isn't mine.
+Agnes: And there's this. I find notes like it all over my flat. I don't remember writing them.
+[She holds out a folded cloth napkin; on the table beside her are two sticky notes and a printed plan. Select any of them on the picture to look closer.]
 
 ## Her wrist
-at: 34, 70
+at: 36, 72
 Her right wrist is in a crepe bandage.
 
 ## The napkin
 at: 40, 83
-A folded cloth napkin. On one corner, in laundry marker, a single digit: "4".
+read: yes
+A folded cloth napkin. On one corner, in laundry marker, a single digit:
+> 4
 
 ## The sticky note
-at: 63, 84
+at: 68, 76
+read: yes
 A sticky note in her own handwriting.
 > HE HAS TO STOP. THE ELEVATOR.
 
 ## The second note
-at: 71, 88
+at: 74, 89
+read: yes
 A second sticky note, in the same handwriting.
 > WHEN THE LIGHTS GO OUT, HE'LL BE ALONE AT THE ELEVATOR. I'LL BE WAITING.
 
 ## The evacuation plan
 at: 85, 78
+read: yes
 A printed photo of the Sleep Floor's fire-evacuation plan, taken where it hangs on a wall. Its red "You are here" dot is in Break Room 2.
 > ● You are here: Break Room 2
 
 ## Bertram at home
 card: Bertram at home
-source: 226c0e65
+source: a8cd0966
 image: scene-bertram-home
+frames: scene-bertram-home-b, scene-bertram-home-c
+where: Port Quiet · Bertram's flat · 06:40
 Bertram's waking self sits on the same chair. No lanyard, and he's still in his Christmas sweater.
 You: Bertram? You were on that floor last night.
-(drawn) > 06:40 · Port Quiet · Bertram's flat
-(drawn) Bertram: Someone trod on me in the dark. I grabbed at them.
-[He looks at the threads, puzzled.]
-(drawn) Bertram: Mr. Hale gave me that. I tore the receipt up this morning. I don't remember why.
+Bertram: Someone trod on me in the dark. I grabbed at them.
+[He touches his right shoulder, then opens his hand toward the camera: what he grabbed from whoever trod on him, a tuft of yarn threads. He looks at the threads, puzzled.]
+Bertram: Mr. Hale gave me that. I tore the receipt up this morning. I don't remember why.
+[On the desk behind him: a letter and a torn receipt. Select them on the picture to read them.]
 
 ## His hand
-at: 39, 76
-He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece.
+at: 36, 68
+He opens his hand toward the camera: what he grabbed from whoever trod on him, a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece.
 
 ## His shoulder
-at: 40, 37
+at: 40, 40
 He touches his right shoulder.
 
 ## The letter
-at: 12, 86
+at: 15, 52
+read: yes
 A Kipsake letter on Mr. Hale's letterhead.
 > Discretion appreciated. R. Hale
 
 ## The receipt
-at: 22, 85
+at: 25, 61
 A torn waffle-iron receipt.
 
 ## Clement at home
 card: Clement at home
 source: a20e27d1
 image: scene-clement-home
+frames: scene-clement-home-b, scene-clement-home-c
 where: Port Quiet · Clement's flat · 06:40
 headline: Clement
 You: Clement? You sleepwalk for Kipsake.
@@ -336,11 +364,12 @@ Clement: Things I keep.
 [He closes the folder and holds it against his chest.]
 
 ## Clement
-at: 61, 39
+at: 51, 36
 Clement's waking self, at home. No lanyard, and he's still in his Christmas sweater.
 
 ## The note
 at: 52, 86
+read: yes
 A scrap of paper torn from a Kipsake notepad, in rounded handwriting.
 > 21:15 H. Tell him about A. and the elevator. — B.
 
@@ -349,50 +378,58 @@ A scrap of paper torn from a Kipsake notepad, in rounded handwriting.
 card: Agnes
 source: 5815ce95
 image: portrait-agnes-push
+frames: portrait-agnes-push-b, portrait-agnes-push-c
+where: Kipsake · Agnes · 04:30
 [Agnes, wearing her lanyard and her Christmas sweater, in tears. Four notes in evidence bags lie in her lap.]
-(drawn) > 04:30 · Kipsake · Agnes
 You: These were in the elevator phone panel.
-(drawn) Agnes: They're for her. The other me.
+Agnes: They're for her. The other me.
 [She takes the folded note from behind her badge card and adds it to the pile.]
 You: Why?
-(drawn) Agnes: So she knows who to trust.
-[She holds one bag up to the camera. The note in it is in joined-up handwriting, with "Waffles" underlined:]
-(drawn) > WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.
+Agnes: So she knows who to trust.
+[She holds one bag up to the camera. The note in it is in joined-up handwriting, with "Waffles" underlined. Select it on the picture to read it.]
+
+## The note she holds up
+at: 63, 32
+read: yes
+The note in the bag she holds up to the camera, in joined-up handwriting, with "Waffles" underlined.
+> WHO'S WHO. Mr. Hale: watch him. BERTRAM: tells Mr. Hale things. Careful. (Clement calls him 'Waffles'.) Clement: kind to me.
 
 ## Her wrist
-at: 18, 72
+at: 36, 78
 Her right wrist is in a crepe bandage from the medical exam.
 
 ## Mr. Hale's note
-at: 36, 74
+at: 46, 86
 One of the notes is the note found in Mr. Hale's jacket. It begins "If you are reading this, you are me…" and ends "Don't trust them."
 
 ## Bertram pushed
 card: Bertram
 source: 6b03d9be
 image: portrait-bertram-push
+frames: portrait-bertram-push-b, portrait-bertram-push-c
+where: Kipsake · Bertram · 04:30
 [Bertram, wearing his lanyard and his Christmas sweater, the ice pack on his shoulder. His shoulders slump.]
-(drawn) > 04:30 · Kipsake · Bertram
-(drawn) You: You weren't having cocoa, Bertram.
-(drawn) Bertram: Fine. I was making a waffle. And yes, I told Mr. Hale about Agnes's notes. I wish I hadn't.
-(drawn) You: And who brought you the ice?
-(drawn) Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.
+You: You weren't having cocoa, Bertram.
+Bertram: Fine. I was making a waffle. And yes, I told Mr. Hale about Agnes's notes. I wish I hadn't.
+You: And who brought you the ice?
+Bertram: Clement. 'Chill out, Waffles.' He's the only one who calls me that.
 
 ## Clement pushed
 card: Clement
 source: 8b51f78c
 image: portrait-clement-push
+frames: portrait-clement-push-b, portrait-clement-push-c
+where: Kipsake · Clement · 04:30
 [Clement, wearing his lanyard and Christmas sweater, with a clipboard and a Kipsake "Incident Statement" form.]
-(drawn) > 04:30 · Kipsake · Clement
 You: For the record, Clement. In your own hand. What did you do after the lights came back?
-[He writes without speaking, in block capitals, line by line:]
-(drawn) > KIPSAKE · INCIDENT STATEMENT
-(drawn) > 03:07 LIGHTS RETURNED. I WAS SEATED.
-(drawn) > I WENT TO THE CORRIDOR AND CHECKED ON BERTRAM.
-(drawn) > I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.
-[The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment.]
-(drawn) Clement: Is that all?
+[He writes without speaking, in block capitals, line by line. The word "Peggy" is crossed out with a single line, but you can still read it. His pen hovers over it for a moment. He holds out the clipboard to you. Select it on the picture to read it.]
+Clement: Is that all?
 
 ## The clipboard
-at: 44, 70
+at: 62, 66
+read: yes
 A Kipsake "Incident Statement" form on a clipboard, written in block capitals. He holds it out to you.
+> KIPSAKE · INCIDENT STATEMENT
+> 03:07 LIGHTS RETURNED. I WAS SEATED.
+> I WENT TO THE CORRIDOR AND CHECKED ON BERTRAM.
+> I HOPE ~~PEGGY~~ AGNES IS BEING LOOKED AFTER.

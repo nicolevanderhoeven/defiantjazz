@@ -115,12 +115,14 @@ class PageTest(unittest.TestCase):
         for guard in ("e.altKey", "e.ctrlKey", "e.metaKey", "e.shiftKey", "INPUT|TEXTAREA|SELECT", "isContentEditable", "dialog.open"):
             self.assertIn(guard, handler)
         # Only the two arrows, and only through keyNav (Next and Back on panels): no choice, lead or accusation.
-        self.assertEqual(sorted(set(re.findall(r'e\.key === "(\w+)"', handler))), ["ArrowLeft", "ArrowRight", "Escape"])
+        # Enter starts the game from the title and Tab stays on an open note's Close button; nothing else.
+        self.assertEqual(sorted(set(re.findall(r'e\.key === "(\w+)"', handler))),
+                         ["ArrowLeft", "ArrowRight", "Enter", "Escape", "Tab"])
         self.assertEqual(re.findall(r"\b(\w+)\(", handler.split('"ArrowRight"', 1)[1]).count("keyNav"), 2)
         for name in ("investigate", "accuse", "choose", "follow", "go"):
             self.assertNotRegex(handler, r"\b%s\(" % name)
         # The player and the verdict set it, and a hint sits beside the Next button.
-        self.assertGreaterEqual(game.count("keyNav = function (step)"), 2)
+        self.assertGreaterEqual(game.count("keyNav = function (step"), 2)
         self.assertIn("keys step through", game)
         self.assertIn("position: sticky; bottom: 0", read("style.css").split(".framebar {", 1)[1].split("}", 1)[0])
 
@@ -968,3 +970,166 @@ class StatisticsDashboardTest(unittest.TestCase):
                 for event in re.findall(r'event_name="([a-z_]+)"', expr):
                     self.assertIn(event, build.TRACK_EVENTS)
             self.assertEqual(len({t["refId"] for t in panel["targets"]}), len(panel["targets"]))
+
+
+def plain(text):
+    """Text as the player reads it: no markers, no punctuation, lower case, one space between words."""
+    return " ".join(re.sub(r"[^a-z0-9 ]", " ", text.replace("~~", "").lower()).split())
+
+
+class AnimationTest(unittest.TestCase):
+    """Frame sequences, the keyboard and the notes to read."""
+
+    def setUp(self):
+        self.art = build.scene_art(CONTENT)
+        self.game = read("game.js")
+        self.css = read("style.css")
+
+    def panels(self):
+        for title, panels in self.art.items():
+            for p in panels:
+                yield title, p
+
+    def animated(self):
+        return {p["image"]: p for _, p in self.panels() if p.get("frames") or p.get("animation")}
+
+    def test_every_frame_is_a_picture_and_each_animation_has_its_pictures(self):
+        for _, p in self.panels():
+            for name in p.get("frames", []):
+                self.assertIn(name, build.IMAGES)
+                self.assertIn(name, build.pictures(), f"{name}: the frame's file")
+            self.assertIn(p.get("animation", "slides"), build.ANIMATIONS)
+        for who in ("agnes", "bertram", "clement"):
+            for kind in ("lit", "dark"):
+                self.assertIn(f"power-{kind}-{who}", build.pictures())
+
+    def test_the_animated_panels(self):
+        made = self.animated()
+        # 03:02, 03:07, Break Room 2's camera, the three first interviews, the three pushes, the three visits at home.
+        for image in ("scene-power-cut", "scene-corridor-cctv", "scene-break-room-camera", "portrait-agnes", "portrait-bertram",
+                      "portrait-clement", "portrait-agnes-push", "portrait-bertram-push", "portrait-clement-push",
+                      "scene-agnes-home", "scene-bertram-home", "scene-clement-home"):
+            self.assertIn(image, made)
+        for image in ("portrait-agnes", "portrait-bertram", "portrait-clement", "portrait-agnes-push", "portrait-bertram-push",
+                      "portrait-clement-push", "scene-agnes-home", "scene-bertram-home", "scene-clement-home"):
+            self.assertEqual(len(made[image]["frames"]), 2, image)  # three frames in all
+        self.assertEqual(made["scene-power-cut"]["animation"], "power-cut")
+        self.assertEqual(made["scene-break-room-camera"]["animation"], "cctv-break-room")
+        self.assertEqual(made["scene-corridor-cctv"]["animation"], "cctv-corridor")
+
+    def test_the_power_cut_plays_lit_one_at_a_time_then_dark_one_at_a_time(self):
+        block = self.game.split('ANIMS["power-cut"] = ', 1)[1].split("\n  };", 1)[0]
+        order = re.findall(r"later\(function \(\) \{ ([^}]*)\}, ([0-9.]+(?: \+ [0-9.]+ \* i)?)\)", block)
+        text = " | ".join(a for a, _ in order)
+        self.assertIn("on(c.lit)", text)
+        self.assertLess(text.index("on(c.lit)"), text.index("on(cols[0].dark)"))
+        self.assertLess(text.index("on(cols[0].dark)"), text.index("on(cols[1].dark)"))
+        self.assertLess(text.index("on(cols[1].dark)"), text.index("on(cols[2].dark)"))
+        # It ends dark, with the jazz; the lullaby is only a caption (the build has no lullaby track).
+        self.assertIn("c.lit); on(c.dark)", block)
+        self.assertIn("The lullaby", block)
+        self.assertIn("music.follow(true)", block)
+
+    def test_reduced_motion_shows_the_end_state(self):
+        self.assertIn("prefers-reduced-motion: reduce", self.game)
+        self.assertIn('pic.classList.add("pic-calm")', self.game)
+        calm = self.game.split("if (calm) {", 1)[1].split("}", 1)[0]
+        self.assertIn("finish(true)", calm)
+        self.assertNotIn("a.play", calm)
+        self.assertIn(".pic-calm img.anim-frame", self.css)
+
+    def test_animation_does_not_move_the_buttons(self):
+        # Frames sit over the first picture, which keeps the panel's shape; nothing is added to the flow.
+        self.assertRegex(self.css, r"img\.anim-frame \{ position: absolute; inset: 0;")
+        self.assertRegex(self.css, r"\.anim-stage \{ position: absolute; inset: 0;")
+        self.assertIn("pic.style.aspectRatio", self.game)
+
+    def test_next_works_during_an_animation_and_a_click_skips_it(self):
+        # Timers belong to the view that started them: render() stops them all before it draws the next one.
+        render = self.game.split("function render(moveFocus) {", 1)[1].split("\n  }\n", 1)[0]
+        self.assertIn("stopAnimations();", render)
+        self.assertIn('finish(true)', self.game)
+        self.assertIn(".pic-playing .hotspot { visibility: hidden; }", self.css)
+
+    def test_camera_clocks_only_show_times_the_story_states(self):
+        stated = {"03:01:20", "03:02:00", "03:07:01", "03:07:03", "03:07:05"}
+        self.assertEqual(set(re.findall(r"\b\d\d:\d\d:\d\d\b", self.game)), stated)
+        # They tick forward, never down.
+        self.assertNotRegex(self.game, r"now -= 1")
+        # The records give the corridor camera 03:07:01 and Break Room 2's 03:07:03 (log lines at 03:07:01 to 03:07:05).
+        records = open(os.path.join(HERE, "..", "telemetry", "system.log"), encoding="utf-8").read()
+        for stamp in ("03:07:01", "03:07:03", "03:07:05", "03:02:00"):
+            self.assertIn("T" + stamp, records)
+
+    def test_enter_starts_from_the_title_and_arrows_never_choose(self):
+        self.assertIn("titleStart = function ()", self.game)
+        handler = self.game.split('document.addEventListener("keydown"', 1)[1].split("\n  });", 1)[0]
+        # A focused button, link or field does what it does itself.
+        self.assertIn("INPUT|TEXTAREA|SELECT|BUTTON|A|SUMMARY", handler)
+        self.assertIn('e.key === "Enter" && titleStart', handler)
+        # Every story step has an arrow-key way on and (but the first) back.
+        for view in ("advert", "cold", "statement", "outside", "result", "card"):
+            body = self.game.split(f"views.{view} = function", 1)[1].split("\n  };", 1)[0]
+            self.assertIn("forward:", body, view)
+        # A decision, an accusation and a confirmation set no key navigation at all.
+        for view in ("lead", "accuse", "confirm"):
+            body = self.game.split(f"views.{view} = function", 1)[1].split("\n  };", 1)[0]
+            self.assertNotIn("keyNav", body, view)
+            self.assertNotIn("forward:", body, view)
+        # The arrows ignore the game while a note is open.
+        self.assertLess(handler.index("if (reading)"), handler.index('"ArrowRight"'))
+
+    def test_notes_are_read_on_click(self):
+        game = self.game
+        self.assertIn('class: "hotspot hotspot-read"', game)
+        self.assertIn('"aria-haspopup": "dialog"', game)
+        self.assertIn('role: "dialog", "aria-modal": "true"', game)
+        handler = game.split('document.addEventListener("keydown"', 1)[1].split("\n  });", 1)[0]
+        self.assertIn("closeRead(true)", handler.split("if (reading)", 1)[1].split("return;", 1)[0])
+        # Every note drawn in a picture opens enlarged, and says exactly what its card says.
+        cards = {c.title: c.body for c in all_cards()}
+        reads = {}
+        for title, p in self.panels():
+            for h in p["hotspots"]:
+                if h.get("read"):
+                    reads[(title, h["label"])] = h
+        for key in (("Break Room 2", "The seating chart"), ("Agnes at home", "The napkin"), ("Agnes at home", "The sticky note"),
+                    ("Agnes at home", "The second note"), ("Agnes at home", "The evacuation plan"), ("Bertram at home", "The letter"),
+                    ("Clement at home", "The note"), ("Agnes", "The note she holds up"), ("Clement", "The clipboard")):
+            self.assertIn(key, reads, key)
+        source = {"Agnes at home": cards["Agnes at home"], "Bertram at home": cards["Bertram at home"],
+                  "Clement at home": cards["Clement at home"], "Break Room 2": cards["Break Room 2"],
+                  "Agnes": next(c.body for c in CONTENT.decisions[2].options if c.title == "Agnes"),
+                  "Clement": next(c.body for c in CONTENT.decisions[2].options if c.title == "Clement")}
+        for (title, label), h in reads.items():
+            for line in (l[1:].strip() for l in h["body"].splitlines() if l.startswith(">")):
+                if line.startswith("\u25cf"):  # the plan's dot: the card says it in words
+                    self.assertIn("you are here", plain(source[title]))
+                    self.assertIn(plain(line.split(": ", 1)[1]), plain(source[title]))
+                    continue
+                self.assertIn(plain(line), plain(source[title]), f"{title}: {label}: {line}")
+
+    def test_the_home_visits_have_no_drawn_text_and_say_it_in_the_captions(self):
+        for title in ("Agnes at home", "Bertram at home", "Clement at home"):
+            for p in self.art[title]:
+                self.assertNotIn("(drawn)", p["body"], title)
+        agnes = self.art["Agnes at home"][0]["body"]
+        self.assertIn("Agnes: A man grabbed my wrist.", agnes)
+        self.assertIn("Agnes: This was in my pocket. It isn't mine.", agnes)
+        bertram = self.art["Bertram at home"][0]["body"]
+        self.assertIn("Bertram: Someone trod on me in the dark. I grabbed at them.", bertram)
+        # Where the threads came from, without saying who.
+        self.assertIn("what he grabbed from whoever trod on him", bertram)
+        self.assertNotRegex(bertram, r"Clement")
+        self.assertIn("what he grabbed from whoever trod on him", " ".join(CONTENT.decisions[1].options[1].body.split("\n")))
+
+    def test_the_incident_file_says_colourful_yarn_without_the_colours(self):
+        colours = "navy, blue, red, orange, green and white"
+        self.assertIn("a twist of colourful yarn threads. Not from his own clothing.", CONTENT.cold_open.body)
+        self.assertNotIn(colours, CONTENT.cold_open.body)
+        incident = " ".join(p["body"] for p in self.art["The Defiant Jazz Incident"])
+        self.assertIn("a twist of colourful yarn threads", incident)
+        self.assertNotIn(colours, incident)
+        # The exact colours stay in the Elevator lead and at Bertram's.
+        self.assertIn(colours, CONTENT.decisions[0].options[0].body)
+        self.assertIn(colours, CONTENT.decisions[1].options[1].body)

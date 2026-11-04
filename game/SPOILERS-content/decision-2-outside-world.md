@@ -32,7 +32,7 @@ aliases: bertram, b
 [Bertram's waking self sits on the same chair. No lanyard, and he's still in his Christmas sweater. The camera is handheld: you're the investigator.]
 You: Bertram? You were on that floor last night.
 Bertram: Someone trod on me in the dark. I grabbed at them.
-[He opens his hand toward the camera: a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece. Then he touches his right shoulder.]
+[He opens his hand toward the camera: what he grabbed from whoever trod on him, a tuft of yarn threads in navy, blue, red, orange, green and white, twisted together into one piece. Then he touches his right shoulder.]
 [He looks at the threads, puzzled.]
 [On the table: a Kipsake letter on Mr. Hale's letterhead, "Discretion appreciated. R. Hale", and a torn waffle-iron receipt.]
 Bertram: Mr. Hale gave me that. I tore the receipt up this morning. I don't remember why.
