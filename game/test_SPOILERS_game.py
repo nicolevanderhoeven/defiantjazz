@@ -190,9 +190,10 @@ class ClueRedesignTest(unittest.TestCase):
         self.assertIn("Found in the victim's closed right hand: a twist of yarn threads in navy, blue, red, orange, green and white.",
                       CONTENT.cold_open.body)
 
-    def test_all_three_clerks_wear_a_colourful_christmas_sweater(self):
+    def test_all_three_clerks_still_wear_a_colourful_christmas_sweater(self):
         for title in ("T-A · Agnes · 03:30", "T-B · Bertram · 03:40", "T-C · Clement · 03:20"):
-            self.assertRegex(self.card(title).body, r"knitted Christmas sweater with a bright pattern")
+            # The first interviews don't describe clothes (the pictures show them); the later ones still do.
+            self.assertNotRegex(self.card(title).body.lower(), r"sweater|knitted|jumper")
         for title in ("Agnes at home", "Bertram at home", "Clement at home"):
             self.assertIn("Christmas sweater", self.card(title).body)
         records = telemetry("records.log")
@@ -390,6 +391,12 @@ class OtherPathsTest(unittest.TestCase):
         self.assertIn("You accused Clement.", game_output := play(
             ["", "", "", "", "", "accuse clement", "y", "x", ".", "", ""], None)[1])
         self.assertNotIn("Clement..", game_output)
+
+    def test_the_verdict_does_not_say_you_named_after_you_accused(self):
+        for who in ("clement", "agnes", "bertram", "peggy"):
+            _, output = play(["", "", "", "", "", f"accuse {who}", "y", "x", ".", "", "", "", ""], None)
+            self.assertIn("You accused ", output)
+            self.assertNotIn("You named", output)
 
     def test_reasoning_keeps_paragraphs_until_terminator(self):
         game, output = play(["", "", "", "", "", "accuse agnes", "y",

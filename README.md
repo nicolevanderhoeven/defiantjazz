@@ -4,7 +4,7 @@ An observability murder mystery set on the Sleep Floor at Kipsake.
 
 Kipsake rents your sleep: at night its Dreamers sleep in pods while their sleepwalking selves work the floor. During the Cocoa Hour, the floor's middle-of-the-night holiday party in Break Room 2, the floor loses power for five minutes. When the power comes back, the night supervisor, Mr. Reginald Hale, is dead in the elevator. Kipsake recorded everything it could: badges, doors, chat, sleep rings, power, microphones, cameras, sleep bands, personnel records. Your job is to work out who killed him.
 
-This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, an MCP server, `gcx`, or the AI agent of your choice. It also has the game itself, in a terminal version for demos and playtests and a web version to embed in a Grafana dashboard.
+This repo contains the telemetry and the tools to load it into Grafana: Loki for logs, Prometheus or Mimir for metrics, and Tempo for traces. You can load it into Grafana Cloud or a local Docker stack, then investigate with Grafana, Grafana Assistant, the [Grafana MCP server](https://gra.fan/mcprepo), [`gcx`](https://gra.fan/gcxrepo), or the AI agent of your choice. It also has the game itself, in a terminal version for demos and playtests and a web version to embed in a Grafana dashboard.
 
 > [!WARNING]
 > **Spoilers live in `game/SPOILERS-content/`, `game/test_SPOILERS_game.py`, `web/SPOILERS-content.js` and, once you build it, `web/dist/SPOILERS-defiantjazz.page.json`.** The folder holds the human-only story clips and `SPOILERS-reveal.md`, which names the killer and explains the solution. The test names the killer too, and the web bundle and page file are built from that folder. Don't open them if you want to play.
@@ -44,7 +44,7 @@ The game finds an AI on its own: [Claude Code](https://docs.claude.com/en/docs/c
 
 ### In the browser or a Grafana dashboard
 
-The same game as a static web page, made to embed in a Grafana dashboard panel next to the telemetry. There's no AI inside it: players ask Grafana Assistant, or their own agent through the Grafana MCP server or `gcx`, and the page offers example questions to copy. To play it locally:
+The same game as a static web page, made to embed in a Grafana dashboard panel next to the telemetry. There's no AI inside it: players ask Grafana Assistant, or their own agent through the [Grafana MCP server](https://gra.fan/mcprepo) or [`gcx`](https://gra.fan/gcxrepo), and the page offers example questions to copy. To play it locally:
 
 ```sh
 python3 -m http.server 8080 --bind 127.0.0.1 --directory web
@@ -156,7 +156,7 @@ Some Assistant features, such as Investigations, aren't available on self-manage
 
 ### Grafana MCP server on the local stack
 
-The stack also runs the open-source [Grafana MCP server](https://github.com/grafana/mcp-grafana), so any MCP-capable AI agent (Claude Code, Cursor, Codex and others) can investigate the case through Grafana.
+The stack also runs the open-source [Grafana MCP server](https://gra.fan/mcprepo), so any MCP-capable AI agent (Claude Code, Cursor, Codex and others) can investigate the case through Grafana.
 
 - **Endpoint:** `http://localhost:8000/mcp` (streamable HTTP), reachable only from this machine.
 - **Read-only:** write tools are disabled, so agents can query Loki, Prometheus and Tempo, but can't change anything in Grafana.

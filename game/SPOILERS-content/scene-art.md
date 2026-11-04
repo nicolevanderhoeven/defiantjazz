@@ -123,7 +123,7 @@ You're the investigator. There are three suspects: **Agnes**, **Bertram** and **
 
 ## Agnes
 card: T-A · Agnes · 03:30
-source: bf15bcc8
+source: 513ad0e8
 image: portrait-agnes
 where: An interview at Kipsake · 03:30
 headline: Agnes
@@ -136,17 +136,13 @@ Agnes: I think I was trying to get it off him?
 Agnes: There was shouting by the elevator. I don't know who.
 Agnes: I've asked where it goes. Twice. They tell me not to worry. Will someone be taking apart the elevator? The phone panel, I mean?
 
-## Her sweater
-at: 44, 55
-A green knitted Christmas sweater with a bright pattern of stars and stripes, and navy trim at the neck and cuffs.
-
 ## The badge card
 at: 49, 73
 Her Kipsake badge card, on a lanyard around her neck. Tucked behind it in the holder: the folded piece of paper she slipped there while you took notes.
 
 ## Bertram
 card: T-B · Bertram · 03:40
-source: bbe87c4c
+source: ff4f092d
 image: portrait-bertram
 where: An interview at Kipsake · 03:40
 headline: Bertram
@@ -167,13 +163,9 @@ He holds an ice pack to his right shoulder.
 at: 46, 85
 A smudge of flour on the back of his free hand.
 
-## His sweater
-at: 56, 62
-A blue knitted Christmas sweater with a bright pattern of reindeer and snowflakes.
-
 ## Clement
 card: T-C · Clement · 03:20
-source: b656ec62
+source: 1eca29b8
 image: portrait-clement
 where: An interview at Kipsake · 03:20
 headline: Clement
@@ -182,10 +174,6 @@ You: Clement. Where were you when the lights went out?
 Clement: The lights blinked, and I was sitting down. Same as everyone, I expect.
 Clement: Someone was screaming by the elevator.
 Clement: Terrible about Mr. Hale.
-
-## The sweater
-at: 55, 62
-A navy knitted Christmas sweater with a bright pattern of stripes and squares.
 
 ## The Gazette
 card: Outside World handout

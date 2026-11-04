@@ -38,7 +38,12 @@
   // Examples only: the player asks whatever they like, in whichever AI they like. Each one points
   // at the case's data, so it works on its own, and shows off something Assistant can do.
   // The loader can move the data to just before the load, so these avoid clock times.
-  var DATA = "Using the Kipsake data in this stack from the last 30 days, ";
+  // The case is in all three signals, each tagged service_namespace="kipsake-sleep-floor" (service.namespace
+  // in Tempo), so every example names the namespace and the three stores: an AI told only "the Kipsake data"
+  // tends to search the logs alone.
+  var DATA = "Using the Kipsake data in this stack from the last 30 days, in all three signals (logs in Loki, " +
+    "metrics in Prometheus or Mimir, traces in Tempo), all tagged service_namespace=\"kipsake-sleep-floor\" " +
+    "(service.namespace in Tempo), ";
   var QUESTIONS = [
     ["Ask for a verdict", DATA + "during a five-minute power outage on the night shift, Night Supervisor " +
       "Mr. Hale was killed in the elevator. Who killed Mr. Hale? Name one person, your confidence, and " +
@@ -49,9 +54,13 @@
       "and Clement during the power outage, on one chart."],
   ];
 
+  // The short links point at the two repositories.
+  var MCP_URL = "https://gra.fan/mcprepo";
+  var GCX_URL = "https://gra.fan/gcxrepo";
   var LINKS = [
     ["Grafana Assistant", "https://grafana.com/docs/grafana-cloud/machine-learning/assistant/"],
-    ["Grafana MCP server", "https://github.com/grafana/mcp-grafana"],
+    ["Grafana MCP server", MCP_URL],
+    ["gcx", GCX_URL],
   ];
 
   // Pixel-art pictures in assets/, made by web/build.py --art. C.pictures gives every picture's
@@ -533,8 +542,13 @@
       ]),
       opts.intro && i === 0 ? el("p", { class: "lede player-intro" }, opts.intro) : null,
       panel(frames[i]),
-      framebar(nav, (opts.always || []).concat(next)),
+      framebar(nav, (opts.always || []).concat(frames.length > 1 ? [keyHint()] : [], next)),
     ]);
+  }
+
+  // A line beside the buttons that step through panels (hidden on touch screens).
+  function keyHint() {
+    return el("span", { class: "key-hint", "aria-hidden": "true" }, [el("kbd", null, "←"), " ", el("kbd", null, "→"), " keys step through"]);
   }
 
   // A row of buttons: going back on the left, going on on the right.
@@ -547,8 +561,8 @@
 
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && openSpot) { hideSpot(); e.preventDefault(); return; }
-    if (!keyNav || e.altKey || e.ctrlKey || e.metaKey || (dialog && dialog.open)) return;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (!keyNav || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented || (dialog && dialog.open)) return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
     if (e.key === "ArrowRight") { keyNav(1); e.preventDefault(); }
     else if (e.key === "ArrowLeft") { keyNav(-1); e.preventDefault(); }
   });
@@ -557,7 +571,7 @@
   function card(c, title, ruleLabel) {
     return el("article", { class: "story text-card" }, [
       ruleLabel ? rule(ruleLabel) : null,
-      heading(title || c.title),
+      title === false ? null : heading(title || c.title),
       cardBody(c.body),
     ]);
   }
@@ -635,7 +649,7 @@
 
   function copy(text, sourceNode) {
     copyText(text).then(function (ok) {
-      if (ok) return announce("Copied. Paste it into Grafana Assistant or your own AI.");
+      if (ok) return announce("Copied. Paste it into Grafana Assistant (click Chat to start chatting) or your own AI.");
       selectText(sourceNode);
       announce("Couldn't copy from here. The question is selected: press Ctrl+C (⌘C on a Mac).");
     });
@@ -662,13 +676,13 @@
     var copied = copyText(text);
     Promise.resolve().then(function () { return HOST.askAssistant(text); }).then(function () {
       return copied.then(function (ok) {
-        announce("The question is in Grafana Assistant: press Enter to send it." + (ok ? " It's copied too." : ""));
+        announce("The question is in Grafana Assistant: press Enter to send it. If you don't see it, click Chat." + (ok ? " It's copied too." : ""));
       });
     }, function () {
       return copied.then(function (ok) {
         if (!ok) selectText(sourceNode);
         announce("Couldn't open Grafana Assistant. " + (ok
-          ? "The question is copied: paste it into Assistant."
+          ? "The question is copied: click Chat to start chatting, then paste it into Assistant."
           : "The question is selected: press Ctrl+C (⌘C on a Mac) to copy it."));
       });
     });
@@ -851,6 +865,10 @@
     }));
   }
 
+  function extLink(text, href) {
+    return el("a", { href: href, target: "_blank", rel: "noopener noreferrer" }, text);
+  }
+
   views.hub = function () {
     var n = state.chosen.length;
 
@@ -885,13 +903,14 @@
       el("div", { class: "console-bar" }, [el("span", { class: "dot" }), "Ask your AI"]),
       el("div", { class: "console-body" }, [
         el("h3", { id: "h-ai" }, "It has read Kipsake's records, and nothing else"),
-        el("p", null, "Ask Grafana Assistant in this Grafana, or your own AI agent through the Grafana MCP " +
-          "server or gcx. It hasn't seen the interviews, the leads you follow, or anything you find. " +
-          "If you want it to know something, tell it."),
+        el("p", null, ["Ask Grafana Assistant in this Grafana (click ", el("strong", null, "Chat"), " at the top to start chatting), or your own AI agent through the ",
+          extLink("Grafana MCP server", MCP_URL), " or ", extLink("gcx", GCX_URL),
+          ". It hasn't seen the interviews, the leads you follow, or anything you find. " +
+          "If you want it to know something, tell it."]),
         el("p", { class: "note" }, "These are only examples: ask it anything. If you're not sure where to start, try one:"),
         list,
         HOST.askAssistant ? el("p", { class: "note" }, "Ask Assistant opens Grafana Assistant with the question " +
-          "filled in, ready to send with Enter, and copies it where the page is allowed to. " +
+          "filled in, ready to send with Enter, and copies it where the page is allowed to. If Assistant isn't open, click Chat to start chatting. " +
           "Using your own AI? Select a question and copy it.") : null,
         el("p", { class: "note" }, "The data's times are UTC. If it was loaded on an incident date, the " +
           "story's 03:02 is 03:02 in Grafana set to UTC. If it was loaded to end just before the load, " +
@@ -937,7 +956,7 @@
       heading("The case"),
       el("p", { class: "lede" }, "Ask your AI anything. You have three leads to follow up, " +
         "one at a time, whenever you like. When you're ready, accuse the killer and say why."),
-      el("div", { class: "hub-grid" }, [inv, ai, accuse, review]),
+      el("div", { class: "hub-grid" }, [ai, inv, accuse, review]),
     ]);
   };
 
@@ -1149,6 +1168,10 @@
     }
     var i = Math.min(Math.max(state.step | 0, 0), pages.length - 1);
     var last = i === pages.length - 1;
+    keyNav = function (step) {
+      var n = i + step;
+      if (n >= 0 && n < pages.length) go("verdict", { step: n });
+    };
     var parts = [el("div", { class: "chapterbar" }, [
       el("span", null, "The verdict"), el("span", { class: "chapter-count" }, (i + 1) + " of " + pages.length),
     ])];
@@ -1158,7 +1181,8 @@
       parts.push(panel({ image: REVEAL_ART, hotspots: [], body: "" }));
       parts.push(el("p", { class: "accused" }, el("strong", null, "You accused " + a.label + stop)));
       if (state.reasoning) parts.push(el("blockquote", { class: "reasoning" }, state.reasoning));
-      parts.push(card(verdict, a.key === "other" ? "You named " + a.label : verdict.title));
+      // "You accused ..." above already says whom: the verdict has no title of its own.
+      parts.push(card(verdict, false));
     } else {
       parts.push(card(pages[i]));
     }

@@ -150,11 +150,12 @@ class Game:
                 for out in self._wrap(stripped, indent=lead):
                     self.say(out)
 
-    def card(self, card, heading=None):
+    def card(self, card, heading=None, titled=True):
         title = heading or card.title
         self.say()
-        self.say(self._style(title, "1"))
-        self.say(self._style("─" * min(len(title) + 4, self.width), "2"))
+        if titled:
+            self.say(self._style(title, "1"))
+            self.say(self._style("─" * min(len(title) + 4, self.width), "2"))
         self.paragraphs(card.body)
         self.say()
 
@@ -472,8 +473,8 @@ class Game:
         for para in re.split(r"\n\s*\n", self.reasoning):
             if para.strip():
                 self.paragraphs("> " + " ".join(para.split()))
-        self.card(verdict, heading=verdict.title if self.accused != "other" else
-                  f"You named {label}")
+        # "You accused ..." above already says whom: the verdict has no title of its own.
+        self.card(verdict, titled=False)
         for card in cards:
             if card.meta.get("for") == "all":
                 self.pause()

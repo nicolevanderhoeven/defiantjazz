@@ -93,15 +93,53 @@ class PageTest(unittest.TestCase):
         urls = [u for u in re.findall(r"\"(https?://[^\"]+)\"", game) if u != "http://www.w3.org/2000/svg"]
         self.assertTrue(urls)
         for url in urls:
-            self.assertIn(f'"{url}"]', game, f"{url} should be in LINKS")
+            self.assertTrue(f'"{url}"]' in game or url in ("https://gra.fan/mcprepo", "https://gra.fan/gcxrepo"), f"{url} should be in LINKS")
         self.assertIn('target: "_blank", rel: "noopener noreferrer"', game)
+        # The MCP server and gcx are linked by their short links, wherever the game names them.
+        self.assertIn('["Grafana MCP server", MCP_URL]', game)
+        self.assertIn('["gcx", GCX_URL]', game)
+        self.assertIn('extLink("Grafana MCP server", MCP_URL)', game)
+        self.assertIn('extLink("gcx", GCX_URL)', game)
+        self.assertNotIn("github.com/grafana/mcp-grafana", game)
+
+    def test_assistant_prompts_say_to_click_chat(self):
+        game = read("game.js")
+        self.assertIn('click ", el("strong", null, "Chat"), " at the top to start chatting', game)
+        self.assertIn("click Chat to start chatting", game)
+        self.assertIn("If you don't see it, click Chat.", game)
+
+    def test_arrow_keys_step_panels_only(self):
+        game = read("game.js")
+        handler = game.split('document.addEventListener("keydown"', 1)[1].split("\n  });", 1)[0]
+        # Ignored with a modifier held, in a text field or select, or while a dialog is open.
+        for guard in ("e.altKey", "e.ctrlKey", "e.metaKey", "e.shiftKey", "INPUT|TEXTAREA|SELECT", "isContentEditable", "dialog.open"):
+            self.assertIn(guard, handler)
+        # Only the two arrows, and only through keyNav (Next and Back on panels): no choice, lead or accusation.
+        self.assertEqual(sorted(set(re.findall(r'e\.key === "(\w+)"', handler))), ["ArrowLeft", "ArrowRight", "Escape"])
+        self.assertEqual(re.findall(r"\b(\w+)\(", handler.split('"ArrowRight"', 1)[1]).count("keyNav"), 2)
+        for name in ("investigate", "accuse", "choose", "follow", "go"):
+            self.assertNotRegex(handler, r"\b%s\(" % name)
+        # The player and the verdict set it, and a hint sits beside the Next button.
+        self.assertGreaterEqual(game.count("keyNav = function (step)"), 2)
+        self.assertIn("keys step through", game)
+        self.assertIn("position: sticky; bottom: 0", read("style.css").split(".framebar {", 1)[1].split("}", 1)[0])
+
+    def test_the_ai_box_comes_before_investigate_in_the_hub(self):
+        css = read("style.css")
+        self.assertIn('grid-template-areas: "ai" "inv" "review" "accuse";', css)
+        self.assertIn('grid-template-areas: "ai inv" "ai accuse" "review review";', css)
+        self.assertIn('el("div", { class: "hub-grid" }, [ai, inv, accuse, review])', read("game.js"))
 
     def test_example_questions(self):
         game = read("game.js")
         block = game.split("var DATA = ", 1)[1].split("var LINKS", 1)[0]
         hints = re.findall(r'\[\"([^"]+)\", DATA \+', block)
         self.assertEqual(hints, ["Ask for a verdict", "Make a table", "Make a graph"])
-        self.assertIn('var DATA = "Using the Kipsake data in this stack from the last 30 days, ";', game)
+        data = re.search(r'var DATA = (.*?);\n  var QUESTIONS', game, re.S).group(1)
+        # Every example names the case's namespace and all three stores, so an AI doesn't stop at the logs.
+        for part in ('service_namespace=\\"kipsake-sleep-floor\\"', "all three signals", "logs in Loki", "metrics in Prometheus", "traces in Tempo",
+                     "from the last 30 days"):
+            self.assertIn(part, data)
         self.assertIn("Who killed Mr. Hale?", block.split("Make a table")[0])
         # The loader can shift the data's times, so the examples name no clock time.
         self.assertNotRegex(block, r"\b\d\d:\d\d\b")
@@ -273,12 +311,13 @@ class SceneTextTest(unittest.TestCase):
     def hotspots(self, card):
         return {h["label"]: h["body"] for p in self.art[card] for h in p["hotspots"]}
 
-    def test_every_clerk_wears_a_sweater_in_the_interviews(self):
-        # The clues are split by identity: all three clerks get a sweater hotspot, at the same level of detail.
+    def test_the_interviews_do_not_describe_what_the_clerks_wear(self):
+        # The captain's call: the three first interviews say nothing of clothes (the pictures still show them).
         for card in ("T-A \u00b7 Agnes \u00b7 03:30", "T-B \u00b7 Bertram \u00b7 03:40", "T-C \u00b7 Clement \u00b7 03:20"):
-            sweaters = [b for label, b in self.hotspots(card).items() if "sweater" in label.lower()]
-            self.assertEqual(len(sweaters), 1, card)
-            self.assertIn("knitted Christmas sweater with a bright pattern", sweaters[0], card)
+            self.assertEqual([l for l in self.hotspots(card) if "sweater" in l.lower()], [], card)
+            body = next(t.body for t in CONTENT.testimonies if t.title == card)
+            for text in list(self.hotspots(card).values()) + [body] + [f["body"] for f in self.art[card]]:
+                self.assertNotRegex(text.lower(), r"sweater|knitted|jumper", card)
 
     def test_the_break_room_clip_has_the_chart_and_an_unnamed_person(self):
         spots = self.hotspots("Break Room 2")
@@ -730,6 +769,12 @@ class PlayStatisticsTest(unittest.TestCase):
         self.assertNotIn("anonymous play statistics", game)
         self.assertNotIn("track-note", read("style.css"))
         self.assertNotIn("play statistics", read("index.html"))
+
+    def test_the_verdict_has_no_you_named_title(self):
+        game = read("game.js")
+        self.assertNotIn("You named", game)
+        self.assertIn("You accused ", game)
+        self.assertIn("card(verdict, false)", game)
 
     def test_clue_ids_are_unique(self):
         ids = []

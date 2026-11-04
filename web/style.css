@@ -355,10 +355,23 @@ p { margin: 0 0 10px; }
 .role-tiles strong { color: var(--c-ink); text-transform: capitalize; }
 .panel-role .panel-head { position: static; max-width: none; padding: 16px 20px 0; text-shadow: none; }
 
+/* The buttons that step on and back sit at the bottom of the screen on every panel, whatever
+   its picture's shape or its text's length: a player can click in the same place each time.
+   A player that is shorter than the screen stretches to fill it, and the bar stays in view when
+   it is taller. */
+.player { display: flex; flex-direction: column; padding-bottom: 0; min-height: calc(100vh - 58px); min-height: calc(100svh - 58px); }
+@media (max-width: 640px) { .player { padding-bottom: 0; min-height: calc(100vh - 54px); min-height: calc(100svh - 54px); } }
 .framebar {
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-  padding-top: 14px;
+  margin-top: auto; padding: 12px 0 20px;
+  position: sticky; bottom: 0; z-index: 4;
+  background: var(--c-bg); border-top: 1px solid var(--c-line-soft);
 }
+.player > .panel, .player > .text-card { margin-bottom: 14px; }
+.key-hint { color: var(--c-muted); font: 11px/1.4 var(--mono); letter-spacing: 0.06em; }
+.key-hint kbd { font: inherit; padding: 0 4px; border: 1px solid var(--c-line); border-radius: 2px; }
+@media (hover: none), (pointer: coarse) { .key-hint { display: none; } }
+@media (max-width: 640px) { .framebar { padding-bottom: 14px; } }
 .framebar-nav, .framebar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .framebar-actions { margin-left: auto; justify-content: flex-end; }
 .framebar-note { flex-basis: 100%; margin: 0; text-align: right; font-size: 14px; }
@@ -421,12 +434,13 @@ p { margin: 0 0 10px; }
 .hub-grid {
   display: grid; gap: 14px; margin-top: 16px;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "inv" "ai" "review" "accuse";
+  grid-template-areas: "ai" "inv" "review" "accuse";
 }
 @media (min-width: 900px) {
   .hub-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    grid-template-areas: "inv ai" "accuse ai" "review review";
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas: "ai inv" "ai accuse" "review review";
+    grid-template-rows: auto 1fr auto;
     align-items: start;
   }
   .hub-grid .area-ai { align-self: stretch; }
