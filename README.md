@@ -175,6 +175,44 @@ The data source UIDs are `loki`, `prometheus` and `tempo`.
 
 In the local Tempo, TraceQL searches limited to a time range may not find the historical badge traces. A search without a time range (for example `curl 'localhost:3200/api/search?q={span.badge="hale_r"}'`) or opening a trace by ID works. Every door-event log line in Loki carries its trace's `trace_id`.
 
+### gcx on the local stack (CLI alternative)
+
+The Grafana MCP server above is the main way to connect an agent. Use [`gcx`](https://gra.fan/gcxrepo) instead if your agent has no MCP support, or you prefer a command line. It talks to the local Grafana directly, with a service-account token. A Viewer token is enough.
+
+> **Don't run a shell-capable agent inside this repo's folder.** It can read the spoiler files. Start it somewhere else, and give it only `gcx` and the commands below.
+
+1. In Grafana (<http://localhost:3000>), open **Administration > Users and access > Service accounts**, add a service account with the **Viewer** role, and add a token to it. Copy the token.
+2. Log gcx in to the local stack:
+
+   ```sh
+   gcx login dj-local --server http://localhost:3000 --token <token>
+   ```
+
+3. Check it can see the data sources (`loki`, `prometheus` and `tempo`):
+
+   ```sh
+   gcx datasources list
+   ```
+
+Then ask your agent to investigate with commands like these. Pass the data source UID with `-d`:
+
+```sh
+# Logs (LogQL)
+gcx logs query -d loki '{service_namespace="kipsake-sleep-floor"} |= "hale"' --since 24h --limit 20 -o raw
+
+# Log counts (a metric query over logs uses `gcx logs metrics`)
+gcx logs metrics -d loki 'sum(count_over_time({service_namespace="kipsake-sleep-floor"}[1h]))' --since 24h --step 1h
+
+# Metrics (PromQL)
+gcx metrics query -d prometheus 'max(sleep_band_heart_rate_bpm{service_namespace="kipsake-sleep-floor"})' --since 24h --step 1m
+
+# Traces (TraceQL). Leave out --since: a time range may not find the historical badge traces
+gcx traces query -d tempo '{ span.badge = "hale" }' --limit 5
+gcx traces get -d tempo <trace id>
+```
+
+Commands for Grafana Cloud products, such as `gcx assistant` and SLOs, don't work against a local stack. Everything above does.
+
 ## Loader options
 
 ```
