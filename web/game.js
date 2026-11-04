@@ -796,9 +796,6 @@
       el("div", { class: "title-text" }, [
         el("h1", { class: "sr-only" }, "The Defiant Jazz Incident"),
         el("p", { class: "lede" }, "An observability murder mystery on the Sleep Floor at Kipsake."),
-        // Only where the host records play statistics (a Grafana Page with a collector).
-        HOST.track ? el("p", { class: "note track-note" }, "This game records anonymous play statistics: " +
-          "which parts you reach, which clues you open and who you accuse. It never records what you type.") : null,
         el("div", { class: "actions" }, [
           button([el("span", null, resume ? "Continue" : "Start"), icon("next")],
             function () { go(resume ? "hub" : "advert"); }, "btn-primary btn-next"),

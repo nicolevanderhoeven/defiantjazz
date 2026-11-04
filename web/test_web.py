@@ -724,12 +724,11 @@ class PlayStatisticsTest(unittest.TestCase):
         self.assertEqual(len(right), 1)
         self.assertIn(right[0]["meta"]["for"], build.content.SUSPECTS)
 
-    def test_the_title_says_so_where_play_is_recorded(self):
+    def test_the_title_does_not_announce_play_statistics(self):
         game = read("game.js")
-        note = game.split("HOST.track ? el(", 1)[1].split(") : null", 1)[0]
-        self.assertIn("anonymous play statistics", note)
-        self.assertIn("track-note", note)
-        # Not in the markup: a build that records nothing says nothing.
+        self.assertNotIn("track-note", game)
+        self.assertNotIn("anonymous play statistics", game)
+        self.assertNotIn("track-note", read("style.css"))
         self.assertNotIn("play statistics", read("index.html"))
 
     def test_clue_ids_are_unique(self):
