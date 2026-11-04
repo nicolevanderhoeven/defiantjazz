@@ -43,7 +43,8 @@ services:
       - "127.0.0.1:${DJ_PROMETHEUS_PORT:-9090}:9090"
 
   tempo:
-    image: grafana/tempo:2.10.10
+    # 2.9, not 2.10: Tempo 2.10 can't search this case's historical traces (a search finds none, though a trace opens by its ID).
+    image: grafana/tempo:2.9.5
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
       - ./tempo.yaml:/etc/tempo/tempo.yaml:ro

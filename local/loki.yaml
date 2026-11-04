@@ -38,6 +38,12 @@ limits_config:
         - action: index_label
           attributes: [service.name, service.namespace]
 
+ingester:
+  # The case is loaded in a burst, with old timestamps, and Loki only finds old lines once it has flushed them
+  # out of the ingester. Flush soon after the load goes quiet (the defaults wait half an hour).
+  chunk_idle_period: 30s
+  flush_check_period: 10s
+
 pattern_ingester:
   enabled: false
 

@@ -73,6 +73,12 @@ class ComposeTest(unittest.TestCase):
         for name in ("loki.yaml", "tempo.yaml", "prometheus.yml"):
             self.assertNotRegex(read(name), r"grafana\.(net|com)")
 
+    def test_loki_flushes_the_loaded_case_soon(self):
+        # Old lines are only found once flushed out of the ingester, and the default waits half an hour.
+        loki = yaml.safe_load(read("loki.yaml"))
+        self.assertLessEqual(int(loki["ingester"]["chunk_idle_period"].rstrip("s")), 60)
+        self.assertFalse(loki["limits_config"]["reject_old_samples"])
+
     def test_anonymous_viewers_by_default(self):
         env = env_of(self.services["grafana"])
         self.assertEqual((env["GF_AUTH_ANONYMOUS_ENABLED"], env["GF_AUTH_ANONYMOUS_ORG_ROLE"]), ("true", "Viewer"))

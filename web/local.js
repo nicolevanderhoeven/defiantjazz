@@ -37,7 +37,8 @@
   // What the three example questions open with: the same wording as the Grafana Page, naming the local data sources.
   var DATA = "Using the Kipsake data in this local Grafana stack from the last 30 days, in all three signals " +
     "(logs in Loki, metrics in Prometheus, traces in Tempo; the data source UIDs are loki, prometheus and tempo), " +
-    "all tagged service_namespace=\"kipsake-sleep-floor\" (service.namespace in Tempo), ";
+    "all tagged service_namespace=\"kipsake-sleep-floor\" (service.namespace in Tempo; search Tempo without a time range, " +
+    "or open a trace by the trace_id on a door log line), ";
 
   function code(el, text) { return el("code", null, text); }
 

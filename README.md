@@ -137,7 +137,7 @@ To find out what was really stored, set the optional `GRAFANA_LOKI_URL`, `GRAFAN
 cd local && docker compose up -d
 ```
 
-That starts Loki 3.7, Prometheus 3, Tempo 2, Grafana 13.3, the Grafana MCP server and the game, and a one-shot `loader` loads the case into the three stores (with `--incident-date latest`, so you get the full 14 weeks of history) and exits. It waits for the stores to be ready, and it skips any signal that's already loaded, so repeating `up` is safe. Watch it with `docker compose logs -f loader`.
+That starts Loki 3.7, Prometheus 3, Tempo 2.9, Grafana 13.3, the Grafana MCP server and the game, and a one-shot `loader` loads the case into the three stores (with `--incident-date latest`, so you get the full 14 weeks of history) and exits. It waits for the stores to be ready, and it skips any signal that's already loaded, so repeating `up` is safe. Watch it with `docker compose logs -f loader`. Loki only finds old lines once it has flushed them, which the stack's Loki does about 30 seconds after the load goes quiet, so the whole case is queryable about a minute after the loader exits.
 
 | What | Where |
 |---|---|
