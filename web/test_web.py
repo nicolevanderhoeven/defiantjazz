@@ -1079,6 +1079,11 @@ class AnimationTest(unittest.TestCase):
         # The arrows ignore the game while a note is open.
         self.assertLess(handler.index("if (reading)"), handler.index('"ArrowRight"'))
 
+    def test_the_game_asks_for_the_keyboard_once_it_appears(self):
+        # A Page's frame starts without focus, so Enter on the title would reach nothing until a click.
+        tail = self.game.split("readStored(STORE_KEY).then(function (text) {", 1)[1]
+        self.assertIn("window.focus()", tail.split("});", 1)[0])
+
     def test_notes_are_read_on_click(self):
         game = self.game
         self.assertIn('class: "hotspot hotspot-read"', game)

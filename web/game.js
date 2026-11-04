@@ -1653,5 +1653,8 @@
   readStored(STORE_KEY).then(function (text) {
     state = load(text);
     render(false);
+    // Inside a Grafana Page the game's frame starts without the keyboard, so Enter on the title and the arrow keys
+    // would go nowhere until the player clicked in it. Asking for focus once, as the game appears, gives them to it.
+    try { window.focus(); } catch (e) { /* the keys then work after a click */ }
   });
 })();
