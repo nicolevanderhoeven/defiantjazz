@@ -63,7 +63,7 @@ Spoilers: anyone who can open a page can export its source, and Grafana Assistan
 
 ## Play statistics
 
-A Grafana Page build can record anonymous play statistics with [Faro](https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/), so you can see how many people play, where they get to, which clues they open and whom they accuse. The static page and the terminal game record nothing: `game.js` only calls the optional `HOST.track(name, attrs)` hook, and only a Page build with a collector defines it. Where it's defined, the title screen says so.
+A Grafana Page build can record anonymous play statistics with [Faro](https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/), so you can see how many people play, where they get to, which clues they open and whom they accuse. The static page and the terminal game record nothing: `game.js` only calls the optional `HOST.track(name, attrs)` hook, and only a Page build with a collector defines it.
 
 Set the stack's collector as a build input (the address and app key are per stack, so they aren't in the repository), then build as usual:
 
