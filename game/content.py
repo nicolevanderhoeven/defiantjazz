@@ -73,6 +73,7 @@ class Content:
     decisions: list
     reveal: Section
     aliases: dict  # normalized name -> suspect key
+    scoring: dict = None  # the accusation's questions and key (SPOILERS-scoring.json)
 
     def resolve_suspect(self, text):
         """Return 'agnes', 'bertram' or 'clement' for a recognisable name, else None."""
@@ -141,6 +142,14 @@ def _aliases(content_dir):
     return {normalize_name(name): key for key, group in names.items() for name in group}
 
 
+def _scoring(content_dir):
+    import scoring
+    try:
+        return scoring.load_key(os.path.join(content_dir, "SPOILERS-scoring.json"))
+    except scoring.KeyError_ as e:
+        raise ContentError(str(e))
+
+
 def load(content_dir=CONTENT_DIR):
     testimony_section = _read("testimonies.md", content_dir)
     testimonies = testimony_section.cards
@@ -170,6 +179,7 @@ def load(content_dir=CONTENT_DIR):
         decisions=decisions,
         reveal=reveal,
         aliases=_aliases(content_dir),
+        scoring=_scoring(content_dir),
     )
 
 

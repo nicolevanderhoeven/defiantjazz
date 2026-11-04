@@ -5,7 +5,7 @@ The terminal game as a static web page, made to sit in a Grafana dashboard panel
 > [!WARNING]
 > **`SPOILERS-content.js` contains spoilers**, and so does `dist/SPOILERS-defiantjazz.page.json` once you build it. They hold every story card from `game/SPOILERS-content/`, including the solution. The solution is encoded so a glance doesn't give it away, but don't read the files before you play. Everything else in this folder is spoiler-free.
 
-The flow is the same as `python3 game/play.py`, told in full-image panels after the comic prototype: the Kipsake flyer and the cold open, your interviews with the suspects, then the case, where you follow up your three leads (one option each), review what you've unlocked, and accuse the killer. The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the [Grafana MCP server](https://gra.fan/mcprepo) or [`gcx`](https://gra.fan/gcxrepo), about the telemetry loaded in the stack. The page offers example questions with copy buttons.
+The flow is the same as `python3 game/play.py`, told in full-image panels after the comic prototype: the Kipsake flyer and the cold open, your interviews with the suspects, then the case, where you follow up your three leads (one option each), review what you've unlocked, and make your accusation: seven questions, scored out of 10, with a [leaderboard](#the-scored-accusation). The AI isn't in the page. Players ask Grafana Assistant in the same Grafana, or their own agent through the [Grafana MCP server](https://gra.fan/mcprepo) or [`gcx`](https://gra.fan/gcxrepo), about the telemetry loaded in the stack. The page offers example questions with copy buttons.
 
 The page makes no network requests of its own: no CDNs, fonts or analytics (a Grafana Page build with a collector is the one exception, see [Play statistics](#play-statistics)). Progress is saved in the browser's `localStorage`, so reloading the dashboard keeps your place, and **Restart** clears it. Without storage the game still plays, it just forgets on reload.
 
@@ -61,6 +61,20 @@ Who can play:
 
 Spoilers: anyone who can open a page can export its source, and Grafana Assistant can read a published page's source when asked. The solution stays encoded, the page's title is spoiler-free, and **Ask Assistant** sends only the question, never story text. To discourage Assistant from reading the page, add a tenant-wide Assistant rule to the stack telling it never to read the page's source or reveal its solution. That's a soft guard, not a lock.
 
+## The scored accusation
+
+The Accuse step asks seven questions with free-text answers and marks them out of 10: who killed Mr. Hale (3 points) and why (2, one for his sister's death and one for Mr. Hale signing off the procedure behind it), then one point each for who swapped the lullaby for *Defiant Jazz*, what caused the blackout, who "Waffles" is, how the killer left their seat unnoticed, and why Agnes was in the elevator. The first two are required; a blank answer to the others scores 0. An optional "Name for the leaderboard" (24 characters, plain characters, a short list of words refused) is what other players see.
+
+**The key** is `game/SPOILERS-content/SPOILERS-scoring.json`, which also holds each question's `tests` (answers and the points they must earn). `build.py` encodes it into `SPOILERS-content.js` like the reveal (the page reads it only after the player confirms), and the terminal game reads the same file. It is never in `game/ai-evidence/case-bundle.md`; a test checks that.
+
+**The matcher** always marks the answers, in the browser (`game.js`) and in the terminal (`game/scoring.py`, the same algorithm, held to the same `tests`): text is lower-cased and stripped of punctuation, each question has groups of synonyms, names allow typos (two for six letters or more), a name after "not" is ruled out, and an answer naming two suspects on a who-question scores nothing.
+
+**The AI judge** is built into the Page. A Page can ask the host's Assistant for a one-off generation (`useInlineAssistant`: no tools, its own context, nothing in the player's chat), which `host.ts` offers the game as `judge`. After the player confirms, the answers the matcher didn't give full marks are sent in one call, as JSON data, with a fixed prompt that carries each question's marking note and tells the AI to ignore anything in an answer that asks for marks. It can only raise a question's score, never past its maximum, and the breakdown says which points the matcher gave and which the AI did. If the call fails or takes more than 10 seconds, the matcher's marks stand and the page says so. An AI judge can still be talked into generous marks within a question's maximum, which is the risk of the leaderboard trusting it. Without Assistant (a static page, or a viewer who can't use it) the matcher alone judges.
+
+**The leaderboard** is the `accusation_scored` events, ranked on the play statistics dashboard's Leaderboard panel: each player counts once, by their best score, and ties go to whoever finished earlier. In the game, the last verdict page shows the player's own score and, in a Grafana Page, a button to that dashboard. The game has code to show the board itself when a host offers `HOST.leaderboard()` (the log lines of the scored accusations), but the Page doesn't: a Page build whose glue read the stack's logs with `grafana.subscribe`, or with several fallback queries, failed in Grafana's builder ("Could not rebuild this page", HTTP 502), and the one that did build read no rows from the logs (`done, 0 frames`) for a signed-in viewer. If that gets fixed, the Page's glue is the place for it (`host.ts`, with the query in `track.ts`).
+
+After the score, the verdict shows each question with the player's answer, the real answer and the points, then the killer card, "What really happened", "How it's solved", and the leaderboard page.
+
 ## Play statistics
 
 A Grafana Page build can record anonymous play statistics with [Faro](https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/), so you can see how many people play, where they get to, which clues they open and whom they accuse. The static page and the terminal game record nothing: `game.js` only calls the optional `HOST.track(name, attrs)` hook, and only a Page build with a collector defines it.
@@ -77,7 +91,7 @@ Setting up a stack:
 
 1. Create a Frontend Observability app named `defiant-jazz`, and set its CORS origin to the literal `null` (a Page runs in a sandboxed frame with an opaque origin). With gcx, `create` ignores CORS, so follow it with `gcx frontend apps update <id> -f app.yaml` whose `spec` has `corsOrigins: [{url: "null"}]`, and check with `gcx frontend apps get <id>`: the update accepts `allowedOrigins` silently and stores nothing.
 2. Build with that app's `<collectEndpointURL>/<appKey>`, import or write the files into the Page, and approve the collector's origin on that Page once. It's a per-Page, per-stack click, and it has to come before the build's first check: right after **Import page**, ask Assistant in the Page's conversation to "request network access for this page only to the Faro collector origin", and click **Allow** on its card while the build installs. A build that fails the check for the missing origin is remembered for that import, so import again. Don't ask Assistant to edit or read the Page's files.
-3. The app's events are in the stack's Loki as `{service_name="defiant-jazz", kind="event"}`. [`dashboard-play-statistics.json`](dashboard-play-statistics.json) is the six-panel dashboard.
+3. The app's events are in the stack's Loki as `{service_name="defiant-jazz", kind="event"}`. [`dashboard-play-statistics.json`](dashboard-play-statistics.json) is the seven-panel dashboard.
 
 What's recorded (`TRACK_EVENTS` in `build.py` is the list, and the page's glue drops anything else). Every event is `event_domain=defiant-jazz` with string attributes, plus `app_version` and `environment`, and Faro adds the session, browser and page load signals:
 
@@ -89,10 +103,11 @@ What's recorded (`TRACK_EVENTS` in `build.py` is the list, and the page's glue d
 | `clue_opened` | `clue` (picture and marker number), `label` (the marker's name), `chapter`; once per clue per visit |
 | `ai_question_asked` | `source`, `example_id`, `question_length` |
 | `accusation_started`, `game_restarted` | none, and `after` (`verdict` or `mid_game`) |
-| `accusation_made` | `suspect` (a suspect's key, or `other`), `is_listed_suspect`, `reasoning_length` |
+| `accusation_made` | `suspect` (a suspect's key, or `other`), `is_listed_suspect`, `reasoning_length` (the length of the answer to *why*) |
+| `accusation_scored` | `score`, `max`, `judge` (`matcher` or `ai`), `name` (the optional leaderboard name), and the points for each question: `killer`, `why`, `jazz`, `blackout`, `waffles`, `seat`, `elevator` |
 | `verdict_viewed` | `correct`, `leads_followed` |
 
-Not recorded: anything the player types (the name of someone else, their reasoning, a question), any story or reveal text, and the answer. `correct` comes from a marker on the right reveal card, `correct: yes`, and is only read after the accusation. The player is a random `p_...` id in their Grafana user storage (`dj_player_id`); the viewer's login, name and email are never read or sent. If user storage fails (a draft of the Page can't use it), there's no id and the visit is marked `player_id_source=none`. Faro still sees the browser, operating system, language and the page's size, and Frontend Observability derives an approximate location from the IP address. The statistics are indicative: the app key is in the page's source, so anyone can post to the app.
+Not recorded: anything the player types except the optional leaderboard name (the answers, a question), any story or reveal text, and the answer. `correct` comes from a marker on the right reveal card, `correct: yes`, and is only read after the accusation. The player is a random `p_...` id in their Grafana user storage (`dj_player_id`); the viewer's login, name and email are never read or sent. If user storage fails (a draft of the Page can't use it), there's no id and the visit is marked `player_id_source=none`. Faro still sees the browser, operating system, language and the page's size, and Frontend Observability derives an approximate location from the IP address. The statistics are indicative: the app key is in the page's source, so anyone can post to the app.
 
 ## Scene art
 
@@ -155,7 +170,7 @@ It checks that `SPOILERS-content.js` matches `game/SPOILERS-content/` and holds 
 | `assets/*.webp` | The title art, scenes and portraits, made by `build.py --art` |
 | `SPOILERS-content.js` | **Spoilers:** the story cards, generated by `build.py` |
 | `build.py` | Builds `SPOILERS-content.js` from `game/SPOILERS-content/`, with `--page` the Grafana Page file (with `DJ_FARO_URL`, one that records play statistics), and with `--art` the pictures |
-| `dashboard-play-statistics.json` | A six-panel dashboard of the play statistics, for the stack's Loki |
+| `dashboard-play-statistics.json` | A seven-panel dashboard of the play statistics, with the leaderboard, for the stack's Loki |
 | `dist/SPOILERS-defiantjazz.page.json` | **Spoilers:** the Grafana Page file, written by `build.py --page`, not committed |
 | `test_web.py` | The self-check |
 | `assets/private/`, `with-music.html` | Your copy of the music and the game with it, made by `build.py`, not committed |

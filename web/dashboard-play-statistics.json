@@ -1284,6 +1284,207 @@
           "showLegend": false
         }
       }
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Leaderboard",
+      "description": "Each player once, by their best score out of 10, best first. Ties go to whoever finished earlier. The name is the optional one the player chose.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "count by (user_id, event_data_name, event_data_score, event_data_max, timestamp)(count_over_time({service_name=\"defiant-jazz\", kind=\"event\", deployment_environment=~\"$environment\"} | logfmt | event_domain=\"defiant-jazz\" | browser_name!=\"Chrome Headless\" | user_attr_player_id_source=\"user_storage\" | user_id!~\"$exclude\" | event_name=\"accusation_scored\" [$__range]))",
+          "legendFormat": "scores",
+          "queryType": "instant",
+          "instant": true,
+          "range": false,
+          "editorMode": "code"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "No scores yet",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Detective"
+            },
+            "properties": [
+              {
+                "id": "noValue",
+                "value": "Anonymous detective"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm"
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "Value #A": true
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "event_data_score",
+                "destinationType": "number"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "event_data_score",
+                "desc": true
+              },
+              {
+                "field": "timestamp"
+              }
+            ]
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "user_id": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "event_data_name": {
+                "aggregations": [
+                  "firstNotNull"
+                ],
+                "operation": "aggregate"
+              },
+              "event_data_score": {
+                "aggregations": [
+                  "first"
+                ],
+                "operation": "aggregate"
+              },
+              "event_data_max": {
+                "aggregations": [
+                  "first"
+                ],
+                "operation": "aggregate"
+              },
+              "timestamp": {
+                "aggregations": [
+                  "first"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "event_data_score (first)",
+                "desc": true
+              },
+              {
+                "field": "timestamp (first)"
+              }
+            ]
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": 25
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "index",
+            "alias": "Index",
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "binary",
+            "alias": "#",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Index"
+                }
+              },
+              "operator": "+",
+              "right": {
+                "fixed": "1"
+              }
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "user_id": true,
+              "Index": true,
+              "event_data_max (first)": true
+            },
+            "indexByName": {
+              "#": 0,
+              "event_data_name (firstNotNull)": 1,
+              "event_data_score (first)": 2,
+              "timestamp (first)": 3
+            },
+            "renameByName": {
+              "event_data_name (firstNotNull)": "Detective",
+              "event_data_score (first)": "Score (of 10)",
+              "timestamp (first)": "Finished"
+            }
+          }
+        }
+      ]
     }
   ]
 }

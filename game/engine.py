@@ -4,6 +4,7 @@ import re
 import shutil
 import textwrap
 
+import scoring
 from ai import AIError
 from content import SUSPECTS
 
@@ -23,8 +24,10 @@ Commands:
                     questions.
   review [n|all]    Re-read the advert, cold open, interviews and clips you've
                     unlocked.
-  accuse <name>     When you're ready, name the killer and say why. You can do
-                    this any time, even before all three leads. It ends the game.
+  accuse <name>     When you're ready, name the killer and answer seven questions
+                    about the case (the first two are required, the rest are
+                    optional). You can do this any time, even before all three
+                    leads. It ends the game, and scores your answers out of 10.
   help              Show this list.
   quit              Leave without accusing."""
 
@@ -61,6 +64,8 @@ class Game:
         self.asked = []  # (question, answer)
         self.accused = None
         self.reasoning = ""
+        self.answers = {}
+        self.scores = []
 
     # ---- output ---------------------------------------------------------------
 
@@ -430,7 +435,19 @@ class Game:
         else:
             self.say("There's nothing with that number. Type review to see the list.")
 
+    def _read_paragraphs(self):
+        lines = []
+        while True:
+            line = self.read("  ")
+            if line.strip() == ".":
+                break
+            if not line.strip() and lines and not lines[-1].strip():
+                break
+            lines.append(line)
+        return "\n".join(lines).strip()
+
     def do_accuse(self, arg=""):
+        key_questions = self.content.scoring["questions"]
         name = arg or self.read("Who killed Mr. Hale? (Agnes, Bertram or Clement) ")
         if not name:
             return
@@ -449,19 +466,41 @@ class Game:
                             "follow up. You can accuse now or keep investigating.")
         if not self.read(f"Accuse {label}? This ends the game. (y/n) ").lower().startswith("y"):
             return
-        self.paragraphs("Why? Explain your reasoning. Finish with a line containing only \".\" "
-                        "or with two empty lines in a row.")
-        lines = []
-        while True:
-            line = self.read("  ")
-            if line.strip() == ".":
-                break
-            if not line.strip() and lines and not lines[-1].strip():
-                break
-            lines.append(line)
+        self.say()
+        self.paragraphs(f"Your accusation is scored out of {scoring.maximum(self.content.scoring)}. "
+                        "The first two questions are required; press Enter to skip the others.")
+        answers = {key_questions[0]["id"]: name}
+        for q in key_questions[1:]:
+            self.say()
+            weight = f"{q['points']} point{'s' if q['points'] > 1 else ''}"
+            if q["required"]:
+                self.paragraphs(f"{q['label']} ({weight}) Explain your reasoning. Finish with a line "
+                                "containing only \".\" or with two empty lines in a row.")
+                while True:
+                    text = self._read_paragraphs()
+                    if text:
+                        break
+                    self.say("This one is required.")
+            else:
+                text = self.read(f"{q['label']} ({weight}, optional) ")
+            answers[q["id"]] = text
         self.accused = key
-        self.reasoning = "\n".join(lines).strip()
+        self.answers = answers
+        self.reasoning = answers[key_questions[1]["id"]]
+        self.scores = scoring.score(self.content.scoring, answers)
         self.reveal(label)
+
+    def breakdown(self):
+        key = self.content.scoring
+        self.say()
+        self.say(self._style(f"You scored {scoring.total(self.scores)} / {scoring.maximum(key)}", "1"))
+        for q, row in zip(key["questions"], self.scores):
+            self.say()
+            self.say(self._style(f"{q['short']}: {row['points']} / {row['max']}", "1"))
+            mine = " ".join(self.answers.get(q["id"], "").split()) or "(no answer)"
+            for text in ("Your answer: " + mine, "The answer: " + q["answer"]):
+                for out in self._wrap(text, indent="  ", hang="    "):
+                    self.say(out)
 
     def reveal(self, label):
         cards = self.content.reveal.cards
@@ -470,9 +509,8 @@ class Game:
         self.rule("The verdict")
         stop = "" if label.endswith(".") else "."
         self.say(self._style(f"You accused {label}{stop}", "1"))
-        for para in re.split(r"\n\s*\n", self.reasoning):
-            if para.strip():
-                self.paragraphs("> " + " ".join(para.split()))
+        self.breakdown()
+        self.say()
         # "You accused ..." above already says whom: the verdict has no title of its own.
         self.card(verdict, titled=False)
         for card in cards:

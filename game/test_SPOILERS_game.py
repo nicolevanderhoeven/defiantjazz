@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import ai  # noqa: E402
 import content  # noqa: E402
+import scoring  # noqa: E402
 from engine import Game  # noqa: E402
 
 CONTENT = content.load()
@@ -302,6 +303,8 @@ class FullPathTest(unittest.TestCase):
             "investigate",                      # all used
             "accuse clement.", "y",
             REASONING, "", "Second paragraph.", ".",
+            "Agnes", "The waffle iron tripped the breaker", "Bertram", "He left his badge on the chair",
+            "She hid notes for herself",
             "", "",                             # the reveal's cards
         ]
         self.game, self.output = play(answers, self.ai)
@@ -381,7 +384,7 @@ class FullPathTest(unittest.TestCase):
 
 class OtherPathsTest(unittest.TestCase):
     def test_early_accusation_of_agnes(self):
-        game, output = play(["", "", "", "", "", "accuse peggy", "y", "She had the cable.", "", "", "", ""],
+        game, output = play(["", "", "", "", "", "accuse peggy", "y", "She had the cable.", "", "", "", "", "", "", "", "", ""],
                             None)
         self.assertEqual(game.accused, "agnes")
         self.assertIn("You still have 3 leads to follow up", output)
@@ -390,21 +393,21 @@ class OtherPathsTest(unittest.TestCase):
 
     def test_accused_label_has_one_full_stop(self):
         self.assertIn("You accused Clement.", game_output := play(
-            ["", "", "", "", "", "accuse clement", "y", "x", ".", "", ""], None)[1])
+            ["", "", "", "", "", "accuse clement", "y", "x", ".", "", "", "", "", "", "", ""], None)[1])
         self.assertNotIn("Clement..", game_output)
 
     def test_the_verdict_does_not_say_you_named_after_you_accused(self):
         for who in ("clement", "agnes", "bertram", "peggy"):
-            _, output = play(["", "", "", "", "", f"accuse {who}", "y", "x", ".", "", "", "", ""], None)
+            _, output = play(["", "", "", "", "", f"accuse {who}", "y", "x", ".", "", "", "", "", "", "", "", ""], None)
             self.assertIn("You accused ", output)
             self.assertNotIn("You named", output)
 
     def test_reasoning_keeps_paragraphs_until_terminator(self):
         game, output = play(["", "", "", "", "", "accuse agnes", "y",
-                             "First.", "", "Second.", "", "", "", ""], None)
+                             "First.", "", "Second.", "", "", "", "", "", "", "", ""], None)
         self.assertEqual(game.reasoning, "First.\n\nSecond.")
         self.assertIn("Second.", output)
-        game, _ = play(["", "", "", "", "", "accuse agnes", "y", "One.", "", "Two.", " . ", "", ""],
+        game, _ = play(["", "", "", "", "", "accuse agnes", "y", "One.", "", "Two.", " . ", "", "", "", "", "", "", ""],
                        None)
         self.assertEqual(game.reasoning, "One.\n\nTwo.")
 
@@ -482,3 +485,91 @@ class ErrorTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ScoredAccusationTest(unittest.TestCase):
+    """The accusation is seven questions, scored out of 10 by a matcher that reads the key."""
+
+    KEY = CONTENT.scoring
+    ALL_RIGHT = {"killer": "Clement", "why": "His sister June died after a procedure Hale signed off.",
+                 "jazz": "Agnes", "blackout": "Bertram's waffle iron tripped the breaker", "waffles": "Bertram",
+                 "seat": "He left his badge on the chair", "elevator": "She hid notes for herself"}
+
+    def test_the_key_is_ten_points_and_the_first_two_questions_are_required(self):
+        self.assertEqual([q["id"] for q in self.KEY["questions"]],
+                         ["killer", "why", "jazz", "blackout", "waffles", "seat", "elevator"])
+        self.assertEqual(scoring.maximum(self.KEY), 10)
+        self.assertEqual([(q["points"], q["required"]) for q in self.KEY["questions"]],
+                         [(3, True), (2, True), (1, False), (1, False), (1, False), (1, False), (1, False)])
+        self.assertEqual(self.KEY["questions"][6]["label"], "Why was Agnes in the elevator?")
+
+    def test_every_answer_in_the_key_is_marked_as_the_key_says(self):
+        for q in self.KEY["questions"]:
+            kinds = {points for _, points in q["tests"]}
+            self.assertIn(0, kinds, q["id"])
+            self.assertIn(q["points"], kinds, q["id"])
+            for answer, points in q["tests"]:
+                self.assertEqual(scoring.score_question(self.KEY, q, answer)[0], points, f"{q['id']}: {answer!r}")
+
+    def test_all_right_all_wrong_and_a_misspelt_one(self):
+        self.assertEqual(scoring.total(scoring.score(self.KEY, self.ALL_RIGHT)), 10)
+        self.assertEqual(scoring.total(scoring.score(self.KEY, {q["id"]: "no idea" for q in self.KEY["questions"]})), 0)
+        partly = dict(self.ALL_RIGHT, killer="Clemmont", why="His sister died", jazz="", seat="a dummy")
+        rows = scoring.score(self.KEY, partly)
+        self.assertEqual([r["points"] for r in rows], [3, 1, 0, 1, 1, 0, 1])
+        self.assertEqual(scoring.total(rows), 7)
+
+    def test_the_elevator_answer_needs_the_notes_not_just_finding_hale(self):
+        q = self.KEY["questions"][6]
+        for wrong in ("She found Hale and pulled the cable off him", "she pulled the cable", "She found the body"):
+            self.assertEqual(scoring.score_question(self.KEY, q, wrong)[0], 0, wrong)
+
+    def test_a_name_ruled_out_does_not_count_and_two_suspects_do_not_both_win(self):
+        q = self.KEY["questions"][0]
+        self.assertEqual(scoring.score_question(self.KEY, q, "Agnes, not Clement")[0], 0)
+        self.assertEqual(scoring.score_question(self.KEY, q, "It wasn't Agnes, it was Clement")[0], 3)
+        self.assertEqual(scoring.score_question(self.KEY, q, "Clement or Bertram")[0], 0)
+
+    def test_leaderboard_names(self):
+        self.assertEqual(scoring.clean_name("  Nic   the  Detective  "), ("Nic the Detective", None))
+        self.assertEqual(scoring.clean_name("x" * 40)[0], "x" * scoring.NAME_MAX)
+        self.assertEqual(scoring.clean_name("a<b>c")[0], "abc")
+        for bad in ("f u c k", "Sh1t", "NAZI"):
+            self.assertEqual(scoring.clean_name(bad)[0], "", bad)
+        for fine in ("Dickens", "Spice Girl", "Pakistan", "Scunthorpe"):
+            self.assertEqual(scoring.clean_name(fine)[0], fine, fine)
+
+    def test_the_key_never_reaches_the_ai(self):
+        flat_bundle = " ".join(scoring.normalize(BUNDLE).split())
+        for q in self.KEY["questions"]:
+            for field in ("answer", "judge"):
+                words = scoring.normalize(q[field]).split()
+                for i in range(len(words) - 3):
+                    phrase = " ".join(words[i:i + 4])
+                    self.assertNotIn(phrase, flat_bundle, f"{q['id']} {field}: {phrase!r} is in the case bundle")
+        self.assertNotIn("SPOILERS-scoring", BUNDLE)
+        self.assertNotIn('"parts"', BUNDLE)
+
+    def test_the_terminal_game_asks_seven_questions_and_scores_them(self):
+        lines = ["", "", "", "", "", "accuse clement", "y",
+                 "His sister died; Hale signed off the procedure.", ".",
+                 "Agnes", "the waffle iron tripped the breaker", "Bertram", "the badge on the chair", "notes for herself",
+                 "", ""]
+        game, output = play(lines, None)
+        self.assertEqual(scoring.total(game.scores), 10)
+        flat = " ".join(output.split())
+        self.assertIn("You scored 10 / 10", flat)
+        for q in self.KEY["questions"]:
+            self.assertIn(q["short"], flat)
+        self.assertLess(flat.index("You scored"), flat.index("You're right."))
+        self.assertIn("Your answer: Agnes", flat)
+        self.assertIn("The answer: Clement.", flat)
+
+    def test_the_terminal_game_skips_the_optional_questions_and_requires_the_second(self):
+        lines = ["", "", "", "", "", "accuse agnes", "y", "", "", "She was nearby.", ".",
+                 "", "", "", "", "", "", ""]
+        game, output = play(lines, None)
+        self.assertIn("This one is required.", output)
+        self.assertEqual([r["points"] for r in game.scores], [0] * 7)
+        self.assertIn("You scored 0 / 10", " ".join(output.split()))
+        self.assertIn("(no answer)", output)

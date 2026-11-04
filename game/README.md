@@ -20,7 +20,7 @@ The game opens with a Kipsake advert, the cold open and your three interviews. A
 | `ask <question>` | Ask your AI assistant anything. It has read Kipsake's records (the telemetry), and nothing else: it hasn't seen the interviews, the leads you follow, or anything you find. If you want it to know something, tell it. |
 | `investigate` | Follow up your next lead. There are three, one at a time, each with three choices, and each choice unlocks one clip. |
 | `review` | Re-read the advert, the cold open, the interviews, and anything you've unlocked. |
-| `accuse <name>` | When you're ready, name the killer and say why. You can do this at any time, and it ends the game. |
+| `accuse <name>` | When you're ready, name the killer, then answer six more questions (why, and five optional ones). You can do this at any time, and it ends the game, with a score out of 10. |
 | `help`, `quit` | |
 
 The first `ask` sends the AI the whole case file (about 80 KB), so it can take up to a minute. Later questions are faster. Ctrl-C cancels a question.
@@ -44,7 +44,7 @@ The AI only ever gets:
 - `ai-evidence/case-bundle.md`: the incident brief and a curated excerpt of `telemetry/` (from the Paper Test), the same kind of files an investigator would query.
 - what you type after `ask`, exactly as typed
 
-It never gets a clip, the Outside World, the reveal, or your accusation and reasoning.
+It never gets a clip, the Outside World, the reveal, the scoring key (`SPOILERS-scoring.json`), or your accusation and answers.
 
 Every call runs from a new, empty temporary directory, which is deleted when the game ends.
 

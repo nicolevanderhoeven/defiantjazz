@@ -1,0 +1,160 @@
+{
+  "_": [
+    "SPOILERS: THE SCORING KEY. Every answer to the accusation's questions. Never give this to the AI.",
+    "It is encoded in the web bundle and read only after the player accuses; the terminal game reads it the same way.",
+    "A question is worth 'points'. It is split into 'parts' that add up to it; a part is earned when the player's text matches it.",
+    "A part's 'match' is a list of alternatives (any one will do). An alternative is a list of groups (every group must be hit).",
+    "A group is a list of words or phrases (any one will do). Matching ignores case, accents and punctuation.",
+    "  ~name   a name: one or two typos are allowed (two for 6 letters or more), and a name after not, never or isnt doesn't count",
+    "  =word   exactly this word",
+    "  stem*   any word that starts with stem",
+    "  word    a plain word: one typo is allowed for 5 letters or more",
+    "'suspect: true' means an answer that names two different suspects (and doesn't rule one out) scores nothing.",
+    "'answer' is what the player sees afterwards. 'judge' is what the AI judge is told (web, when Assistant is there).",
+    "'tests' are (answer, points) pairs that both matchers (Python and JavaScript) must score the same way."
+  ],
+  "suspects": {
+    "agnes": ["agnes", "peggy"],
+    "bertram": ["bertram"],
+    "clement": ["clement"]
+  },
+  "questions": [
+    {
+      "id": "killer",
+      "label": "Who killed Mr. Hale?",
+      "short": "The killer",
+      "points": 3,
+      "required": true,
+      "suspect": true,
+      "answer": "Clement.",
+      "judge": "Worth 3. Full marks only if the player says Clement killed Mr. Hale (a typo in the name is fine). Naming anyone else, or hedging between suspects, is 0.",
+      "parts": [
+        { "points": 3, "match": [[["~clement"]]] }
+      ],
+      "tests": [
+        ["Clement", 3], ["clement.", 3], ["It was Clement", 3], ["clemmont", 3], ["Clemant did it", 3],
+        ["It wasn't Agnes, it was Clement", 3], ["Agnes", 0], ["Peggy", 0], ["Bertram", 0], ["Waffles", 0],
+        ["Not Clement, Agnes", 0], ["Clement or Agnes", 0], ["I have no idea", 0], ["", 0]
+      ]
+    },
+    {
+      "id": "why",
+      "label": "Why did they do it?",
+      "short": "The motive",
+      "points": 2,
+      "required": true,
+      "answer": "Revenge. Clement's sister, June Whitlow, died after a procedure (Procedure Revision 114), and Mr. Hale had signed it off.",
+      "judge": "Worth 2, one point each. (1) The player says the killer's sister died, or names her, June Whitlow. (2) The player says Mr. Hale signed off, approved or was responsible for the procedure (Procedure Revision 114) that caused her death. Revenge on its own, or a different motive, earns neither point.",
+      "parts": [
+        { "points": 1, "match": [[["=june", "sister", "sibling", "=sis", "whitlow"]]] },
+        { "points": 1, "match": [
+          [["procedure", "procedures", "revision", "=114", "protocol", "policy"]],
+          [["hale", "~reginald"], ["signed", "sign", "approved", "approve", "approval", "authorised", "authorized", "sanctioned", "okayed", "signoff"]]
+        ] }
+      ],
+      "tests": [
+        ["Revenge for his sister June, who died because of a procedure Hale approved", 2],
+        ["Hale signed off on Revision 114, and Clement's sister died", 2],
+        ["His sister died", 1], ["June Whitlow was his sister", 1], ["Clemant's sistr June died", 1],
+        ["Hale approved a procedure that killed someone", 1],
+        ["Hale signed off the new procedure", 1],
+        ["Jealousy", 0], ["He was angry at his boss", 0], ["Money", 0], ["", 0]
+      ]
+    },
+    {
+      "id": "jazz",
+      "label": "Who swapped the lullaby for Defiant Jazz?",
+      "short": "The jazz",
+      "points": 1,
+      "required": false,
+      "suspect": true,
+      "answer": "Agnes, the sleepwalker (Peggy is her waking name). She changed the emergency speakers' fail-safe track the night before.",
+      "judge": "Worth 1. The player says Agnes (or Peggy, her waking name) changed the emergency speakers' fail-safe track from the lullaby to Defiant Jazz. Naming anyone else is 0.",
+      "parts": [
+        { "points": 1, "match": [[["~agnes", "~peggy"]]] }
+      ],
+      "tests": [
+        ["Agnes", 1], ["peggy", 1], ["Agnus changed it", 1], ["Agnes (or Peggy)", 1],
+        ["Clement", 0], ["Bertram", 0], ["Agnes or Bertram", 0], ["nobody", 0], ["", 0]
+      ]
+    },
+    {
+      "id": "blackout",
+      "label": "What caused the blackout?",
+      "short": "The blackout",
+      "points": 1,
+      "required": false,
+      "answer": "Bertram's banned waffle iron tripped the floor's main breaker. It was an accident.",
+      "judge": "Worth 1. The player says Bertram's waffle iron, or waffle making in the supply room, overloaded or tripped the breaker. An accident with the breaker and the waffle iron is the answer; a deliberate sabotage, or anything else, is 0.",
+      "parts": [
+        { "points": 1, "match": [
+          [["waffle", "waffles", "waffleiron", "wafflemaker"]],
+          [["~bertram"], ["breaker", "breakers", "fuse", "circuit"]]
+        ] }
+      ],
+      "tests": [
+        ["Bertram's waffle iron tripped the breaker", 1], ["a waffle iron", 1], ["wafle iron overloaded the circuit", 1],
+        ["Bertram overloaded the breaker", 1], ["The breaker tripped", 0], ["Clement cut the power", 0],
+        ["a storm", 0], ["", 0]
+      ]
+    },
+    {
+      "id": "waffles",
+      "label": "Who is \"Waffles\"?",
+      "short": "Waffles",
+      "points": 1,
+      "required": false,
+      "answer": "Bertram. It's what Clement calls him at work.",
+      "judge": "Worth 1. The player says Waffles is Bertram (a typo in the name is fine). Anyone else is 0.",
+      "parts": [
+        { "points": 1, "match": [[["~bertram"]]] }
+      ],
+      "tests": [
+        ["Bertram", 1], ["bertrum", 1], ["It's Bertram, Clement's name for him", 1], ["Not Bertram, Agnes", 0],
+        ["Agnes", 0], ["Clement", 0], ["the cook", 0], ["", 0]
+      ]
+    },
+    {
+      "id": "seat",
+      "label": "How did the killer leave their seat unnoticed?",
+      "short": "The seat",
+      "points": 1,
+      "required": false,
+      "answer": "Clement left his badge on a chair next to the speaker. The jazz shook it, so it looked as if someone was still sitting there.",
+      "judge": "Worth 1. The player says the killer left their badge (lanyard, ID card) on the chair, so it looked as if they were still sitting there. Any other trick, like a dummy or an accomplice, is 0.",
+      "parts": [
+        { "points": 1, "match": [
+          [["badge", "badges", "lanyard", "=id", "pass"],
+           ["chair", "seat", "speaker", "sat", "sitting", "still", "stayed", "left", "propped", "shook", "shaking", "vibrat*", "rattl*", "jazz"]]
+        ] }
+      ],
+      "tests": [
+        ["He left his badge on the chair", 1], ["badge on the chair by the speaker, the jazz shook it", 1],
+        ["Clement's lanyard stayed on the seat", 1], ["left his bedge on his chair", 1],
+        ["He used a dummy", 0], ["Bertram covered for him", 0], ["He crawled under the table", 0], ["", 0]
+      ]
+    },
+    {
+      "id": "elevator",
+      "label": "Why was Agnes in the elevator?",
+      "short": "Agnes in the elevator",
+      "points": 1,
+      "required": false,
+      "answer": "She had hidden notes for herself (her waking self, Peggy) in the elevator's emergency phone panel, and she was there for them. Finding Mr. Hale and pulling the cable off him doesn't count.",
+      "judge": "Worth 1. The player says Agnes was in the elevator for the notes she had hidden for her waking self (Peggy) in the elevator's emergency phone panel. Finding Mr. Hale, pulling the cable off him, or being there to confront or hurt him is 0.",
+      "parts": [
+        { "points": 1, "match": [
+          [["note", "notes", "letter", "letters", "message", "messages", "paper", "papers", "clue", "clues", "instruction*"],
+           ["hid", "hide", "hiding", "hidden", "stash*", "planted", "left", "leaving", "placed", "put", "retriev*", "collect*", "fetch*", "pick*", "herself", "peggy", "waking", "own"]],
+          [["phone", "panel"], ["hid", "hide", "hiding", "hidden", "stash*", "planted", "left", "placed", "put"]]
+        ] }
+      ],
+      "tests": [
+        ["She hid notes for herself in the elevator", 1], ["to leave notes for Peggy", 1],
+        ["She hid something in the phone panel", 1], ["notes she'd stashed for her waking self", 1],
+        ["She found Hale and pulled the cable off him", 0], ["She was going to confront Hale", 0],
+        ["She was sleepwalking", 0], ["", 0]
+      ]
+    }
+  ]
+}
